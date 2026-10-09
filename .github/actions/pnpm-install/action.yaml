@@ -1,0 +1,55 @@
+name: pnpm install
+description: >-
+  Set up the toolchain via Mise and run `pnpm install --frozen-lockfile` with
+  the pnpm store cached. pnpm and Node.js come from mise.toml (pnpm is locked
+  to the same version as `packageManager` in package.json).
+
+inputs:
+  mise-install-args:
+    default: pnpm node
+    description: Arguments forwarded to `mise install`; defaults provision pnpm and node.
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Mise
+      uses: jdx/mise-action@dba19683ed58901619b14f395a24841710cb4925 # v4.1.0
+      with:
+        install_args: ${{ inputs.mise-install-args }}
+
+    - id: store-path
+      name: Resolve pnpm store path
+      # Use a heredoc-style write to scope the value to a single key, so
+      # nothing in `pnpm store path` can inject additional env entries.
+      run: |
+        {
+          echo "STORE_PATH<<__PNPM_STORE_PATH__"
+          pnpm store path --silent
+          echo "__PNPM_STORE_PATH__"
+        } >> "$GITHUB_ENV"
+      shell: bash
+
+    - name: Cache pnpm store
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        key: ${{ runner.os }}-pnpm-store-v2-${{ hashFiles('**/pnpm-lock.yaml') }}
+        path: ${{ env.STORE_PATH }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-v2-
+
+    - name: Install dependencies
+      run: |
+        for attempt in 1 2 3; do
+          if pnpm install --frozen-lockfile --prefer-offline --trust-lockfile=false; then
+            break
+          fi
+          if [ "$attempt" = "3" ]; then
+            echo "::error title=pnpm install failed::pnpm install --frozen-lockfile did not succeed after 3 attempts." >&2
+            exit 1
+          fi
+          sleep $((attempt * 10))
+        done
+      env:
+        CI: "true"
+      shell: bash

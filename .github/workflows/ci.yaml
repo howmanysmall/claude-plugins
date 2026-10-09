@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths: &ci-paths
+      - "**/*.markdown"
+      - "**/*.md"
+      - "**/*.mdx"
+      - "*.config.ts"
+      - ".github/actions/**"
+      - .github/workflows/checks.yaml
+      - .github/workflows/ci.yaml
+      - ".ox*trc.json"
+      - .vale.ini
+      - biome.jsonc
+      - hk.pkl
+      - mise.lock
+      - mise.toml
+      - package.json
+      - "packages/**"
+      - "plugins/**"
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - "scripts/**"
+      - "tools/**"
+      - "tsconfig*.json"
+  pull_request:
+    paths: *ci-paths
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    permissions:
+      contents: read
+    uses: $/.github/workflows/checks.yaml
+
+  vale:
+    name: Vale
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup toolchain
+        uses: $/.github/actions/setup
+        with:
+          tools: vale
+
+      # Styles live in gitignored `.vale/styles`; `Packages` in `.vale.ini` is the source.
+      - name: Sync styles
+        run: vale sync
+
+      - name: Lint prose
+        run: vale --no-color .
+
+  workflow-security:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    name: Workflow Security
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - id: changes
+        name: Check if .github/ changed
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+            HEAD="${{ github.event.pull_request.head.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+            HEAD="${{ github.sha }}"
+          fi
+          if git diff --name-only "$BASE" "$HEAD" 2>/dev/null | grep -q '^\.github/'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.changes.outputs.changed == 'true'
+        name: Setup toolchain
+        uses: $/.github/actions/setup
+        with:
+          tools: actionlint pinact zizmor
+
+      - if: steps.changes.outputs.changed == 'true'
+        name: actionlint
+        run: actionlint
+
+      - if: steps.changes.outputs.changed == 'true'
+        name: pinact
+        run: pinact run
+
+      - if: steps.changes.outputs.changed == 'true'
+        name: zizmor
+        run: zizmor .github

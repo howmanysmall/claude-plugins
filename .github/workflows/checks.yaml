@@ -1,0 +1,65 @@
+name: Checks
+
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  check:
+    name: Validate
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup toolchain
+        uses: $/.github/actions/setup
+
+      - name: Install dependencies
+        uses: $/.github/actions/install
+
+      - name: Restore ESLint cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          key: ${{ runner.os }}-eslint-v1-${{ hashFiles('pnpm-lock.yaml', 'eslint.config.ts') }}-${{ github.sha }}
+          path: .eslintcache*
+          restore-keys: |
+            ${{ runner.os }}-eslint-v1-${{ hashFiles('pnpm-lock.yaml', 'eslint.config.ts') }}-
+
+      - name: Lint
+        run: node --run lint
+
+      - name: Type Check
+        run: node --run type-check
+
+      - name: Build
+        run: node --run build
+
+      # The plugin ships the bundle, so a stale commit breaks installs.
+      - name: Check committed bundle is current
+        run: git diff --exit-code -- plugins/howmanysmall-lsps/lsp-mux.js
+
+  test:
+    name: Test
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup toolchain
+        uses: $/.github/actions/setup
+
+      - name: Install dependencies
+        uses: $/.github/actions/install
+
+      - name: Run tests
+        run: node --run test -- --reporter github-actions --reporter dot
