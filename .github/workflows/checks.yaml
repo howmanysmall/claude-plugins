@@ -42,7 +42,7 @@ jobs:
 
       # The plugin ships the bundle, so a stale commit breaks installs.
       - name: Check committed bundle is current
-        run: git diff --exit-code -- plugins/howmanysmall-lsps/lsp-mux.js
+        run: git diff --exit-code -- plugins/
 
   test:
     name: Test
