@@ -337,12 +337,6 @@
 				}
 			}
 		},
-		"fallow": {
-			"binary": {
-				"arguments": ["--run", "fallow-lsp"],
-				"path": "node"
-			}
-		},
 		"eslint": {
 			"binary": {
 				"env": {
@@ -357,6 +351,12 @@
 				"run": "onType",
 				"runtime": "node",
 				"workingDirectories": [{ "directory": "." }]
+			}
+		},
+		"fallow": {
+			"binary": {
+				"arguments": ["--run", "fallow-lsp"],
+				"path": "node"
 			}
 		},
 		"mdx-analyzer": {
