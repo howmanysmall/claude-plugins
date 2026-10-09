@@ -1,0 +1,36 @@
+{
+	"name": "@howmanysmall/lsp-mux",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Presents several language servers to Claude Code as one, since it starts only one server per file extension.",
+	"license": "UNLICENSED",
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"import": "./src/index.ts"
+		},
+		"./package.json": "./package.json"
+	},
+	"bin": {
+		"lsp-mux": "./src/cli.ts"
+	},
+	"scripts": {
+		"test": "vitest run",
+		"test:agent": "node --run test -- --reporter agent",
+		"type-check": "tsc --build"
+	},
+	"dependencies": {
+		"@cliffy/command": "catalog:scripts",
+		"arktype": "catalog:runtime",
+		"c12": "catalog:runtime",
+		"effect": "catalog:runtime",
+		"type-fest": "catalog:types"
+	},
+	"devDependencies": {
+		"@howmanysmall/vite-configuration": "workspace:*",
+		"@types/node": "catalog:types",
+		"vitest": "catalog:test"
+	}
+}

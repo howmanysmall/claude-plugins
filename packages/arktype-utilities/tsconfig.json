@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"composite": true,
+		"tsBuildInfoFile": "./node_modules/.tmp/arktype-utilities.tsbuildinfo",
+		"lib": ["ESNext"],
+		"types": ["node"]
+	},
+	"references": [{ "path": "../../tools/vite-configuration" }],
+	"include": ["src/**/*.ts", "vitest.config.ts"],
+	"exclude": ["dist", "node_modules"]
+}

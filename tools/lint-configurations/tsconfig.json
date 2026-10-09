@@ -1,0 +1,10 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"composite": true,
+		"tsBuildInfoFile": "./node_modules/.tmp/lint-configurations.tsbuildinfo",
+		"types": ["node"]
+	},
+	"references": [{ "path": "../linter-utilities" }, { "path": "../vite-configuration" }],
+	"include": ["*.config.ts", "src/**/*.ts"]
+}

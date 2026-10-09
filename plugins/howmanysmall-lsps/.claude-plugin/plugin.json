@@ -1,0 +1,11 @@
+{
+	"author": {
+		"email": "contact@howmanysmall.com",
+		"name": "HowManySmall",
+		"url": "https://howmanysmall.com"
+	},
+	"description": "Every language server through one configurable lsp-mux: TypeScript, Astro, linters and formatters, YAML, Markdown, TOML, shell, and Swift",
+	"lspServers": "./.lsp.json",
+	"name": "howmanysmall-lsps",
+	"version": "2.1.1"
+}

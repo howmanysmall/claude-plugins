@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"composite": true,
+		"tsBuildInfoFile": "./node_modules/.tmp/linter-utilities.tsbuildinfo",
+		"lib": ["ESNext"],
+		"types": ["node"]
+	},
+	"references": [{ "path": "../../packages/arktype-utilities" }],
+	"include": ["src/**/*.ts"],
+	"exclude": ["dist", "node_modules"]
+}

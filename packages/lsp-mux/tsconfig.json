@@ -1,0 +1,19 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"composite": true,
+		"tsBuildInfoFile": "./node_modules/.tmp/lsp-mux.tsbuildinfo",
+		"paths": {
+			"$constants": ["./src/constants.ts"],
+			"$functions/*": ["./src/functions/*"],
+			"$meta/*": ["./src/meta/*"],
+			"$types/*": ["./src/types/*"],
+			"$utilities/*": ["./src/utilities/*"],
+			"$validators/*": ["./src/validators/*"]
+		},
+		"types": ["node"]
+	},
+	"references": [{ "path": "../../tools/vite-configuration" }],
+	"include": ["src/**/*.ts", "./package.json", "vitest.config.ts"],
+	"exclude": ["node_modules"]
+}
