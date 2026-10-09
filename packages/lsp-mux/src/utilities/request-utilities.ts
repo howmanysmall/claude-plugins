@@ -1,5 +1,6 @@
 // oxlint-disable unicorn/no-null -- JSON-RPC results and ids are real null.
 
+import { RouteStrategy } from "$meta/protocol-meta";
 import { BackendState } from "$types/mux-types";
 import { backendSupports, enqueueAsync, getConnection } from "$utilities/backend-utilities";
 import { tagResponse, untagItem } from "$utilities/call-hierarchy-utilities";
@@ -7,7 +8,6 @@ import { forwardAsync } from "$utilities/client-utilities";
 import { sendNotification } from "$utilities/connection-utilities";
 import { asObject, getObject, isJsonRpcId } from "$utilities/json-utilities";
 import { combineResponses, getDefaultStrategy } from "$utilities/routing-utilities";
-import { RouteStrategy } from "$validators/configuration-type";
 
 import type { JsonObject } from "type-fest";
 
@@ -52,9 +52,8 @@ export async function routeAsync(
 	backends: ReadonlyArray<Backend>,
 ): Promise<RequestResult> {
 	const responses = await collectAsync(mux, backends, request);
-	const strategy = mux.options.configuration.routes?.[request.method]?.strategy ?? getDefaultStrategy(request.method);
 	return combineResponses(
-		strategy,
+		getDefaultStrategy(request.method),
 		responses.map(({ backend, response }) => tagResponse(request.method, backend.key, response)),
 	);
 }

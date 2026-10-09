@@ -42,4 +42,28 @@ describe("toMessage", () => {
 		});
 		expect(toMessage({ id: {}, jsonrpc: "2.0" })).toBeUndefined();
 	});
+
+	// Catches a server's malformed or non-JSON-RPC output being forwarded.
+	it("rejects anything that isn't JSON-RPC 2.0 and keeps parameters and results", () => {
+		expect.assertions(6);
+
+		expect(toMessage("text")).toBeUndefined();
+		expect(toMessage({ id: 1, jsonrpc: "1.0", method: "m" })).toBeUndefined();
+		expect(toMessage({ jsonrpc: "2.0", method: "m", params: { a: 1 } })).toStrictEqual({
+			jsonrpc: "2.0",
+			method: "m",
+			params: { a: 1 },
+		});
+		expect(toMessage({ id: 2, jsonrpc: "2.0", result: [1] })).toStrictEqual({ id: 2, jsonrpc: "2.0", result: [1] });
+		expect(toMessage({ id: 3, error: { code: 3, message: "no" }, jsonrpc: "2.0" })).toStrictEqual({
+			id: 3,
+			error: { code: 3, message: "no" },
+			jsonrpc: "2.0",
+		});
+		expect(toMessage({ id: 4, error: { message: "no code" }, jsonrpc: "2.0" })).toStrictEqual({
+			id: 4,
+			jsonrpc: "2.0",
+			result: null,
+		});
+	});
 });

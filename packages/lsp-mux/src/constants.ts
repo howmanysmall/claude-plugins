@@ -13,6 +13,8 @@ export const version = packageJson.version;
 export const CONFIGURATION_NAME = "lsp-mux";
 /** Names a user configuration file, overriding the XDG location. */
 export const USER_CONFIGURATION_VARIABLE = "LSP_MUX_CONFIG";
+/** Set to `1` to run a project's `lsp-mux.config.ts`, which is code. */
+export const TRUST_PROJECT_CONFIGS_VARIABLE = "LSP_MUX_TRUST_PROJECT_CONFIGS";
 
 export const METHOD_NOT_FOUND = -32_601;
 export const INTERNAL_ERROR = -32_603;

@@ -4,13 +4,13 @@ import { getSyncKind, supportsMethod } from "$utilities/routing-utilities";
 
 import type { SyncKind } from "$meta/protocol-meta";
 import type { Backend, Connection } from "$types/mux-types";
-import type { ServerConfiguration } from "$validators/configuration-type";
+import type { ServerDefinition } from "$validators/configuration-type";
 
 export function getBackendKey(name: string, root: string): string {
 	return `${name}@${root}`;
 }
 
-export function createBackend(name: string, server: ServerConfiguration, root: string): Backend {
+export function createBackend(name: string, server: ServerDefinition, root: string): Backend {
 	return {
 		key: getBackendKey(name, root),
 		name,

@@ -2,9 +2,8 @@
 
 import { Predicate } from "effect";
 
-import { MERGED_BY_DEFAULT, PROVIDERS, SyncKind } from "$meta/protocol-meta";
+import { MERGED_BY_DEFAULT, PROVIDERS, RouteStrategy, SyncKind } from "$meta/protocol-meta";
 import { asObject, isJsonArray } from "$utilities/json-utilities";
-import { RouteStrategy } from "$validators/configuration-type";
 
 import type { JsonObject, JsonValue } from "type-fest";
 

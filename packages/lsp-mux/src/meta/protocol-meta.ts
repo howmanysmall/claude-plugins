@@ -7,6 +7,11 @@ export const enum MessageType {
 	Log = 4,
 }
 
+export const enum RouteStrategy {
+	First = "first",
+	Merge = "merge",
+}
+
 export const enum SyncKind {
 	None = 0,
 	Full = 1,
@@ -69,3 +74,9 @@ export const MUX_CAPABILITIES: JsonObject = {
 	typeDefinitionProvider: true,
 	workspaceSymbolProvider: true,
 };
+
+/** Requests answered by the configured `formatters`. */
+export const FORMATTING_METHODS: ReadonlySet<string> = new Set([
+	"textDocument/formatting",
+	"textDocument/rangeFormatting",
+]);

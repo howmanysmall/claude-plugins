@@ -1,15 +1,16 @@
 import type { JsonObject, JsonValue } from "type-fest";
 
+import type { ResolvedConfiguration } from "$functions/resolve-configuration";
 import type { JsonRpcId, Message, RequestMessage, RequestResult, ResponseMessage } from "$types/protocol-types";
 import type { PathExists } from "$utilities/path-utilities";
-import type { Configuration, ServerConfiguration } from "$validators/configuration-type";
+import type { ServerDefinition } from "$validators/configuration-type";
 
 export interface Transport {
 	readonly close: () => void;
 	readonly send: (message: Message) => void;
 }
 
-export interface SpawnSpecification extends Pick<ServerConfiguration, "args" | "env"> {
+export interface SpawnSpecification extends Pick<ServerDefinition, "args" | "env"> {
 	/** The resolved command, which may differ from the configured one. */
 	readonly command: string;
 	readonly cwd: string;
@@ -61,7 +62,7 @@ export interface Backend {
 	readonly root: string;
 	/** Document versions this server has seen, by URI. */
 	readonly sentVersions: Map<string, number>;
-	readonly server: ServerConfiguration;
+	readonly server: ServerDefinition;
 	state: BackendState;
 	transport: Transport | undefined;
 }
@@ -78,7 +79,7 @@ export interface ForwardedRequest {
 }
 
 export interface MuxOptions {
-	readonly configuration: Configuration;
+	readonly configuration: ResolvedConfiguration;
 	readonly createTransport: TransportFactory;
 	/** Directory used as the workspace when the client names none. */
 	readonly cwd: string;

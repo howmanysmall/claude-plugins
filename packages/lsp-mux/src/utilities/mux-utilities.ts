@@ -1,8 +1,9 @@
 // oxlint-disable unicorn/no-null -- JSON-RPC results and ids are real null.
 
 import { DEFAULT_SHUTDOWN_TIMEOUT_MS, METHOD_NOT_FOUND, name } from "$constants";
-import { MUX_CAPABILITIES } from "$meta/protocol-meta";
+import { FORMATTING_METHODS, MessageType, MUX_CAPABILITIES } from "$meta/protocol-meta";
 import { getConnection, stopBackend } from "$utilities/backend-utilities";
+import { logToClient } from "$utilities/client-utilities";
 import {
 	closeConnection,
 	createConnection,
@@ -43,6 +44,9 @@ function initialize(mux: Mux, request: RequestMessage): RequestResult {
 	const rootUri = folder ?? getString(parameters, "rootUri");
 	const root = (rootUri === undefined ? undefined : toFilePath(rootUri)) ?? getString(parameters, "rootPath");
 	if (root !== undefined) mux.boundary = root;
+
+	const warnings = mux.options.configuration.warnings ?? [];
+	for (const warning of warnings) logToClient(mux, MessageType.Warning, warning);
 
 	return { result: { capabilities: MUX_CAPABILITIES, serverInfo: { name } } };
 }
@@ -91,7 +95,8 @@ async function handleClientRequestAsync(mux: Mux, request: RequestMessage): Prom
 			}
 
 			if (!mux.documents.has(uri)) openFromDisk(mux, uri);
-			const names = mux.options.configuration.routes?.[request.method]?.servers;
+			const { formatters } = mux.options.configuration;
+			const names = FORMATTING_METHODS.has(request.method) && formatters.length > 0 ? formatters : undefined;
 			return routeAsync(mux, request, getBackendsForDocument(mux, uri, names));
 		}
 	}

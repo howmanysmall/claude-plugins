@@ -1,15 +1,19 @@
 import { describe, expect, it } from "vitest";
 
+import { name as packageName } from "$constants";
+import { resolveConfiguration } from "$functions/resolve-configuration";
 import { detach } from "$utilities/connection-utilities";
 import { asObject, getObject, getString, isJsonArray } from "$utilities/json-utilities";
 import { createMux, receiveClientMessage } from "$utilities/mux-utilities";
-import { isConfiguration, RouteStrategy } from "$validators/configuration-type";
+import { isConfiguration } from "$validators/configuration-type";
 
 import type { JsonObject, JsonValue } from "type-fest";
 
+import type { LspMuxConfiguration } from "$functions/define-config";
+import type { ResolvedConfiguration } from "$functions/resolve-configuration";
 import type { Mux, SpawnSpecification, TransportEvents } from "$types/mux-types";
 import type { Message, RequestMessage, ResponseError } from "$types/protocol-types";
-import type { Configuration, ConfigurationInput } from "$validators/configuration-type";
+import type { ServerOptions } from "$validators/configuration-type";
 
 type HandlerOutcome = JsonValue | { readonly failure: string };
 type Handler = (parameters: JsonObject) => HandlerOutcome | Promise<HandlerOutcome>;
@@ -118,7 +122,7 @@ type ClientReply = { readonly error: ResponseError } | { readonly result?: JsonV
 
 interface HarnessOptions {
 	readonly behaviors?: Readonly<Record<string, FakeBehavior>>;
-	readonly configuration: ConfigurationInput;
+	readonly configuration: LspMuxConfiguration;
 	readonly files?: Readonly<Record<string, string>>;
 	readonly maxRestarts?: number;
 	readonly paths?: ReadonlyArray<string>;
@@ -150,8 +154,18 @@ function commandName(specification: SpawnSpecification): string {
 	return specification.command.split("/").at(-1) ?? specification.command;
 }
 
-function parse(configuration: ConfigurationInput): Configuration {
-	return isConfiguration.assert(configuration);
+function parse(configuration: LspMuxConfiguration): ResolvedConfiguration {
+	return resolveConfiguration(isConfiguration.assert(configuration));
+}
+
+/**
+ * Runs every listed server, in the order given.
+ *
+ * @param options - Each server's definition, in priority order.
+ * @returns A configuration running those servers.
+ */
+function serversOf(options: Readonly<Record<string, ServerOptions>>): LspMuxConfiguration {
+	return { options, servers: Object.keys(options) };
 }
 
 function createHarness(options: HarnessOptions): Harness {
@@ -245,13 +259,11 @@ function createHarness(options: HarnessOptions): Harness {
 	};
 }
 
-const TS_AND_BIOME = {
-	servers: {
-		tsgo: { command: "tsgo", extensions: [".ts"], rootMarkers: ["package.json"] },
-		// oxlint-disable-next-line perfectionist/sort-objects -- priority order.
-		biome: { command: "biome", extensions: [".ts", ".json"], rootMarkers: ["biome.json"] },
-	},
-};
+const TS_AND_BIOME = serversOf({
+	tsgo: { command: "tsgo", extensions: [".ts"], rootMarkers: ["package.json"] },
+	// oxlint-disable-next-line perfectionist/sort-objects -- priority order.
+	biome: { command: "biome", extensions: [".ts", ".json"], requireRootMarker: false, rootMarkers: ["biome.json"] },
+});
 
 const WORKSPACE = { rootUri: "file:///repo", workspaceFolders: [{ name: "repo", uri: "file:///repo" }] };
 const POSITION = { position: { character: 0, line: 0 }, textDocument: { uri: "file:///repo/a.ts" } };
@@ -298,7 +310,7 @@ describe("mux", () => {
 		const harness = createHarness({ configuration: TS_AND_BIOME });
 		const result = asObject(await harness.resultAsync("initialize", WORKSPACE));
 
-		expect(getObject(result, "serverInfo")).toStrictEqual({ name: "@howmanysmall/lsp-mux" });
+		expect(getObject(result, "serverInfo")).toStrictEqual({ name: packageName });
 		expect(getObject(result, "capabilities")?.hoverProvider).toBe(true);
 	});
 
@@ -309,18 +321,16 @@ describe("mux", () => {
 
 		const harness = createHarness({
 			behaviors: { tsgo: { capabilities: { textDocumentSync: 2 } } },
-			configuration: {
-				servers: {
-					tsgo: {
-						command: "tsgo",
-						extensions: [".ts"],
-						initializationOptions: { strict: true },
-						rootMarkers: ["package.json"],
-					},
-					// oxlint-disable-next-line perfectionist/sort-objects -- priority order.
-					biome: { command: "biome", extensions: [".ts"], rootMarkers: ["biome.json"] },
+			configuration: serversOf({
+				tsgo: {
+					command: "tsgo",
+					extensions: [".ts"],
+					initializationOptions: { strict: true },
+					rootMarkers: ["package.json"],
 				},
-			},
+				// oxlint-disable-next-line perfectionist/sort-objects -- priority order.
+				biome: { command: "biome", extensions: [".ts"], rootMarkers: ["biome.json"] },
+			}),
 			paths: [
 				"/repo/package.json",
 				"/repo/biome.json",
@@ -374,16 +384,14 @@ describe("mux", () => {
 		expect.assertions(1);
 
 		const harness = await startAsync({
-			configuration: {
-				servers: {
-					biome: {
-						command: "biome",
-						extensions: [".ts"],
-						requireRootMarker: true,
-						rootMarkers: ["biome.json"],
-					},
+			configuration: serversOf({
+				biome: {
+					command: "biome",
+					extensions: [".ts"],
+					requireRootMarker: true,
+					rootMarkers: ["biome.json"],
 				},
-			},
+			}),
 			paths: ["/usr/bin/biome", "/repo/pkg/biome.json"],
 		});
 		harness.notify("textDocument/didOpen", openParameters("file:///repo/pkg/b.ts"));
@@ -396,12 +404,10 @@ describe("mux", () => {
 		expect.assertions(1);
 
 		const harness = await startAsync({
-			configuration: {
-				servers: {
-					a: { command: "/tools/a", extensions: [".ts"] },
-					b: { command: "/tools/b", extensions: [".ts"] },
-				},
-			},
+			configuration: serversOf({
+				a: { command: "/tools/a", extensions: [".ts"] },
+				b: { command: "/tools/b", extensions: [".ts"] },
+			}),
 			paths: ["/tools/a"],
 		});
 
@@ -429,9 +435,9 @@ describe("mux", () => {
 		expect.assertions(2);
 
 		const harness = createHarness({
-			configuration: {
-				servers: { yaml: { command: "yaml", extensions: [".yaml"], settings: { yaml: { format: true } } } },
-			},
+			configuration: serversOf({
+				yaml: { command: "yaml", extensions: [".yaml"], settings: { yaml: { format: true } } },
+			}),
 			paths: ["/usr/bin/yaml"],
 		});
 		await harness.requestAsync("initialize", WORKSPACE);
@@ -504,8 +510,8 @@ describe("mux", () => {
 		await expect(harness.resultAsync("textDocument/definition", POSITION)).resolves.toStrictEqual([]);
 	});
 
-	it("merges array answers and honours configured routes", async () => {
-		expect.assertions(4);
+	it("merges array answers from every server", async () => {
+		expect.assertions(2);
 
 		const behaviors = { biome: answering("b"), tsgo: answering("t") };
 		const paths = ["/usr/bin/tsgo", "/usr/bin/biome"];
@@ -516,24 +522,24 @@ describe("mux", () => {
 			{ uri: "b" },
 		]);
 		await expect(merged.resultAsync("textDocument/definition", POSITION)).resolves.toStrictEqual([{ uri: "t" }]);
+	});
 
-		const routed = await startAsync({
-			behaviors,
-			configuration: {
-				...TS_AND_BIOME,
-				routes: {
-					"textDocument/definition": { servers: ["biome", "tsgo"], strategy: RouteStrategy.Merge },
-					"textDocument/references": { servers: ["biome"] },
-				},
+	it("sends formatting to the configured formatters, in order", async () => {
+		expect.assertions(1);
+
+		const formatting = { documentFormattingProvider: true };
+		const harness = await startAsync({
+			behaviors: {
+				biome: { capabilities: formatting, handlers: { "textDocument/formatting": () => [{ newText: "b" }] } },
+				tsgo: { capabilities: formatting, handlers: { "textDocument/formatting": () => [{ newText: "t" }] } },
 			},
-			paths,
+			configuration: { ...TS_AND_BIOME, formatters: ["biome", "tsgo"] },
+			paths: ["/usr/bin/tsgo", "/usr/bin/biome"],
 		});
 
-		await expect(routed.resultAsync("textDocument/definition", POSITION)).resolves.toStrictEqual([
-			{ uri: "b" },
-			{ uri: "t" },
-		]);
-		await expect(routed.resultAsync("textDocument/references", POSITION)).resolves.toStrictEqual([{ uri: "b" }]);
+		await expect(
+			harness.resultAsync("textDocument/formatting", { options: {}, textDocument: { uri: "file:///repo/a.ts" } }),
+		).resolves.toStrictEqual([{ newText: "b" }]);
 	});
 
 	it("reports server errors and unknown methods", async () => {

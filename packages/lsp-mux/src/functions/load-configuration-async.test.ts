@@ -3,7 +3,10 @@ import { tmpdir } from "node:os";
 import nodePath from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { getUserConfigurationLocation, loadConfigurationAsync, mergeLayers } from "./load-configuration-async";
+import { name as packageName } from "$constants";
+import { mergeLayers } from "$utilities/merge-utilities";
+
+import { getUserConfigurationLocation, loadConfigurationAsync } from "./load-configuration-async";
 
 async function withWorkspaceAsync<TValue>(runAsync: (workspace: string) => Promise<TValue>): Promise<TValue> {
 	const workspace = await mkdtemp(nodePath.join(tmpdir(), "lsp-mux-configuration-"));
@@ -22,6 +25,20 @@ async function writeAsync(workspace: string, relativePath: string, contents: str
 }
 
 const TYPESCRIPT = { args: ["--lsp", "--stdio"], command: "tsgo", extensions: [".ts", ".tsx"] };
+
+// `defineConfiguration` itself; the built `index.js` re-exports it.
+const API_PATH = nodePath.join(import.meta.dirname, "define-config.ts");
+
+const TRUSTED = { LSP_MUX_TRUST_PROJECT_CONFIGS: "1" };
+const TYPESCRIPT_CONFIGURATION = [
+	`import { defineConfiguration } from "${packageName}";`,
+	"",
+	'export default defineConfiguration({ servers: ["yaml"] });',
+].join("\n");
+
+function namesOf(servers: ReadonlyArray<{ readonly name: string }>): ReadonlyArray<string> {
+	return servers.map(({ name }) => name);
+}
 
 describe("mergeLayers", () => {
 	// Catches c12's default defu concatenating a project's args onto the
@@ -57,74 +74,104 @@ describe("getUserConfigurationLocation", () => {
 });
 
 describe("loadConfigurationAsync", () => {
-	// Catches a project or user tweak replacing the whole default server list.
-	it("layers the defaults, the user configuration, and the project configuration", async () => {
-		expect.assertions(1);
+	// Catches a project's `lsp-mux.config.ts` failing to load where the package
+	// isn't installed.
+	it("loads a TypeScript configuration that imports defineConfiguration", async () => {
+		expect.assertions(2);
 
 		const configuration = await withWorkspaceAsync(async (workspace) => {
-			// Entry order is the server priority order.
-			const servers = Object.fromEntries([
-				["typescript", TYPESCRIPT],
-				["oxfmt", { args: ["--lsp"], command: "oxfmt", extensions: [".ts"] }],
-				["biome", { args: ["lsp-proxy"], command: "biome", extensions: [".ts"] }],
-			]);
-			const defaults = await writeAsync(
+			await writeAsync(
 				workspace,
-				"plugin/lsp-mux.json",
-				JSON.stringify({ routes: { "textDocument/formatting": { servers: ["oxfmt", "biome"] } }, servers }),
+				"lsp-mux.config.ts",
+				[
+					`import { defineConfiguration } from "${packageName}";`,
+					"",
+					"export default defineConfiguration({",
+					'\tservers: ["typescript", "biome"],',
+					'\toptions: { typescript: { command: "tsc" } },',
+					"});",
+				].join("\n"),
 			);
+			return loadConfigurationAsync({ apiPath: API_PATH, cwd: workspace, environment: TRUSTED, home: workspace });
+		});
+
+		expect(namesOf(configuration.servers)).toStrictEqual(["typescript", "biome"]);
+		expect(configuration.servers[0]).toMatchObject({ args: ["--lsp", "--stdio"], command: "tsc" });
+	});
+
+	// Catches a user's personal servers being lost, or overriding the project.
+	it("layers the project configuration over the user configuration", async () => {
+		expect.assertions(2);
+
+		const configuration = await withWorkspaceAsync(async (workspace) => {
 			await writeAsync(
 				workspace,
 				"config/lsp-mux.jsonc",
-				'{\n\t// mine\n\t"servers": { "biome": { "enabled": false } },\n}\n',
+				'{\n\t// mine\n\t"servers": ["yaml"],\n\t"options": { "yaml": { "args": ["--x"] } },\n}\n',
 			);
-			await writeAsync(
-				workspace,
-				"project/lsp-mux.config.json",
-				JSON.stringify({ servers: { typescript: { args: ["--run", "tsc", "--", "--lsp"], command: "node" } } }),
-			);
-
+			await writeAsync(workspace, "project/.config/lsp-mux.json", JSON.stringify({ formatters: ["biome"] }));
 			return loadConfigurationAsync({
+				apiPath: API_PATH,
 				cwd: nodePath.join(workspace, "project"),
-				defaults,
 				environment: { XDG_CONFIG_HOME: nodePath.join(workspace, "config") },
 				home: workspace,
 			});
 		});
 
-		const { servers = {} } = configuration;
+		expect(configuration.formatters).toStrictEqual(["biome"]);
+		expect(configuration.servers).toMatchObject([{ name: "yaml", args: ["--x"], command: "yaml-language-server" }]);
+	});
 
-		expect(
-			Object.entries(servers).map(([name, { args, command, enabled }]) => [name, command, args, enabled]),
-		).toStrictEqual([
-			["typescript", "node", ["--run", "tsc", "--", "--lsp"], true],
-			["oxfmt", "oxfmt", ["--lsp"], true],
-			["biome", "biome", ["lsp-proxy"], false],
+	// Catches an untrusted repository's config code running as soon as Claude
+	// Code starts the plugin.
+	it("skips a project's code configuration unless trusted, and says why", async () => {
+		expect.assertions(2);
+
+		const configuration = await withWorkspaceAsync(async (workspace) => {
+			await writeAsync(workspace, "lsp-mux.config.ts", TYPESCRIPT_CONFIGURATION);
+			return loadConfigurationAsync({ apiPath: API_PATH, cwd: workspace, environment: {}, home: workspace });
+		});
+
+		expect(configuration.servers).toStrictEqual([]);
+		expect(configuration.warnings).toStrictEqual([
+			expect.stringContaining("set LSP_MUX_TRUST_PROJECT_CONFIGS=1 to run project configuration code"),
 		]);
 	});
 
-	it("works without any configuration file", async () => {
+	it("always runs the user's own code configuration", async () => {
+		expect.assertions(1);
+
+		const configuration = await withWorkspaceAsync(async (workspace) => {
+			await writeAsync(workspace, "config/lsp-mux.ts", TYPESCRIPT_CONFIGURATION);
+			return loadConfigurationAsync({
+				apiPath: API_PATH,
+				cwd: nodePath.join(workspace, "project"),
+				environment: { XDG_CONFIG_HOME: nodePath.join(workspace, "config") },
+				home: workspace,
+			});
+		});
+
+		expect(namesOf(configuration.servers)).toStrictEqual(["yaml"]);
+	});
+
+	it("runs nothing without a configuration", async () => {
 		expect.assertions(1);
 
 		const configuration = await withWorkspaceAsync(async (workspace) =>
-			loadConfigurationAsync({ cwd: workspace, environment: {}, home: workspace }),
+			loadConfigurationAsync({ apiPath: API_PATH, cwd: workspace, environment: {}, home: workspace }),
 		);
 
-		expect(configuration).toStrictEqual({});
+		expect(configuration).toStrictEqual({ formatters: [], servers: [], warnings: [] });
 	});
 
-	it("rejects an invalid configuration", async () => {
+	it("rejects an unknown server without a command", async () => {
 		expect.assertions(1);
 
 		await expect(
 			withWorkspaceAsync(async (workspace) => {
-				await writeAsync(
-					workspace,
-					"lsp-mux.config.json",
-					JSON.stringify({ servers: { typescript: { command: "" } } }),
-				);
-				return loadConfigurationAsync({ cwd: workspace, environment: {}, home: workspace });
+				await writeAsync(workspace, "lsp-mux.config.json", JSON.stringify({ servers: ["mystery"] }));
+				return loadConfigurationAsync({ apiPath: API_PATH, cwd: workspace, environment: {}, home: workspace });
 			}),
-		).rejects.toThrow("invalid lsp-mux configuration");
+		).rejects.toThrow('lsp-mux server "mystery"');
 	});
 });

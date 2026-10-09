@@ -1,44 +1,52 @@
-import { type } from "arktype";
-
 import {
 	isBoolean,
+	isMaybeBoolean,
+	isMaybeJsonObject,
+	isMaybeNonEmptyString,
 	isMaybeReadonlyArrayOfStrings,
+	isMaybeReadonlyDictionaryOfStrings,
 	isReadonlyArrayOfStrings,
-	isReadonlyRecordOfStrings,
+	isReadonlyDictionaryOfStrings,
 	isString,
 	isUndefined,
-} from "$validators/primitive-validators";
+} from "@howmanysmall/arktype-utilities";
+import { type } from "arktype";
 
-export const enum RouteStrategy {
-	First = "first",
-	Merge = "merge",
-}
+/** How to start a language server and which files it handles. */
+export const isServerOptions = type({
+	"args?": isMaybeReadonlyArrayOfStrings,
+	"command?": isMaybeNonEmptyString,
+	"env?": isMaybeReadonlyDictionaryOfStrings,
+	"extensions?": isMaybeReadonlyArrayOfStrings,
+	"initializationOptions?": isMaybeJsonObject,
+	/** Only start where a root marker exists, not at the workspace root. */
+	"requireRootMarker?": isMaybeBoolean,
+	"rootMarkers?": isMaybeReadonlyArrayOfStrings,
+	"settings?": isMaybeJsonObject,
+}).readonly();
+export type ServerOptions = typeof isServerOptions.inferIn;
 
-export const isServerConfiguration = type({
+/** A server with everything needed to start it. */
+export const isServerDefinition = type({
 	args: isReadonlyArrayOfStrings.default(() => []),
 	command: "string > 0",
-	enabled: isBoolean.default(true),
-	env: isReadonlyRecordOfStrings.default(() => ({})),
+	env: isReadonlyDictionaryOfStrings.default(() => ({})),
 	extensions: isReadonlyArrayOfStrings,
-	"initializationOptions?": "object.json | undefined",
-	/** Only start where a root marker exists, not at the workspace root. */
+	"initializationOptions?": isMaybeJsonObject,
 	requireRootMarker: isBoolean.default(false),
 	rootMarkers: isReadonlyArrayOfStrings.default(() => []),
-	"settings?": "object.json | undefined",
+	"settings?": isMaybeJsonObject,
 }).readonly();
+export type ServerDefinition = typeof isServerDefinition.infer;
 
-export const isRouteConfiguration = type({
-	/** Servers allowed to answer, in priority order. */
-	"servers?": isMaybeReadonlyArrayOfStrings,
-	"strategy?": type.enumerated(RouteStrategy.First, RouteStrategy.Merge).or(isUndefined),
-}).readonly();
-
-/** A configuration file. Servers are keyed by name to merge across layers. */
 export const isConfiguration = type({
-	"routes?": type.Record(isString, isRouteConfiguration).or(isUndefined),
-	"servers?": type.Record(isString, isServerConfiguration).or(isUndefined),
+	/** Servers that format documents, in priority order. */
+	"formatters?": isMaybeReadonlyArrayOfStrings,
+	/**
+	 * Per-server options, layered over the built-in definition if there is one.
+	 */
+	"options?": type.Record(isString, isServerOptions).or(isUndefined),
+	/** Servers to run, in priority order. */
+	"servers?": isMaybeReadonlyArrayOfStrings,
 }).readonly();
-
-export type ConfigurationInput = typeof isConfiguration.inferIn;
 export type Configuration = typeof isConfiguration.infer;
-export type ServerConfiguration = typeof isServerConfiguration.infer;

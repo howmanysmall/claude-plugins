@@ -8,6 +8,11 @@ const configuration = mergeConfig(
 			name: "lsp-mux",
 			include: ["src/**/*.test.ts"],
 			restoreMocks: true,
+			server: {
+				// Test configuration files load through Node, as in the CLI,
+				// so its resolve hook applies.
+				deps: { external: [/lsp-mux-configuration-/u] },
+			},
 			testTimeout: 5_000,
 		},
 	}),

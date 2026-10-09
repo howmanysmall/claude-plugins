@@ -18,12 +18,12 @@ import type { JsonObject } from "type-fest";
 
 import type { Backend, Mux } from "$types/mux-types";
 import type { ResponseMessage } from "$types/protocol-types";
-import type { ServerConfiguration } from "$validators/configuration-type";
+import type { ServerDefinition } from "$validators/configuration-type";
 
 interface Owner {
 	readonly name: string;
 	readonly root: string;
-	readonly server: ServerConfiguration;
+	readonly server: ServerDefinition;
 }
 
 const INITIALIZATION_OPTIONS: ReadonlySet<string> = new Set(["initializationOptions"]);
@@ -56,7 +56,7 @@ function forServer(capabilities?: JsonObject): JsonObject {
 function getRoot(
 	mux: Mux,
 	name: string,
-	{ requireRootMarker, rootMarkers }: ServerConfiguration,
+	{ requireRootMarker, rootMarkers }: ServerDefinition,
 	directory: string,
 ): string | undefined {
 	const cacheKey = `${name}\0${directory}`;
@@ -81,14 +81,15 @@ export function getOwners(mux: Mux, uri: string, names?: ReadonlyArray<string>):
 
 	const extension = nodePath.extname(path);
 	const directory = nodePath.dirname(path);
-	const servers = mux.options.configuration.servers ?? {};
+	const { servers } = mux.options.configuration;
+	const candidates =
+		names === undefined ? servers : names.flatMap((name) => servers.filter((server) => server.name === name));
 
-	return (names ?? Object.keys(servers)).flatMap((name) => {
-		const server = servers[name];
-		if (server?.enabled !== true || !server.extensions.includes(extension)) return [];
+	return candidates.flatMap((server) => {
+		if (!server.extensions.includes(extension)) return [];
 
-		const root = getRoot(mux, name, server, directory);
-		return root === undefined ? [] : [{ name, root, server }];
+		const root = getRoot(mux, server.name, server, directory);
+		return root === undefined ? [] : [{ name: server.name, root, server }];
 	});
 }
 

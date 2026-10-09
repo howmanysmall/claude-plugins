@@ -5,13 +5,7 @@ import { asObject, getNumber, getString, isJsonRpcId, isJsonValue } from "$utili
 
 import type { JsonValue } from "type-fest";
 
-import type {
-	Message,
-	NotificationMessage,
-	RequestMessage,
-	ResponseError,
-	ResponseMessage,
-} from "$types/protocol-types";
+import type { Message, NotificationMessage, RequestMessage, ResponseError } from "$types/protocol-types";
 
 export type MessageReader = (chunk: Uint8Array) => void;
 
@@ -56,10 +50,6 @@ export function isRequestMessage(message: Message): message is RequestMessage {
 
 export function isNotificationMessage(message: Message): message is NotificationMessage {
 	return "method" in message && !("id" in message);
-}
-
-export function isResponseMessage(message: Message): message is ResponseMessage {
-	return !("method" in message);
 }
 
 export function encodeMessage(message: Message): Buffer {
