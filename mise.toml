@@ -30,6 +30,7 @@ vale = "latest"
 zizmor = "latest"
 
 [tasks]
+
 [tasks."amend:no-verify"]
 description = "Amends the staged changes, reusing the previous commit message."
 run = "git commit --amend --reuse-message=HEAD --signoff --no-verify"
@@ -43,6 +44,33 @@ arg <message> {
 """
 run = """
 git commit --signoff --message "${usage_message?}" --no-verify
+"""
+
+[tasks."fallow:audit-hk"]
+description = "Runs fallow to audit the project."
+depends = ["test:istanbul"]
+run = "fallow audit --quiet --gate-marker hk"
+
+[tasks."test:istanbul"]
+description = "Generate a coverage report with Vitest and Istanbul."
+sources = [
+	"packages/**",
+	"tools/**",
+	"*.config.*",
+	"tsconfig*.json",
+	"package.json",
+	"pnpm-lock.yaml",
+	"pnpm-workspace.yaml",
+	"!**/node_modules/**",
+	"!**/dist/**",
+	"!**/.cache/**",
+	"!**/*.tsbuildinfo",
+]
+outputs = [".cache/istanbul/coverage-final.json"]
+cache = { enabled = true, command_inputs = ["pwd"] }
+run = """
+rm -f .cache/istanbul/coverage-final.json
+nr test:istanbul --silent >/dev/null 2>&1 || test -s .cache/istanbul/coverage-final.json
 """
 
 [tasks.amend]
@@ -67,6 +95,19 @@ arg <message> {
 run = """
 git commit --signoff --message "${usage_message?}"
 """
+
+[tasks.dead-code]
+description = "Detect unused files, exports, types, and dependencies with fallow."
+run = "node --run fallow:dead-code"
+
+[tasks.duplicates]
+alias = "dupes"
+description = "Detect duplicated and structurally-similar code with fallow."
+run = "node --run fallow:dupes"
+
+[tasks.health]
+description = "Rank complexity hotspots and refactoring targets with fallow."
+run = "node --run fallow:health"
 
 [tasks.install]
 description = "Install dependencies from the pnpm lockfile."

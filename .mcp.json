@@ -1,5 +1,9 @@
 {
 	"mcpServers": {
+		"fallow": {
+			"args": ["--run", "fallow-mcp"],
+			"command": "node"
+		},
 		"gh-grep": {
 			"type": "http",
 			"url": "https://mcp.grep.app"

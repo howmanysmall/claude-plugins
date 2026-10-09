@@ -37,6 +37,12 @@ jobs:
       - name: Type Check
         run: node --run type-check
 
+      - name: Dead code
+        run: node --run fallow:dead-code
+
+      - name: Duplication
+        run: node --run fallow:dupes
+
       - name: Build
         run: node --run build
 

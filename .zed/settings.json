@@ -7,6 +7,12 @@
 	},
 	"colorize_brackets": true,
 	"context_servers": {
+		"fallow": {
+			"args": ["--run", "fallow-mcp"],
+			"command": "node",
+			"enabled": true,
+			"remote": false
+		},
 		"hk": {
 			"args": ["x", "--", "hk", "mcp", "--root", "."],
 			"command": "mise",
@@ -329,6 +335,12 @@
 					"rename": true,
 					"requireConfiguration": true
 				}
+			}
+		},
+		"fallow": {
+			"binary": {
+				"arguments": ["--run", "fallow-lsp"],
+				"path": "node"
 			}
 		},
 		"eslint": {

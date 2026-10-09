@@ -103,6 +103,7 @@ local fileChecks = new Mapping<String, Step> {
   }
   ["shellcheck"] = (Builtins.shellcheck) {
     batch = false
+    exclude = List(".claude/hooks/fallow-gate.sh")
   }
   ["shfmt"] = (Builtins.shfmt) {
     batch = false
@@ -288,6 +289,52 @@ hooks {
             argv = List("bash", "scripts/betterleaks-pre-push.sh")
           }
           effect = "read"
+        }
+      }
+      // Changed-code quality gate (dead code, duplication, health). Gates on
+      // `new-only`, so inherited findings on touched files report but do not
+      // block.
+      ["fallow-audit"] {
+        exclusive = true
+        check = new CommandSpec {
+          command = new Command {
+            argv = List("mise", "run", "fallow:audit-hk")
+          }
+          effect = "write"
+        }
+      }
+      ["dead-code"] {
+        check = new CommandSpec {
+          command = new Command {
+            argv = List("fallow", "dead-code")
+          }
+          effect = "write"
+        }
+      }
+      ["duplicates"] {
+        check = new CommandSpec {
+          command = new Command {
+            argv = List("fallow", "dupes")
+          }
+          effect = "write"
+        }
+      }
+      ["health"] {
+        profiles = List("health")
+        check = new CommandSpec {
+          command = new Command {
+            argv = List("fallow", "health", "--hotspots", "--targets", "--report-only")
+          }
+          effect = "write"
+        }
+      }
+      ["security"] {
+        profiles = List("security")
+        check = new CommandSpec {
+          command = new Command {
+            argv = List("fallow", "security")
+          }
+          effect = "write"
         }
       }
       ["unit-tests"] {

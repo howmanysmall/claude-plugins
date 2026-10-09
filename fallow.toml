@@ -1,0 +1,82 @@
+entry = [
+	"packages/lsp-mux/src/cli.ts",
+	"packages/lsp-mux/src/index.ts",
+	"*.config.ts",
+	"packages/*/*.config.ts",
+	"tools/*/*.config.ts",
+	".config/*.ts",
+	"tools/vite-configuration/src/setup.ts",
+]
+ignorePatterns = ["plugins/**", ".claude/**", "!.config/**"]
+ignoreDependencies = [
+	"@arethetypeswrong/core",
+	"@e18e/eslint-plugin",
+	"@isentinel/hooks",
+	"@pobammer-ts/small-rules",
+	"@stylistic/eslint-plugin",
+	"eslint-plugin-antfu",
+	"eslint-plugin-better-max-params",
+	"eslint-plugin-comment-length",
+	"eslint-plugin-de-morgan",
+	"eslint-plugin-eslint-plugin",
+	"eslint-plugin-flawless",
+	"eslint-plugin-jest-extended",
+	"eslint-plugin-jsdoc",
+	"eslint-plugin-n",
+	"eslint-plugin-oxfmt",
+	"eslint-plugin-perfectionist",
+	"eslint-plugin-pnpm",
+	"eslint-plugin-react-jsx",
+	"eslint-plugin-react-naming-convention",
+	"eslint-plugin-react-x",
+	"eslint-plugin-roblox-ts",
+	"eslint-plugin-sonarjs",
+	"eslint-plugin-unicorn",
+	"eslint-plugin-unused-imports",
+	"publint",
+	"typescript7",
+]
+ignoreExportsUsedInFile = true
+overrides = []
+
+[rules]
+unused-files = "error"
+unused-exports = "error"
+unused-types = "error"
+unused-dependencies = "error"
+unused-dev-dependencies = "error"
+unused-optional-dependencies = "error"
+unused-enum-members = "error"
+unlisted-dependencies = "error"
+unresolved-imports = "error"
+duplicate-exports = "error"
+circular-dependencies = "error"
+re-export-cycle = "error"
+type-only-dependencies = "error"
+test-only-dependencies = "error"
+unused-dependency-overrides = "error"
+stale-suppressions = "error"
+
+[health]
+maxCyclomatic = 20
+maxCognitive = 15
+maxCrap = 30
+crapRefactorBand = 5
+maxUnitSize = 60
+coverage = ".cache/istanbul/coverage-final.json"
+ignore = ["*.config.ts", "scripts/**"]
+suggestInlineSuppression = true
+
+[health.ownership]
+botPatterns = ["*\\[bot\\]*", "dependabot*", "renovate*", "github-actions*", "svc-*", "*-service-account*"]
+emailMode = "handle"
+
+[duplicates]
+mode = "mild"
+minLines = 5
+minTokens = 50
+threshold = 0.5
+ignoreDefaults = true
+
+[audit]
+gate = "new-only"
