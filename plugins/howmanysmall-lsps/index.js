@@ -1,0 +1,1 @@
+function e(e){return e}export{e as defineConfig,e as defineConfiguration};
