@@ -1,36 +1,64 @@
 {
-	"name": "@howmanysmall/lsp-mux",
-	"version": "1.0.0",
-	"private": true,
-	"description": "Presents several language servers to Claude Code as one, since it starts only one server per file extension.",
-	"license": "UNLICENSED",
+	"name": "@pobammer-ts/lsp-mux",
+	"version": "3.1.2",
+	"description": "Run several language servers behind one LSP connection, configured with defineConfig.",
+	"keywords": [
+		"language-server",
+		"lsp",
+		"multiplexer",
+		"claude-code",
+		"slop"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/howmanysmall/claude-plugins.git",
+		"directory": "packages/lsp-mux"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "HowManySmall",
+		"email": "contact@howmanysmall.com",
+		"url": "https://howmanysmall.com"
+	},
 	"sideEffects": false,
 	"type": "module",
 	"exports": {
 		".": {
-			"types": "./src/index.ts",
-			"import": "./src/index.ts"
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		},
 		"./package.json": "./package.json"
 	},
 	"bin": {
-		"lsp-mux": "./src/cli.ts"
+		"lsp-mux": "./dist/cli.js"
 	},
+	"files": [
+		"dist"
+	],
 	"scripts": {
+		"prepublishOnly": "cd ../.. && node --run build",
 		"test": "vitest run",
 		"test:agent": "node --run test -- --reporter agent",
 		"type-check": "tsc --build"
 	},
 	"dependencies": {
-		"@cliffy/command": "catalog:scripts",
+		"@cliffy/command": "catalog:runtime",
 		"arktype": "catalog:runtime",
 		"c12": "catalog:runtime",
 		"effect": "catalog:runtime",
 		"type-fest": "catalog:types"
 	},
 	"devDependencies": {
+		"@howmanysmall/arktype-utilities": "workspace:*",
 		"@howmanysmall/vite-configuration": "workspace:*",
 		"@types/node": "catalog:types",
+		"tsdown": "catalog:build",
 		"vitest": "catalog:test"
+	},
+	"engines": {
+		"node": ">=22.18.0"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
