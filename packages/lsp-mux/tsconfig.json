@@ -14,6 +14,6 @@
 		"types": ["node"]
 	},
 	"references": [{ "path": "../../tools/vite-configuration" }],
-	"include": ["src/**/*.ts", "./package.json", "vitest.config.ts"],
+	"include": ["src/**/*.ts", "./package.json", "*.config.ts"],
 	"exclude": ["node_modules"]
 }
