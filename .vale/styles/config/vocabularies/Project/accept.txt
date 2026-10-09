@@ -1,0 +1,25 @@
+# React hooks, not the alex false positive.
+(?i)\bhooks?\b
+(?i)\bGod\b
+(?i)\bsimple\b
+(?i)\blsp\b
+(?i)\blsps\b
+(?i)\blsp-mux\b
+(?i)\bmux\b
+(?i)\bmultiplexer\b
+(?i)\btsdown\b
+(?i)\barktype\b
+(?i)\bc12\b
+(?i)\bcliffy\b
+(?i)\bconfbox\b
+(?i)\beffect\b
+(?i)\bjsonc\b
+(?i)\bmonorepo\b
+(?i)\bpnpm\b
+(?i)\bvitest\b
+(?i)\bbiome\b
+(?i)\boxlint\b
+(?i)\boxfmt\b
+(?i)\btsgo\b
+(?i)\bstdio\b
+(?i)\bJSON-RPC\b

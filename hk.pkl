@@ -31,6 +31,8 @@ exclude =
 
 local ECMA_FILES = List("**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}")
 local MARKDOWN_FILES = List("**/*.{md,markdown,mdx}")
+local WORKFLOW_FILES = List(".github/workflows/**/*.{yml,yaml}")
+local ACTION_FILES = WORKFLOW_FILES + List(".github/actions/**/action.{yml,yaml}")
 local GENERATED_DATA =
   List(
     "**/*-lock.{json,yaml}",
@@ -101,7 +103,6 @@ local fileChecks = new Mapping<String, Step> {
   }
   ["shellcheck"] = (Builtins.shellcheck) {
     batch = false
-    exclude = List(".claude/hooks/fallow-gate.sh")
   }
   ["shfmt"] = (Builtins.shfmt) {
     batch = false
@@ -121,12 +122,66 @@ local fileChecks = new Mapping<String, Step> {
       }
     }
   }
+  ["actionlint"] = (Builtins.actionlint) {
+    glob = WORKFLOW_FILES
+    check = new CommandSpec {
+      command = new Command {
+        argv = List("actionlint", "{{files}}")
+      }
+      effect = "read"
+    }
+  }
+  // zizmor and pinact read a GitHub token for their online checks, which only
+  // a shell can fetch.
+  ["zizmor"] = (Builtins.zizmor) {
+    glob = ACTION_FILES + List(".github/dependabot.yml")
+    check = new CommandSpec {
+      command = "GH_TOKEN=\"$(gh auth token)\" zizmor --no-progress {{files}}"
+      effect = "read"
+    }
+    fix = new CommandSpec {
+      command = "GH_TOKEN=\"$(gh auth token)\" zizmor --no-progress --fix {{files}}"
+      effect = "write"
+    }
+  }
+  ["pinact"] {
+    glob = ACTION_FILES
+    check = new CommandSpec {
+      command = "PINACT_GITHUB_TOKEN=\"$(gh auth token)\" pinact run --verify --check {{files}}"
+      effect = "read"
+    }
+    fix = new CommandSpec {
+      command = "PINACT_GITHUB_TOKEN=\"$(gh auth token)\" pinact run --verify {{files}}"
+      effect = "write"
+    }
+  }
   ["tombi"] = Builtins.tombi
   ["tombi-format"] = Builtins.tombi_format
   ["pkl-format"] = Builtins.pkl_format
   ["rumdl"] = (Builtins.rumdl) {
     glob = MARKDOWN_FILES
     exclude = GENERATED_DATA
+  }
+  ["vale"] = (Builtins.vale) {
+    glob = MARKDOWN_FILES
+  }
+  ["betterleaks"] {
+    check = new CommandSpec {
+      command = new Command {
+        argv =
+          List(
+            "betterleaks",
+            "git",
+            "--config",
+            ".betterleaks.toml",
+            "--pre-commit",
+            "--staged",
+            "--redact",
+            "--no-banner",
+          )
+      }
+      effect = "read"
+    }
   }
   ["merge-conflicts"] = Builtins.check_merge_conflict
   ["case-conflicts"] = Builtins.check_case_conflict
@@ -226,6 +281,15 @@ hooks {
     stage = false
     steps = (fileChecks) {
       ["type-check"] { glob = null }
+      ["betterleaks"] {
+        stdin = "{{hook_stdin}}"
+        check = new CommandSpec {
+          command = new Command {
+            argv = List("bash", "scripts/betterleaks-pre-push.sh")
+          }
+          effect = "read"
+        }
+      }
       ["unit-tests"] {
         depends = List("type-check")
         exclusive = true

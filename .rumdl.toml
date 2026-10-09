@@ -32,7 +32,6 @@ exclude = [
 	# Specific files or patterns
 	"CHANGELOG.md",
 	"LICENSE.md",
-	".opencode/command/*.md",
 ]
 # Respect .gitignore files when scanning directories (default: true)
 respect-gitignore = true

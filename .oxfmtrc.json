@@ -10,7 +10,6 @@
 		"**/*-lock.json",
 		"**/*.js",
 		"**/*.{md,toml,js,yaml,yml,toml}",
-		"**/.opencode/goals",
 		"**/do-not-sync-ever/**",
 		"**/generated/**",
 		"**/ses_*.json",

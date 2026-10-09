@@ -13,16 +13,21 @@ cargo.binstall_native = true
 
 [tools]
 "npm:sherif" = "latest"
+actionlint = "latest"
+betterleaks = "latest"
 direnv = "latest"
 hk = "2.5.0"
 ni = "latest"
 node = "24"
+pinact = "latest"
 pkl = "latest"
 pnpm = "12.10.1"
 rumdl = "latest"
 shellcheck = "latest"
 shfmt = "latest"
 tombi = "latest"
+vale = "latest"
+zizmor = "latest"
 
 [tasks]
 [tasks."amend:no-verify"]
