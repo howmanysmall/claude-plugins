@@ -1,7 +1,4 @@
 export const baseIgnores = [
-	"!**/.opencode",
-	"!**/.opencode/**",
-	"**/.opencode/goals",
 	"**/*.js",
 	".mise/**",
 	"**/generated/**",

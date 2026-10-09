@@ -4,8 +4,8 @@
 		"name": "HowManySmall",
 		"url": "https://howmanysmall.com"
 	},
-	"description": "Every language server through one configurable lsp-mux: TypeScript, Astro, linters and formatters, YAML, Markdown, TOML, shell, and Swift",
+	"description": "One configurable LSP multiplexer: run every language server you configure behind a single Claude Code LSP",
 	"lspServers": "./.lsp.json",
 	"name": "howmanysmall-lsps",
-	"version": "2.1.1"
+	"version": "3.0.0"
 }
