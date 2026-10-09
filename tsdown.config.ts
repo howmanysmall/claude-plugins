@@ -1,27 +1,39 @@
+import nodePath from "node:path";
 import { defineConfig } from "tsdown";
 
-// Claude Code runs the plugin straight from its cache with only Node on PATH,
-// so the bundle has to carry every dependency. c12's optional loaders (jiti,
-// giget, dotenv, magicast) are imported lazily and stay external; JSON and
-// JSONC configuration loads through the bundled confbox.
+// Settings every published package shares; each package's own
+// `tsdown.config.ts` adds its entries and output.
 const configuration = defineConfig({
-	clean: false,
-	deps: {
-		alwaysBundle: [/.*/u],
-		neverBundle: ["dotenv", "giget", "jiti", "magicast"],
-		onlyBundle: false,
+	attw: {
+		enabled: true,
+		level: "error",
+		profile: "esm-only",
 	},
-	dts: false,
-	entry: { "lsp-mux": "./packages/lsp-mux/src/cli.ts" },
+	clean: true,
+	dts: {
+		generator: "tsgo",
+		resolver: "oxc",
+		tsgo: {
+			path: nodePath.join(import.meta.dirname, "node_modules", ".bin", "tsc"),
+		},
+	},
 	fixedExtension: false,
 	format: ["esm"],
-	minify: true,
-	outDir: "plugins/howmanysmall-lsps",
-	outputOptions: { codeSplitting: false },
 	platform: "node",
-	sourcemap: false,
-	target: "node22",
-	tsconfig: "packages/lsp-mux/tsconfig.json",
+	publint: {
+		enabled: true,
+		level: "error",
+	},
+	treeshake: {
+		moduleSideEffects: false,
+		propertyReadSideEffects: false,
+		unknownGlobalSideEffects: false,
+	},
+	// Private packages are bundled into the packages that use them.
+	workspace: {
+		exclude: ["packages/arktype-utilities"],
+		include: ["packages/*"],
+	},
 });
 
 export default configuration;
