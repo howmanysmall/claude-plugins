@@ -1,0 +1,14 @@
+{
+	"recommendations": [
+		"vitest.explorer",
+		"arktypeio.arkdark",
+		"biomejs.biome",
+		"dbaeumer.vscode-eslint",
+		"oxc.oxc-vscode",
+		"caniko.pkl-lsp",
+		"rvben.rumdl",
+		"tombi-toml.tombi",
+		"fill-labs.dependi",
+		"hverlin.mise-vscode"
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"mcpServers": {
+		"gh-grep": {
+			"type": "http",
+			"url": "https://mcp.grep.app"
+		},
+		"hk": {
+			"args": ["x", "--", "hk", "mcp", "--root", "."],
+			"command": "mise"
+		}
+	}
+}
