@@ -10,9 +10,13 @@ export const isNull = type("null");
 
 export const isString = type("string");
 export const isNonEmptyString = type("string > 0");
+export const isMaybeNonEmptyString = isNonEmptyString.or(isUndefined);
 
 export const isNumber = type("number");
 export const isInteger = type("number % 1");
+
+export const isJsonObject = type("object.json");
+export const isMaybeJsonObject = isJsonObject.or(isUndefined);
 
 export const isMaybeString = isString.or(isUndefined);
 export const isNullableString = isString.or(isNull);
