@@ -1,0 +1,33 @@
+**/node_modules/**
+.pnpm-store/
+
+# output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+*.log
+
+# dotenv environment variable files
+.env
+.env.*.local
+.env.local
+.envrc
+
+# caches
+.eslintcache*
+.cache
+.vitest
+*.tsbuildinfo
+
+# Finder (MacOS) folder config
+.DS_Store
+
+# hk local developer overrides
+hk.local.pkl

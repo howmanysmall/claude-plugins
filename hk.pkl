@@ -1,0 +1,253 @@
+// hk configuration - https://hk.jdx.dev/
+amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
+
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
+
+min_hk_version = "2.4.0"
+jobs = 2
+fail_fast = true
+
+env {
+  ["LINT_MAX_WORKERS"] = "1"
+  ["RAYON_NUM_THREADS"] = "2"
+  ["GOMAXPROCS"] = "2"
+}
+
+exclude =
+  List(
+    "node_modules",
+    "dist",
+    "coverage",
+    "report",
+    "reports",
+    ".git",
+    ".mise",
+    ".agents/skills",
+    "do-not-sync-ever",
+    // Generated bundle.
+    "plugins/howmanysmall-lsps/lsp-mux.js",
+    "**/*.tsbuildinfo",
+  )
+
+local ECMA_FILES = List("**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}")
+local MARKDOWN_FILES = List("**/*.{md,markdown,mdx}")
+local GENERATED_DATA =
+  List(
+    "**/*-lock.{json,yaml}",
+    "mise.lock",
+    "skills-lock.json",
+    "patches/**",
+  )
+
+// isentinel-lint and biome need the whole file list in one process: each
+// invocation repays ESLint's or Biome's startup cost.
+local fileChecks = new Mapping<String, Step> {
+  ["type-check"] {
+    glob =
+      ECMA_FILES
+        + List("**/tsconfig*.json", "**/package.json", "pnpm-workspace.yaml", "pnpm-lock.yaml")
+    exclusive = true
+    check = new CommandSpec {
+      command = new Command {
+        argv = List("node", "--run", "type-check")
+      }
+      effect = "write"
+    }
+  }
+  ["isentinel-lint"] {
+    glob =
+      ECMA_FILES
+        + List("**/*.{json,jsonc,json5,yaml,yml,toml,css,scss,less,pcss,postcss,lua,luau}")
+    exclude = GENERATED_DATA
+    depends = List("type-check")
+    batch = false
+    check = new CommandSpec {
+      command = new Command {
+        argv = List("node", "--run", "isentinel-lint", "--", "{{files}}")
+      }
+      effect = "write"
+    }
+    fix = new CommandSpec {
+      command = new Command {
+        argv = List("node", "--run", "isentinel-lint", "--", "--fix", "{{files}}")
+      }
+      effect = "write"
+    }
+  }
+  ["biome"] = (Builtins.biome) {
+    glob =
+      ECMA_FILES
+        + List("**/*.{json,jsonc,css,html,graphql,graphqls,gql,grit,svg,mdx}")
+    exclude = GENERATED_DATA
+    batch = false
+  }
+  // isentinel-lint already runs oxfmt on everything else; .mdx is the only
+  // format neither it nor Biome covers.
+  ["oxfmt"] = (Builtins.oxfmt) {
+    glob = List("**/*.mdx")
+    exclude = GENERATED_DATA
+  }
+  // tsconfig project references are derived from each package.json, and a
+  // missing one is silent: tsgo --build still resolves the import through
+  // the root node_modules and skips the project.
+  ["sherif"] = (Builtins.sherif) {
+    check = new CommandSpec {
+      command = new Command {
+        argv = List("sherif", "-r", "root-package-private-field", "-r", "root-package-dependencies")
+      }
+      effect = "read"
+    }
+    fix = null
+  }
+  ["shellcheck"] = (Builtins.shellcheck) {
+    batch = false
+    exclude = List(".claude/hooks/fallow-gate.sh")
+  }
+  ["shfmt"] = (Builtins.shfmt) {
+    batch = false
+    check_diff = (Builtins.shfmt.check_diff) {
+      command = new Command {
+        argv = List("shfmt", "-d", "--apply-ignore", "-bn", "-ci", "-sr", "{{files}}")
+      }
+    }
+    check_list_files = (Builtins.shfmt.check_list_files) {
+      command = new Command {
+        argv = List("shfmt", "-l", "--apply-ignore", "-bn", "-ci", "-sr", "{{files}}")
+      }
+    }
+    fix = (Builtins.shfmt.fix) {
+      command = new Command {
+        argv = List("shfmt", "-w", "--apply-ignore", "-bn", "-ci", "-sr", "{{files}}")
+      }
+    }
+  }
+  ["tombi"] = Builtins.tombi
+  ["tombi-format"] = Builtins.tombi_format
+  ["pkl-format"] = Builtins.pkl_format
+  ["rumdl"] = (Builtins.rumdl) {
+    glob = MARKDOWN_FILES
+    exclude = GENERATED_DATA
+  }
+  ["merge-conflicts"] = Builtins.check_merge_conflict
+  ["case-conflicts"] = Builtins.check_case_conflict
+  ["symlinks"] = Builtins.check_symlinks
+  ["destroyed-symlinks"] {
+    glob = "**/*"
+    allow_symlinks = true
+    check = new CommandSpec {
+      command = new Command {
+        argv = List("hk", "util", "destroyed-symlinks", "{{files}}")
+      }
+      effect = "read"
+    }
+  }
+  ["executable-shebangs"] = Builtins.check_executables_have_shebangs
+  ["shebang-executables"] {
+    types = List("text")
+    check = new CommandSpec {
+      command = new Command {
+        argv = List("hk", "util", "check-shebang-scripts-are-executable", "{{files}}")
+      }
+      effect = "read"
+    }
+  }
+  ["private-keys"] = Builtins.detect_private_key
+  ["large-files"] = (Builtins.check_added_large_files) {
+    allow_binary = true
+    check = new CommandSpec {
+      command = new Command {
+        argv = List("hk", "util", "check-added-large-files", "--maxkb", "1024", "{{files}}")
+      }
+      effect = "read"
+    }
+  }
+  ["trailing-whitespace"] = (Builtins.trailing_whitespace) {
+    // rumdl preserves Markdown hard breaks while checking whitespace.
+    exclude = GENERATED_DATA + MARKDOWN_FILES
+  }
+  ["final-newline"] = (Builtins.newlines) {
+    exclude = GENERATED_DATA
+  }
+  ["line-endings"] = (Builtins.mixed_line_ending) {
+    exclude = GENERATED_DATA
+  }
+  ["byte-order-marker"] = (Builtins.byte_order_marker) {
+    exclude = GENERATED_DATA
+  }
+}
+
+steps = fileChecks
+
+hooks {
+  ["commit-msg"] {
+    steps {
+      ["commitlint"] {
+        check = new CommandSpec {
+          command = new Command {
+            argv =
+              List(
+                "commitlint",
+                "--strict",
+                "--config",
+                "commitlint.config.ts",
+                "--edit",
+                "{{commit_msg_file}}",
+              )
+          }
+          effect = "read"
+        }
+      }
+    }
+  }
+  ["fix"] {
+    steps {
+      ["sherif"] = (Builtins.sherif) {
+        exclusive = true
+        fix = new CommandSpec {
+          command = new Command {
+            argv =
+              List(
+                "sherif",
+                "--fix",
+                "--no-install",
+                "-r",
+                "root-package-private-field",
+                "-r",
+                "root-package-dependencies",
+              )
+          }
+          effect = "write"
+        }
+      }
+    }
+  }
+  ["pre-push"] {
+    fix = false
+    stage = false
+    steps = (fileChecks) {
+      ["type-check"] { glob = null }
+      ["unit-tests"] {
+        depends = List("type-check")
+        exclusive = true
+        env { ["CI"] = "1" }
+        check = new CommandSpec {
+          command = new Command {
+            argv = List("node", "--run", "test")
+          }
+          effect = "write"
+        }
+      }
+      ["build"] {
+        depends = List("unit-tests")
+        exclusive = true
+        env { ["CI"] = "1" }
+        check = new CommandSpec {
+          command = new Command {
+            argv = List("node", "--run", "build")
+          }
+          effect = "write"
+        }
+      }
+    }
+  }
+}

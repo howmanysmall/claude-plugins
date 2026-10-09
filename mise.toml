@@ -1,0 +1,80 @@
+[env]
+_.file = { path = ".env" }
+_.path = ["{{config_root}}/node_modules/.bin", "{{cwd}}/node_modules/.bin"]
+
+HK_MISE = 1
+
+[settings]
+experimental = true
+auto_install = false
+lockfile = true
+provenance_api_failures_fatal = false
+cargo.binstall_native = true
+
+[tools]
+"npm:sherif" = "latest"
+direnv = "latest"
+hk = "2.5.0"
+ni = "latest"
+node = "24"
+pkl = "latest"
+pnpm = "12.10.1"
+rumdl = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+tombi = "latest"
+
+[tasks]
+[tasks."amend:no-verify"]
+description = "Amends the staged changes, reusing the previous commit message."
+run = "git commit --amend --reuse-message=HEAD --signoff --no-verify"
+
+[tasks."commit:no-verify"]
+description = "Commits the staged changes without running Git hooks."
+usage = """
+arg <message> {
+	help "Git commit message"
+}
+"""
+run = """
+git commit --signoff --message "${usage_message?}" --no-verify
+"""
+
+[tasks.amend]
+description = "Amends the staged changes, reusing the previous commit message."
+run = "git commit --amend --reuse-message=HEAD --signoff"
+
+[tasks.build]
+description = "Bundle lsp-mux into plugins/howmanysmall-lsps/lsp-mux.js using tsdown."
+run = "node --run build"
+
+[tasks.check]
+description = "Run local validation: lint, type-check, test, and build."
+depends = ["lint", "type-check", "test", "build"]
+
+[tasks.commit]
+description = "Commits the staged changes."
+usage = """
+arg <message> {
+	help "Git commit message"
+}
+"""
+run = """
+git commit --signoff --message "${usage_message?}"
+"""
+
+[tasks.install]
+description = "Install dependencies from the pnpm lockfile."
+run = "ni"
+
+[tasks.lint]
+description = "Run the project lint pipeline: ESLint plus Biome checks via the package script."
+run = "node --run lint"
+
+[tasks.test]
+description = "Run the Vitest unit test suite once."
+run = "node --run test"
+
+[tasks.type-check]
+description = "Run TypeScript type checking without emitting files."
+run = "node --run type-check"

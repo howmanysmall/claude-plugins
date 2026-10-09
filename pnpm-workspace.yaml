@@ -1,0 +1,140 @@
+autoInstallPeers: true
+blockExoticSubdeps: true
+catalogMode: prefer
+cleanupUnusedCatalogs: true
+enableGlobalVirtualStore: true
+engineStrict: true
+minimumReleaseAge: 1440
+
+minimumReleaseAgeExclude:
+  - "@biomejs/*"
+  - "@jsr/cliffy__*"
+  - "@oxfmt/*"
+  - "@oxlint/*"
+  - "@pobammer-ts/small-rules"
+  - oxfmt
+  - oxlint
+
+minimumReleaseAgeExcludePrune: true
+minimumReleaseAgeStrict: true
+resolutionMode: time-based
+shamefullyHoist: false
+shellEmulator: true
+strictDepBuilds: true
+strictPeerDependencies: false
+# CI re-verifies the lockfile; local installs still check newly resolved packages.
+trustLockfile: true
+trustPolicy: no-downgrade
+
+trustPolicyExclude:
+  - skills
+
+trustPolicyIgnoreAfter: 10080
+lockfile: true
+
+packages:
+  - packages/*
+  - tools/*
+
+overrides:
+  "@isentinel/eslint-config>@e18e/eslint-plugin": catalog:lint
+  "@isentinel/eslint-config>@pobammer-ts/small-rules": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-antfu": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-better-max-params": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-comment-length": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-de-morgan": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-eslint-plugin": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-flawless": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-jest-extended": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-jsdoc": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-n": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-oxfmt": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-perfectionist": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-pnpm": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-react-jsx": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-react-naming-convention": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-react-x": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-roblox-ts": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-sonarjs": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-unicorn": catalog:lint
+  "@isentinel/eslint-config>eslint-plugin-unused-imports": catalog:lint
+
+catalogs:
+  build:
+    tsdown: 0.23.0
+  commitlint:
+    "@commitlint/cli": 21.2.3
+    "@commitlint/config-conventional": 21.2.3
+    "@commitlint/types": 21.2.3
+  dev:
+    confbox: 0.3.1
+    empathic: 2.1.0
+  lint:
+    "@biomejs/biome": 2.5.15
+    "@e18e/eslint-plugin": 0.8.1
+    "@isentinel/eslint-config": 6.0.0-beta.46
+    "@pobammer-ts/small-rules": 3.3.2
+    "@stylistic/eslint-plugin": 5.10.0
+    "@vitest/eslint-plugin": 1.6.27
+    eslint: 10.12.0
+    eslint-plugin-antfu: 3.2.3
+    eslint-plugin-better-max-params: 1.0.0
+    eslint-plugin-comment-length: 2.3.1
+    eslint-plugin-de-morgan: 2.2.0
+    eslint-plugin-eslint-plugin: 7.6.2
+    eslint-plugin-flawless: 1.14.1
+    eslint-plugin-jest-extended: 3.0.1
+    eslint-plugin-jsdoc: 65.1.0
+    eslint-plugin-n: 18.4.1
+    eslint-plugin-oxfmt: 0.27.0
+    eslint-plugin-perfectionist: 5.12.1
+    eslint-plugin-pnpm: 1.9.1
+    eslint-plugin-react-jsx: 5.24.6
+    eslint-plugin-react-naming-convention: 5.24.6
+    eslint-plugin-react-x: 5.24.6
+    eslint-plugin-roblox-ts: 1.4.1
+    eslint-plugin-sonarjs: 4.2.2
+    eslint-plugin-unicorn: 77.0.0
+    eslint-plugin-unused-imports: 4.4.1
+    oxfmt: 0.72.0
+    oxlint: 1.87.0
+    oxlint-plugin-react-doctor: 0.9.17
+    oxlint-tsgolint: 7.0.2003
+  runtime:
+    arktype: 2.2.7
+    c12: 4.0.0-rc.2
+    effect: 4.0.0
+  scripts:
+    "@cliffy/command": npm:@jsr/cliffy__command@1.3.1
+  test:
+    jest-extended: 7.0.0
+    vitest: 5.0.3
+  tooling:
+    "@isentinel/hooks": 1.7.0
+    jiti: 2.7.0
+    typescript: npm:@typescript/typescript6@^6.0.2
+    typescript7: npm:typescript@^7.0.2
+  types:
+    "@types/node": ^26.6.4
+    type-fest: 5.10.0
+
+allowBuilds:
+  esbuild: true
+
+peerDependencyRules:
+  allowedVersions:
+    "@emnapi/core": ">=1.0.0"
+    "@emnapi/runtime": ">=1.0.0"
+    "@typescript-eslint/*>typescript": ">=6.0.0 <7.0.0"
+
+fetchRetries: 5
+fetchRetryMaxtimeout: 30000
+fetchRetryMintimeout: 1000
+fetchTimeout: 60000
+
+registries:
+  "@jsr": https://npm.jsr.io
+
+strictSsl: true
+strictStorePkgContentCheck: true
+verifyStoreIntegrity: true

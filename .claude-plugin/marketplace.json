@@ -1,0 +1,16 @@
+{
+	"description": "HowManySmall's Claude Code plugins",
+	"name": "howmanysmall",
+	"owner": {
+		"email": "contact@howmanysmall.com",
+		"name": "HowManySmall",
+		"url": "https://howmanysmall.com"
+	},
+	"plugins": [
+		{
+			"description": "Every language server through one configurable lsp-mux",
+			"name": "howmanysmall-lsps",
+			"source": "./plugins/howmanysmall-lsps"
+		}
+	]
+}

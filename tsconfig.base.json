@@ -1,0 +1,31 @@
+{
+	"compilerOptions": {
+		"incremental": true,
+		"target": "ESNext",
+		"moduleDetection": "force",
+		"experimentalDecorators": true,
+		"module": "preserve",
+		"moduleResolution": "bundler",
+		"paths": {
+			"@howmanysmall/arktype-utilities": ["./packages/arktype-utilities/src/index.ts"]
+		},
+		"resolveJsonModule": true,
+		"allowImportingTsExtensions": true,
+		"allowJs": false,
+		"strict": true,
+		"exactOptionalPropertyTypes": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": false,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"declarationDir": "${configDir}/node_modules/.tmp/types",
+		"emitDeclarationOnly": true,
+		"outDir": "${configDir}/node_modules/.tmp/dist",
+		"esModuleInterop": true,
+		"verbatimModuleSyntax": true,
+		"skipLibCheck": true
+	}
+}
