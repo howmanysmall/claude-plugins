@@ -11,22 +11,38 @@ plugin.
 /plugin install howmanysmall-lsps@howmanysmall
 ```
 
-Requires Node 22 or newer on `PATH`. The plugin bundles `lsp-mux.js` into one
+Requires Node 22.18 or newer on `PATH`. The plugin bundles `lsp-mux.js` into one
 self-contained file, so nothing else is installed.
 
 ## Configuration
 
 `lsp-mux` presents several language servers to Claude Code as one, because
 Claude Code starts only one server per file extension. It doesn't run any servers
-until you configure some. Configuration comes in two layers, and the project
-overrides the user:
+until you list some.
 
-1. Your user configuration: `~/.config/lsp-mux.jsonc` (or `$XDG_CONFIG_HOME`),
-   or the file named by `$LSP_MUX_CONFIG`.
-2. The project: `lsp-mux.config.*` or `.config/lsp-mux.*` in the working
-   directory.
+```ts
+// .config/lsp-mux.ts (or lsp-mux.config.ts)
+import { defineConfig } from "@pobammer-ts/lsp-mux";
 
-Each server is keyed by name:
+export default defineConfig({
+	formatters: ["oxfmt", "biome"],
+	options: {
+		typescript: { command: "tsc" },
+		zls: { command: "zls", extensions: [".zig"] },
+	},
+	servers: ["typescript", "oxlint", "eslint", "biome", "oxfmt", "zls"],
+});
+```
+
+- `servers` picks the servers to run. Earlier servers win when several answer the
+  same request.
+- `formatters` picks which servers format a document, in order.
+- `options` changes how a server starts. lsp-mux already knows `astro`, `bash`,
+  `biome`, `clangd`, `eslint`, `gopls`, `lua`, `oxfmt`, `oxlint`, `pyright`,
+  `rumdl`, `rust-analyzer`, `sourcekit`, `tombi`, `typescript`, `vale`, `yaml`,
+  and `zls`. Any other server needs a `command` and `extensions`.
+
+Server options:
 
 | Field | Meaning |
 | --- | --- |
@@ -36,45 +52,28 @@ Each server is keyed by name:
 | `rootMarkers` | Files that mark the server's root, like `"tsconfig.json"`. |
 | `requireRootMarker` | Only start where a root marker exists. |
 | `env`, `settings`, `initializationOptions` | Passed to the server. |
-| `enabled` | `false` turns the server off. |
 
-A later layer overrides only the fields it sets, and arrays replace instead of
-merging. Servers that are not installed are skipped. `routes` picks which
-servers answer a request, in order, like formatting:
+Servers that aren't installed are skipped.
 
-```jsonc
-{
-	"routes": {
-		"textDocument/formatting": { "servers": ["biome"] },
-	},
-	"servers": {
-		"typescript": {
-			"command": "tsgo",
-			"args": ["--lsp", "--stdio"],
-			"extensions": [".ts", ".tsx", ".mts", ".cts"],
-			"rootMarkers": ["tsconfig.json"],
-		},
-		"biome": {
-			"command": "biome",
-			"args": ["lsp-proxy"],
-			"extensions": [".ts", ".tsx", ".js", ".json", ".css"],
-			"rootMarkers": ["biome.json", "biome.jsonc"],
-			"requireRootMarker": true,
-		},
-	},
-}
-```
+### Where configuration lives
 
-A project can then turn one off or swap a command:
+1. Your user configuration: `~/.config/lsp-mux.ts` (or `.json`, `.jsonc`, and
+   so on, under `$XDG_CONFIG_HOME` if set), or the file named by
+   `$LSP_MUX_CONFIG`.
+2. The project: `lsp-mux.config.*` or `.config/lsp-mux.*`, which overrides the
+   user configuration. Lists replace each other, and `options` merge.
 
-```jsonc
-{
-	"servers": {
-		"biome": { "enabled": false },
-		"typescript": { "command": "tsc" },
-	},
-}
-```
+Install `@pobammer-ts/lsp-mux` as a dev dependency to type-check `defineConfig`.
+The configuration loads without it.
+
+### Project configuration that runs code
+
+A `.ts` or `.js` configuration is code, and Claude Code starts lsp-mux on its own
+as soon as you open a matching file. To keep a cloned repository from running
+code unasked, lsp-mux only runs a project's code configuration when
+`LSP_MUX_TRUST_PROJECT_CONFIGS=1` is set, such as in the `env` of
+`~/.claude/settings.json`. Otherwise it skips the file and logs why. Your user
+configuration and JSON project configurations always load.
 
 ## Develop
 
@@ -83,10 +82,15 @@ pnpm install
 node --run test          # vitest across the workspace
 node --run type-check    # tsc --build
 node --run lint:agent    # ESLint, oxlint, and Biome
-node --run build         # bundle to plugins/howmanysmall-lsps/lsp-mux.js
+node --run build         # the npm package and the plugin bundle
+nr release               # bump, rebuild, commit, tag, and push
 ```
 
-The source is in `packages/lsp-mux`. `build` runs tsdown (see
-`tsdown.config.ts`), which bundles cliffy, c12, confbox, arktype, and effect
-into one ESM file with a `#!/usr/bin/env node` banner. Rebuild and commit
-`plugins/howmanysmall-lsps/lsp-mux.js` after changing the source.
+The source is in `packages/lsp-mux`. The root `tsdown.config.ts` holds the
+settings every package shares, and `packages/lsp-mux/tsdown.config.ts` builds
+the npm package into `dist` and the self-contained plugin bundle into
+`plugins/howmanysmall-lsps`.
+
+`nr release` bumps the package and the plugin to the same version, because Claude
+Code only updates an installed plugin when its version changes. Publish the
+package with `pnpm --filter @pobammer-ts/lsp-mux publish`.
