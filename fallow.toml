@@ -6,7 +6,8 @@ entry = [
 	"packages/*/*.config.ts",
 	"tools/*/*.config.ts",
 	".config/*.ts",
-	"tools/vite-configuration/src/setup.ts",
+	"tools/project-configurations/src/vitest/setup.ts",
+	"packages/*/src/**/*.bench.ts",
 ]
 ignorePatterns = ["plugins/**", ".claude/**", "!.config/**"]
 ignoreDependencies = [

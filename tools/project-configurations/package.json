@@ -19,6 +19,7 @@
 		"@vitiate/core": "catalog:test",
 		"jest-extended": "catalog:test",
 		"tsdown": "catalog:build",
+		"unplugin-macros": "catalog:build",
 		"vitest": "catalog:test"
 	},
 	"devDependencies": {
