@@ -16,7 +16,7 @@ export interface ResolvedConfiguration {
 	/** Servers to run, in priority order. */
 	readonly servers: ReadonlyArray<ResolvedServer>;
 	/** Problems loading the configuration, shown to the client. */
-	readonly warnings?: ReadonlyArray<string>;
+	readonly warnings?: ReadonlyArray<string> | undefined;
 }
 
 function resolveServer(name: string, configuration: Configuration): ResolvedServer {
@@ -39,6 +39,6 @@ function resolveServer(name: string, configuration: Configuration): ResolvedServ
 export function resolveConfiguration(configuration: Configuration): ResolvedConfiguration {
 	return {
 		formatters: configuration.formatters ?? [],
-		servers: (configuration.servers ?? []).map((name) => resolveServer(name, configuration)),
+		servers: configuration.servers?.map((name) => resolveServer(name, configuration)) ?? [],
 	};
 }

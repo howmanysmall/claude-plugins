@@ -6,11 +6,11 @@ export type ServerName = CatalogServer | (Record<never, never> & string);
 
 export interface LspMuxConfiguration {
 	/** Servers that format documents, in priority order. */
-	readonly formatters?: ReadonlyArray<ServerName>;
+	readonly formatters?: ReadonlyArray<ServerName> | undefined;
 	/** Per-server options, layered over any built-in definition. */
-	readonly options?: Readonly<Partial<Record<ServerName, ServerOptions>>>;
+	readonly options?: Readonly<Partial<Record<ServerName, ServerOptions>>> | undefined;
 	/** Servers to run, in priority order. */
-	readonly servers?: ReadonlyArray<ServerName>;
+	readonly servers?: ReadonlyArray<ServerName> | undefined;
 }
 
 /**

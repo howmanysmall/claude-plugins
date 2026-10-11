@@ -35,7 +35,7 @@ export interface LoadConfigurationOptions {
  * @param id - The configuration file.
  * @returns The configuration module.
  */
-const importConfigurationAsync: NonNullable<LoadConfigOptions["import"]> = async (id) => {
+const importConfigurationAsync: NonNullable<LoadConfigOptions["import"]> = async function importConfigurationAsync(id) {
 	const module: unknown = await import(pathToFileURL(id).href);
 	return module;
 };
