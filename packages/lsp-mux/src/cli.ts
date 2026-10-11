@@ -4,7 +4,7 @@ import { readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import nodePath from "node:path";
 import { argv, cwd, env, exit, stdin, stdout } from "node:process";
-import { CompletionsCommand } from "@cliffy/command/completions";
+import { HelpCommand } from "@cliffy/command/help";
 import { createBaseCommand } from "@howmanysmall/cli-utilities/create-base-command";
 import { getScriptName } from "@howmanysmall/cli-utilities/get-script-name" with { type: "macro" };
 
@@ -42,10 +42,18 @@ const command = createBaseCommand(scriptName, version, description)
 			searchPath: (env.PATH ?? "").split(nodePath.delimiter),
 		});
 	})
+	.command("lsp", async () => {
+		const { lspCommand } = await import("$commands/lsp-command");
+		return lspCommand;
+	})
 	.command("scaffold", async () => {
 		const { scaffoldCommand } = await import("$commands/scaffold-command");
 		return scaffoldCommand;
 	})
-	.command("completions", new CompletionsCommand());
+	.command("completions", async () => {
+		const { CompletionsCommand } = await import("@cliffy/command/completions");
+		return new CompletionsCommand();
+	})
+	.command("help", new HelpCommand().global());
 
 await command.parse(argv.slice(2));
