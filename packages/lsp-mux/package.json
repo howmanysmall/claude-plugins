@@ -36,7 +36,7 @@
 		"dist"
 	],
 	"scripts": {
-		"prepublishOnly": "cd ../.. && node --run build",
+		"prepublishOnly": "pnpm --workspace-root run build",
 		"test": "vitest run",
 		"test:agent": "node --run test -- --reporter agent",
 		"type-check": "tsc --build"

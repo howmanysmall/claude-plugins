@@ -9,7 +9,8 @@ const ANYTHING = /.*/u;
 function getPluginBuild(name: string, entry: string): UserConfig {
 	return {
 		clean: false,
-		deps: { alwaysBundle: [ANYTHING], onlyBundle: false },
+		// giget backs c12's remote `extends`, which lsp-mux never uses.
+		deps: { alwaysBundle: [ANYTHING], neverBundle: ["giget"], onlyBundle: false },
 		dts: false,
 		entry: { [name]: entry },
 		minify: true,
