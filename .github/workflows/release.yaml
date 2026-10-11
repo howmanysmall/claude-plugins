@@ -1,0 +1,193 @@
+name: Publish Package
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Skip publish & release creation"
+        required: false
+        default: true
+        type: boolean
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    permissions:
+      actions: read # For waiting on the matching main-branch CI run
+      contents: write # For creating GitHub releases
+      id-token: write # Required for NPM Trusted Publishing (OIDC)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Determine dry run flag
+        run: |
+          DRY_RUN="false"
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            VALUE=$(jq -r '.inputs.dry_run // "true"' "$GITHUB_EVENT_PATH")
+            if [ "$VALUE" != "false" ]; then
+              DRY_RUN="true"
+            fi
+          fi
+          echo "DRY_RUN=$DRY_RUN" >> "$GITHUB_ENV"
+
+      - if: ${{ env.DRY_RUN != 'true' && !startsWith(github.ref, 'refs/tags/') }}
+        name: Require tag for real release
+        run: |
+          echo "::error title=Refusing non-tag publish::Run this workflow from a v*.*.* tag, or enable dry_run." >&2
+          exit 1
+
+      - if: startsWith(github.ref, 'refs/tags/')
+        name: Validate tag matches package.json version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PACKAGE_VERSION=$(node -p 'JSON.parse(require("node:fs").readFileSync("packages/lsp-mux/package.json", "utf8")).version')
+          PLUGIN_VERSION=$(node -p 'JSON.parse(require("node:fs").readFileSync("plugins/howmanysmall-lsps/.claude-plugin/plugin.json", "utf8")).version')
+          echo "Tag version: $TAG_VERSION"
+          echo "Package version: $PACKAGE_VERSION"
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ] || [ "$PLUGIN_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error title=Version mismatch::Tag $TAG_VERSION does not match package $PACKAGE_VERSION and plugin $PLUGIN_VERSION" >&2
+            exit 1
+          fi
+
+      - if: startsWith(github.ref, 'refs/tags/')
+        name: Verify tag commit reachable from main
+        run: |
+          git fetch origin main
+          if git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "Tag commit is on main lineage"
+          else
+            echo "::error title=Tag not on main::Tag commit $GITHUB_SHA not reachable from main" >&2
+            exit 1
+          fi
+
+      - id: wait-for-ci
+        if: ${{ env.DRY_RUN != 'true' }}
+        name: Wait for CI
+        run: |
+          CI_RUN_ID=""
+          for _ in $(seq 1 60); do
+            CI_RUN_ID=$(gh run list --workflow ci.yaml --commit "$GITHUB_SHA" --event push --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+            if [ -n "$CI_RUN_ID" ]; then
+              break
+            fi
+            sleep 5
+          done
+          if [ -z "$CI_RUN_ID" ]; then
+            echo "::error title=CI run not found::No main-branch CI run found for $GITHUB_SHA" >&2
+            exit 1
+          fi
+          gh run watch "$CI_RUN_ID" --exit-status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Poll CI while the toolchain installs and release notes generate;
+        # nothing that writes to main, npm, or GitHub runs before the wait.
+        background: true
+
+      - name: Setup toolchain
+        uses: $/.github/actions/setup
+        with:
+          cache: false
+          tools: node pnpm communique git-cliff
+
+      - name: Verify release note generators
+        run: |
+          communique --version
+          git-cliff --version
+
+      - if: ${{ env.DRY_RUN != 'true' }}
+        name: Setup Node.js for NPM publishing
+        # This step is only here to configure the NPM registry URL.
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        uses: $/.github/actions/install
+
+      - if: ${{ env.DRY_RUN == 'true' }}
+        name: Dry-run package build
+        run: node --run build
+
+      - if: ${{ env.DRY_RUN != 'true' }}
+        name: Generate release notes
+        run: |
+          RELEASE_NOTES="$RUNNER_TEMP/release-notes.md"
+          # RELEASE_BASELINE (repository variable) names the previous tag when
+          # communique's auto-detection is wrong, e.g. to skip a broken release.
+          # Empty means auto-detect.
+          echo "Release baseline: ${RELEASE_BASELINE:-auto}"
+          if ! communique generate "$GITHUB_REF_NAME" ${RELEASE_BASELINE:+"$RELEASE_BASELINE"} --changelog --output "$RELEASE_NOTES"; then
+            echo "::warning title=communique failed::Falling back to git-cliff release notes."
+            git-cliff --current --strip all --output "$RELEASE_NOTES"
+          fi
+          echo "RELEASE_NOTES=$RELEASE_NOTES" >> "$GITHUB_ENV"
+        env:
+          COMMUNIQUE_OPENROUTER_API_KEY: ${{ secrets.COMMUNIQUE_OPENROUTER_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.COMMUNIQUE_OPENROUTER_API_KEY }}
+          RELEASE_BASELINE: ${{ vars.RELEASE_BASELINE }}
+
+      - name: Wait for CI to pass before publishing
+        wait: wait-for-ci
+
+      - if: ${{ env.DRY_RUN != 'true' }}
+        name: Commit changelog to main
+        run: |
+          RELEASE_WORKTREE="$RUNNER_TEMP/release-main"
+          git fetch origin main
+          git worktree add --detach "$RELEASE_WORKTREE" origin/main
+          cp CHANGELOG.md "$RELEASE_WORKTREE/CHANGELOG.md"
+          git -C "$RELEASE_WORKTREE" config user.name "github-actions[bot]"
+          git -C "$RELEASE_WORKTREE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$RELEASE_WORKTREE" add CHANGELOG.md
+          if git -C "$RELEASE_WORKTREE" diff --cached --quiet; then
+            echo "Changelog already matches main"
+            exit 0
+          fi
+          git -C "$RELEASE_WORKTREE" commit -m "chore(docs): add $GITHUB_REF_NAME release notes"
+          gh auth setup-git
+          git -C "$RELEASE_WORKTREE" push origin HEAD:main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - if: ${{ env.DRY_RUN != 'true' }}
+        name: Publish to NPM (Trusted Publishing)
+        run: pnpm --filter @pobammer-ts/lsp-mux publish --provenance --access public --no-git-checks
+
+      - if: ${{ env.DRY_RUN != 'true' }}
+        name: Create or update GitHub release
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" --notes-file "$RELEASE_NOTES"
+          else
+            gh release create "$GITHUB_REF_NAME" --notes-file "$RELEASE_NOTES" --title "$GITHUB_REF_NAME"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - if: failure()
+        name: Upload npm debug log on failure
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: npm-debug-log
+          path: /home/runner/.npm/_logs/*.log
+
+      - if: ${{ env.DRY_RUN == 'true' }}
+        name: Dry-run summary
+        run: |
+          echo "Dry run: skipped release notes, publish, and GitHub release creation."
