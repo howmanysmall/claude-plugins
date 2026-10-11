@@ -67,6 +67,7 @@
 		"@stryker-mutator/core": "catalog:test",
 		"@stryker-mutator/vitest-runner": "catalog:test",
 		"@stylistic/eslint-plugin": "catalog:lint",
+		"@turbo/gen": "catalog:tooling",
 		"@types/node": "catalog:types",
 		"@vitest/coverage-istanbul": "catalog:test",
 		"@vitest/eslint-plugin": "catalog:lint",
