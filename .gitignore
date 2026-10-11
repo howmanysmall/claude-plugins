@@ -60,3 +60,6 @@ hk.local.pkl
 
 # fallow coverage input
 .cache/
+
+# turborepo
+.turbo

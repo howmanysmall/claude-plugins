@@ -36,7 +36,8 @@
 		"dist"
 	],
 	"scripts": {
-		"prepublishOnly": "pnpm --workspace-root run build",
+		"build": "tsdown --config ../../tsdown.config.ts --filter @pobammer-ts/lsp-mux",
+		"prepublishOnly": "turbo run build --filter=@pobammer-ts/lsp-mux",
 		"test": "vitest run",
 		"test:agent": "node --run test -- --reporter agent",
 		"type-check": "tsc --build"

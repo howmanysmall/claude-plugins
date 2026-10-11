@@ -12,7 +12,8 @@
 	},
 	"scripts": {
 		"test": "vitest run",
-		"test:agent": "node --run test -- --reporter agent"
+		"test:agent": "node --run test -- --reporter agent",
+		"type-check": "tsc --build"
 	},
 	"dependencies": {
 		"@howmanysmall/linter-utilities": "workspace:*",

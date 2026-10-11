@@ -70,7 +70,7 @@ jobs:
 
       - parallel:
           - name: Run tests
-            run: node --run test -- --reporter github-actions --reporter dot
+            run: node --run turbo -- run test -- --reporter github-actions --reporter dot
 
           - name: Run fuzz regressions
             run: node --run test:fuzz

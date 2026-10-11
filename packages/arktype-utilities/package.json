@@ -10,7 +10,8 @@
 	},
 	"scripts": {
 		"test": "vitest run",
-		"test:agent": "nr test --reporter agent"
+		"test:agent": "nr test --reporter agent",
+		"type-check": "tsc --build"
 	},
 	"dependencies": {
 		"arktype": "catalog:runtime"

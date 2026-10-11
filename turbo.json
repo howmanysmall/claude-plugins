@@ -1,0 +1,33 @@
+{
+	"$schema": "https://turborepo.dev/schema.json",
+	"agentGuidance": false,
+	"concurrency": "50%",
+	"globalDependencies": ["tsconfig.base.json"],
+	"globalPassThroughEnv": ["CI", "FORCE_COLOR", "GITHUB_ACTIONS", "NODE_OPTIONS"],
+	"tasks": {
+		"//#type-check:node": {
+			"dependsOn": ["@pobammer-ts/lsp-mux#build"],
+			"inputs": ["*.config.ts", ".config/*.ts", "scripts/*.ts", "tsconfig.json", "tsconfig.node.json"]
+		},
+		"build": {
+			"dependsOn": ["^build", "transit"],
+			"inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/tsdown.config.ts"],
+			"outputs": ["dist/**", "$TURBO_ROOT$/plugins/howmanysmall-lsps/*.js"]
+		},
+		"test": {
+			"dependsOn": ["transit"],
+			"env": ["PROPERTY_RUNS"]
+		},
+		"test:agent": {
+			"dependsOn": ["transit"],
+			"env": ["PROPERTY_RUNS"]
+		},
+		"transit": {
+			"dependsOn": ["^transit"]
+		},
+		"type-check": {
+			"dependsOn": ["^type-check"]
+		}
+	},
+	"ui": "stream"
+}
