@@ -1,1 +1,1 @@
-export { strykerConfiguration as default } from "@howmanysmall/vite-configuration/stryker";
+export { strykerConfiguration as default } from "@howmanysmall/project-configurations/vitest/stryker";

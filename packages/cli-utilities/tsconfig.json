@@ -5,7 +5,14 @@
 		"tsBuildInfoFile": "./node_modules/.tmp/cli-utilities.tsbuildinfo",
 		"types": ["node"]
 	},
-	"references": [{ "path": "../../tools/vite-configuration" }, { "path": "../arktype-utilities" }],
+	"references": [
+		{
+			"path": "../../tools/project-configurations"
+		},
+		{
+			"path": "../arktype-utilities"
+		}
+	],
 	"include": ["src/**/*.ts", "./package.json", "*.config.ts"],
 	"exclude": ["node_modules"]
 }

@@ -1,4 +1,4 @@
-import { sharedConfiguration } from "@howmanysmall/vite-configuration";
+import { sharedConfiguration } from "@howmanysmall/project-configurations/vitest";
 import { mergeConfig } from "vitest/config";
 
 const configuration = mergeConfig(sharedConfiguration, {

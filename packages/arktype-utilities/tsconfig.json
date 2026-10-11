@@ -6,7 +6,11 @@
 		"lib": ["ESNext"],
 		"types": ["node"]
 	},
-	"references": [{ "path": "../../tools/vite-configuration" }],
+	"references": [
+		{
+			"path": "../../tools/project-configurations"
+		}
+	],
 	"include": ["src/**/*.ts", "vitest.config.ts"],
 	"exclude": ["dist", "node_modules"]
 }

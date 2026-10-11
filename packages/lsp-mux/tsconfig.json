@@ -15,7 +15,7 @@
 	},
 	"references": [
 		{
-			"path": "../../tools/vite-configuration"
+			"path": "../../tools/project-configurations"
 		},
 		{
 			"path": "../arktype-utilities"

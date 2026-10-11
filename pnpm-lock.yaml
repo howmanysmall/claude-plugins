@@ -431,9 +431,9 @@ importers:
       '@howmanysmall/lint-configurations':
         specifier: workspace:*
         version: link:tools/lint-configurations
-      '@howmanysmall/vite-configuration':
+      '@howmanysmall/project-configurations':
         specifier: workspace:*
-        version: link:tools/vite-configuration
+        version: link:tools/project-configurations
       '@isentinel/eslint-config':
         specifier: catalog:lint
         version: 6.0.0-beta.46(a4d83f9de8b2ad1c8afa218dc7bcd155)
@@ -594,9 +594,9 @@ importers:
         specifier: catalog:runtime
         version: 2.2.8
     devDependencies:
-      '@howmanysmall/vite-configuration':
+      '@howmanysmall/project-configurations':
         specifier: workspace:*
-        version: link:../../tools/vite-configuration
+        version: link:../../tools/project-configurations
       vitest:
         specifier: catalog:test
         version: 5.0.3(@opentelemetry/api@1.9.0)(@types/node@26.6.4)(@vitest/coverage-istanbul@5.0.3)(vite@8.3.3(@types/node@26.6.4)(jiti@2.7.0)(yaml@2.9.1))
@@ -616,9 +616,9 @@ importers:
       '@howmanysmall/arktype-utilities':
         specifier: workspace:*
         version: link:../arktype-utilities
-      '@howmanysmall/vite-configuration':
+      '@howmanysmall/project-configurations':
         specifier: workspace:*
-        version: link:../../tools/vite-configuration
+        version: link:../../tools/project-configurations
       '@types/node':
         specifier: catalog:types
         version: 26.6.4
@@ -665,9 +665,9 @@ importers:
       '@howmanysmall/cli-utilities':
         specifier: workspace:*
         version: link:../cli-utilities
-      '@howmanysmall/vite-configuration':
+      '@howmanysmall/project-configurations':
         specifier: workspace:*
-        version: link:../../tools/vite-configuration
+        version: link:../../tools/project-configurations
       '@total-typescript/ts-reset':
         specifier: catalog:types
         version: 0.6.1
@@ -705,9 +705,9 @@ importers:
         specifier: catalog:lint
         version: 0.9.17
     devDependencies:
-      '@howmanysmall/vite-configuration':
+      '@howmanysmall/project-configurations':
         specifier: workspace:*
-        version: link:../vite-configuration
+        version: link:../project-configurations
       '@types/node':
         specifier: catalog:types
         version: 26.6.4
@@ -746,7 +746,7 @@ importers:
         specifier: catalog:types
         version: 26.6.4
 
-  tools/vite-configuration:
+  tools/project-configurations:
     dependencies:
       '@vitiate/core':
         specifier: catalog:test
@@ -754,6 +754,9 @@ importers:
       jest-extended:
         specifier: catalog:test
         version: 7.0.0(@typescript/typescript6@6.0.2)
+      tsdown:
+        specifier: catalog:build
+        version: 0.23.0(@arethetypeswrong/core@0.18.5)(@typescript/typescript6@6.0.2)(oxc-resolver@11.24.2)(publint@0.3.25)
       vitest:
         specifier: catalog:test
         version: 5.0.3(@opentelemetry/api@1.9.0)(@types/node@26.6.4)(@vitest/coverage-istanbul@5.0.3)(vite@8.3.3(@types/node@26.6.4)(jiti@2.7.0)(yaml@2.9.1))
@@ -761,6 +764,12 @@ importers:
       '@types/node':
         specifier: catalog:types
         version: 26.6.4
+      typescript:
+        specifier: catalog:tooling
+        version: '@typescript/typescript6@6.0.2'
+      typescript7:
+        specifier: catalog:tooling
+        version: typescript@7.0.2
 
 packages:
 

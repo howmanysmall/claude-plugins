@@ -1,5 +1,5 @@
 import { env } from "node:process";
-import { vitiateConfiguration } from "@howmanysmall/vite-configuration/vitiate";
+import { vitiateConfiguration } from "@howmanysmall/project-configurations/vitest/vitiate";
 import { defineConfig } from "vitest/config";
 
 // vitiate respawns vitest per fuzz target without forwarding --config, so the

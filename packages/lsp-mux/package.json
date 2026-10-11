@@ -1,7 +1,7 @@
 {
 	"name": "@pobammer-ts/lsp-mux",
 	"version": "3.1.2",
-	"description": "Run several language servers behind one LSP connection, configured with defineConfig.",
+	"description": "Run several language servers behind one LSP connection, configured with `defineConfiguration`.",
 	"keywords": [
 		"language-server",
 		"lsp",
@@ -53,7 +53,7 @@
 		"@fast-check/vitest": "catalog:test",
 		"@howmanysmall/arktype-utilities": "workspace:*",
 		"@howmanysmall/cli-utilities": "workspace:*",
-		"@howmanysmall/vite-configuration": "workspace:*",
+		"@howmanysmall/project-configurations": "workspace:*",
 		"@total-typescript/ts-reset": "catalog:types",
 		"@types/node": "catalog:types",
 		"@vitiate/core": "catalog:test",

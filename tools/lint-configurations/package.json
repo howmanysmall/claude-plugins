@@ -21,7 +21,7 @@
 		"oxlint-plugin-react-doctor": "catalog:lint"
 	},
 	"devDependencies": {
-		"@howmanysmall/vite-configuration": "workspace:*",
+		"@howmanysmall/project-configurations": "workspace:*",
 		"@types/node": "catalog:types",
 		"eslint-plugin-sonarjs": "catalog:lint",
 		"oxlint": "catalog:lint",

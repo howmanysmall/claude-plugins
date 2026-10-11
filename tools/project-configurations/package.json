@@ -1,0 +1,29 @@
+{
+	"name": "@howmanysmall/project-configurations",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Shared project configurations.",
+	"license": "UNLICENSED",
+	"type": "module",
+	"exports": {
+		"./package.json": "./package.json",
+		"./tsdown": "./src/tsdown/shared.ts",
+		"./vitest": "./src/vitest/shared.ts",
+		"./vitest/stryker": "./src/vitest/stryker.ts",
+		"./vitest/vitiate": "./src/vitest/vitiate.ts"
+	},
+	"scripts": {
+		"type-check": "tsc --build"
+	},
+	"dependencies": {
+		"@vitiate/core": "catalog:test",
+		"jest-extended": "catalog:test",
+		"tsdown": "catalog:build",
+		"vitest": "catalog:test"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:types",
+		"typescript": "catalog:tooling",
+		"typescript7": "catalog:tooling"
+	}
+}

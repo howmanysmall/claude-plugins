@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@howmanysmall/arktype-utilities": "workspace:*",
-		"@howmanysmall/vite-configuration": "workspace:*",
+		"@howmanysmall/project-configurations": "workspace:*",
 		"@types/node": "catalog:types",
 		"@vitiate/core": "catalog:test",
 		"fast-check": "catalog:test",
