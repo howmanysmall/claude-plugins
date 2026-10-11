@@ -1,8 +1,6 @@
 {
 	"lsp-mux": {
-		"args": [
-			"${CLAUDE_PLUGIN_ROOT}/lsp-mux.js"
-		],
+		"args": ["${CLAUDE_PLUGIN_ROOT}/lsp-mux.js"],
 		"command": "node",
 		"extensionToLanguage": {
 			".Rmd": "rmarkdown",

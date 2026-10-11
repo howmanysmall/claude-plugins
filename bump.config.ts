@@ -6,7 +6,7 @@ const configuration = defineConfig({
 	all: true,
 	commit: true,
 	confirm: true,
-	execute: "node --run build",
+	execute: "node --run build && node --run changelog:version",
 	files: ["packages/lsp-mux/package.json", "plugins/howmanysmall-lsps/.claude-plugin/plugin.json"],
 	noGitCheck: false,
 	push: true,

@@ -1,6 +1,7 @@
 entry = [
 	"packages/lsp-mux/src/cli.ts",
 	"packages/lsp-mux/src/index.ts",
+	"packages/*/src/**/*.fuzz.ts",
 	"*.config.ts",
 	"packages/*/*.config.ts",
 	"tools/*/*.config.ts",
@@ -33,6 +34,7 @@ ignoreDependencies = [
 	"eslint-plugin-sonarjs",
 	"eslint-plugin-unicorn",
 	"eslint-plugin-unused-imports",
+	"fast-check",
 	"publint",
 	"typescript7",
 ]

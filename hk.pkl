@@ -23,6 +23,7 @@ exclude =
     ".git",
     ".mise",
     ".agents/skills",
+    ".stryker-tmp",
     "do-not-sync-ever",
     // Generated bundle.
     "plugins/howmanysmall-lsps/lsp-mux.js",
@@ -92,6 +93,21 @@ local fileChecks = new Mapping<String, Step> {
   // tsconfig project references are derived from each package.json, and a
   // missing one is silent: tsgo --build still resolves the import through
   // the root node_modules and skips the project.
+  ["tsconfig-references"] {
+    glob = List("**/package.json", "**/tsconfig*.json")
+    check = new CommandSpec {
+      command = new Command {
+        argv = List("node", "--run", "references:check")
+      }
+      effect = "read"
+    }
+    fix = new CommandSpec {
+      command = new Command {
+        argv = List("node", "--run", "references:sync")
+      }
+      effect = "write"
+    }
+  }
   ["sherif"] = (Builtins.sherif) {
     check = new CommandSpec {
       command = new Command {
@@ -234,6 +250,15 @@ local fileChecks = new Mapping<String, Step> {
 
 steps = fileChecks
 
+local pullhook = new Step {
+  check = new CommandSpec {
+    command = new Command {
+      argv = List("pullhook", "run")
+    }
+    effect = "write"
+  }
+}
+
 hooks {
   ["commit-msg"] {
     steps {
@@ -337,6 +362,16 @@ hooks {
           effect = "write"
         }
       }
+      ["mutation"] {
+        profiles = List("mutation")
+        exclusive = true
+        check = new CommandSpec {
+          command = new Command {
+            argv = List("node", "--run", "test:mutation")
+          }
+          effect = "write"
+        }
+      }
       ["unit-tests"] {
         depends = List("type-check")
         exclusive = true
@@ -359,6 +394,21 @@ hooks {
           effect = "write"
         }
       }
+    }
+  }
+  ["post-merge"] {
+    steps {
+      ["pullhook"] = pullhook
+    }
+  }
+  ["post-checkout"] {
+    steps {
+      ["pullhook"] = pullhook
+    }
+  }
+  ["post-rewrite"] {
+    steps {
+      ["pullhook"] = pullhook
     }
   }
 }

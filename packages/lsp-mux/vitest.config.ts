@@ -6,6 +6,7 @@ const configuration = mergeConfig(
 	defineConfig({
 		test: {
 			name: "lsp-mux",
+			benchmark: { include: ["src/**/*.bench.ts"] },
 			include: ["src/**/*.test.ts"],
 			restoreMocks: true,
 			server: {
