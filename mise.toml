@@ -12,10 +12,14 @@ provenance_api_failures_fatal = false
 cargo.binstall_native = true
 
 [tools]
+"github:howmanysmall/pullhook" = "latest"
+"github:vale-cli/vale-ls" = "latest"
 "npm:sherif" = "latest"
 actionlint = "latest"
 betterleaks = "latest"
+communique = "latest"
 direnv = "latest"
+git-cliff = "latest"
 hk = "2.5.0"
 ni = "latest"
 node = "24"
