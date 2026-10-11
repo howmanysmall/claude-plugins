@@ -13,7 +13,7 @@
 		},
 		"types": ["node"]
 	},
-	"references": [{ "path": "../../tools/vite-configuration" }],
+	"references": [{ "path": "../../tools/vite-configuration" }, { "path": "../arktype-utilities" }],
 	"include": ["src/**/*.ts", "./package.json", "*.config.ts"],
 	"exclude": ["node_modules"]
 }
