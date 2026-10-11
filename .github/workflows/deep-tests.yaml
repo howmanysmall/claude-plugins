@@ -108,8 +108,8 @@ jobs:
       # shrunk counterexample of any failure.
       - name: Run property tests
         run: >-
-          node --run test --
-          --project lsp-mux
+          node --run turbo -- run test
+          --filter=@pobammer-ts/lsp-mux --
           --testTimeout 1800000
           --reporter github-actions --reporter dot
           .property.test.ts
