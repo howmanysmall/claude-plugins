@@ -6,14 +6,14 @@ import { Predicate } from "effect";
 
 import { CONFIGURATION_NAME, TRUST_PROJECT_CONFIGS_VARIABLE, USER_CONFIGURATION_VARIABLE } from "$constants";
 import { resolveConfiguration } from "$functions/resolve-configuration";
+import { isConfiguration } from "$types/configuration-types";
 import { mergeLayers } from "$utilities/merge-utilities";
-import { isConfiguration } from "$validators/configuration-type";
 
 import type { LoadConfigOptions } from "c12";
 import type { UnknownRecord } from "type-fest";
 
 import type { ResolvedConfiguration } from "$functions/resolve-configuration";
-import type { Configuration } from "$validators/configuration-type";
+import type { Configuration } from "$types/configuration-types";
 
 export interface ConfigurationLocation {
 	readonly configFile: string;

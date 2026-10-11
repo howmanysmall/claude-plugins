@@ -1,5 +1,5 @@
 import type { CatalogServer } from "$meta/server-catalog";
-import type { ServerOptions } from "$validators/configuration-type";
+import type { ServerOptions } from "$types/configuration-types";
 
 /** A server name lsp-mux knows, or any other name with its own options. */
 export type ServerName = CatalogServer | (Record<never, never> & string);

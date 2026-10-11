@@ -1,6 +1,6 @@
 // oxlint-disable small-rules/prevent-abbreviations -- `args` is the configuration field.
 
-import type { ServerOptions } from "$validators/configuration-type";
+import type { ServerOptions } from "$types/configuration-types";
 
 const ESLINT_SETTINGS = {
 	codeAction: {

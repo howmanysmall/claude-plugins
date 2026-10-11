@@ -1,10 +1,10 @@
 import { type } from "arktype";
 
 import { getCatalogServer } from "$meta/server-catalog";
+import { isServerDefinition } from "$types/configuration-types";
 import { mergeLayers } from "$utilities/merge-utilities";
-import { isServerDefinition } from "$validators/configuration-type";
 
-import type { Configuration, ServerDefinition } from "$validators/configuration-type";
+import type { Configuration, ServerDefinition } from "$types/configuration-types";
 
 export interface ResolvedServer extends ServerDefinition {
 	readonly name: string;

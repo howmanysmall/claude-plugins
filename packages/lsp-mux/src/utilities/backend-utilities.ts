@@ -3,8 +3,8 @@ import { closeConnection, detach } from "$utilities/connection-utilities";
 import { getSyncKind, supportsMethod } from "$utilities/routing-utilities";
 
 import type { SyncKind } from "$meta/protocol-meta";
+import type { ServerDefinition } from "$types/configuration-types";
 import type { Backend, Connection } from "$types/mux-types";
-import type { ServerDefinition } from "$validators/configuration-type";
 
 export function getBackendKey(name: string, root: string): string {
 	return `${name}@${root}`;
