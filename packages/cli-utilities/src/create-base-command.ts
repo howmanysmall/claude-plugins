@@ -4,7 +4,7 @@ import { Command, ValidationError } from "@cliffy/command";
 import { ShowHelpError } from "./show-help-error";
 
 export interface ExtraOptions {
-	readonly showHelpWithoutArguments?: boolean;
+	readonly showHelpWithoutArguments?: boolean | undefined;
 }
 
 export function createBaseCommand(

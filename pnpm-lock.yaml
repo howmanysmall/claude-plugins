@@ -662,6 +662,9 @@ importers:
       '@howmanysmall/arktype-utilities':
         specifier: workspace:*
         version: link:../arktype-utilities
+      '@howmanysmall/cli-utilities':
+        specifier: workspace:*
+        version: link:../cli-utilities
       '@howmanysmall/vite-configuration':
         specifier: workspace:*
         version: link:../../tools/vite-configuration
@@ -683,6 +686,9 @@ importers:
       tsdown:
         specifier: catalog:build
         version: 0.23.0(@arethetypeswrong/core@0.18.5)(oxc-resolver@11.24.2)(publint@0.3.25)(typescript@6.0.3)
+      unplugin-macros:
+        specifier: catalog:build
+        version: 0.23.2(rolldown@1.2.13)(vite@8.3.3(@types/node@26.6.4)(jiti@2.7.0)(yaml@2.9.1))
       vitest:
         specifier: catalog:test
         version: 5.0.3(@opentelemetry/api@1.9.0)(@types/node@26.6.4)(@vitest/coverage-istanbul@5.0.3)(vite@8.3.3(@types/node@26.6.4)(jiti@2.7.0)(yaml@2.9.1))

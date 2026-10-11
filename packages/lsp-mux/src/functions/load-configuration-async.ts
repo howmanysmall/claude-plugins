@@ -1,4 +1,4 @@
-import { registerHooks } from "node:module";
+import nodeModule from "node:module";
 import nodePath from "node:path";
 import { pathToFileURL } from "node:url";
 import { type } from "arktype";
@@ -38,9 +38,25 @@ export interface LoadConfigurationOptions {
 const aliasedApiPaths = new Set<string>();
 
 /**
+ * Points `@pobammer-ts/lsp-mux` imports at the running copy, so configuration
+ * files load where the package isn't installed. Bun has no
+ * `module.registerHooks`; there the import resolves from `node_modules`.
+ *
+ * @param apiPath - The module the package name resolves to.
+ */
+function aliasPackage(apiPath: string): void {
+	if (!("registerHooks" in nodeModule)) return;
+
+	const url = pathToFileURL(apiPath).href;
+	nodeModule.registerHooks({
+		resolve: (specifier, context, nextResolve) =>
+			specifier === name ? { shortCircuit: true, url } : nextResolve(specifier, context),
+	});
+}
+
+/**
  * Resolves `@pobammer-ts/lsp-mux` imports in configuration files to the
- * running copy, so they load without the package installed. Node runs the
- * TypeScript itself by stripping types.
+ * running copy, so they load without the package installed.
  *
  * @param apiPath - The module the package name resolves to.
  * @returns The import function c12 calls for code configurations.
@@ -48,11 +64,7 @@ const aliasedApiPaths = new Set<string>();
 function createImport(apiPath: string): NonNullable<LoadConfigOptions["import"]> {
 	if (!aliasedApiPaths.has(apiPath)) {
 		aliasedApiPaths.add(apiPath);
-		const url = pathToFileURL(apiPath).href;
-		registerHooks({
-			resolve: (specifier, context, nextResolve) =>
-				specifier === name ? { shortCircuit: true, url } : nextResolve(specifier, context),
-		});
+		aliasPackage(apiPath);
 	}
 	return async (id) => {
 		const module: unknown = await import(pathToFileURL(id).href);

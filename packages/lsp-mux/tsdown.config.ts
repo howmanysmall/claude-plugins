@@ -1,10 +1,15 @@
-import { defineConfig } from "tsdown";
+import { defineConfig, mergeConfig } from "tsdown";
+import Macros from "unplugin-macros/rolldown";
 
 import type { UserConfig } from "tsdown";
 
 /** The private workspace packages are not published, so they are inlined. */
-const PRIVATE_PACKAGES = [/^@howmanysmall\/arktype-utilities/u];
+const PRIVATE_PACKAGES = [/^@howmanysmall\/.*/u];
 const ANYTHING = /.*/u;
+
+const BASE_CONFIGURATION: UserConfig = {
+	plugins: [Macros()],
+};
 
 function getPluginBuild(name: string, entry: string): UserConfig {
 	return {
@@ -21,14 +26,17 @@ function getPluginBuild(name: string, entry: string): UserConfig {
 }
 
 const configuration = defineConfig([
-	{
-		deps: { alwaysBundle: PRIVATE_PACKAGES },
-		entry: { cli: "./src/cli.ts", index: "./src/index.ts" },
-		outDir: "dist",
-		tsconfig: "tsconfig.lib.json",
-	},
-	getPluginBuild("lsp-mux", "./src/cli.ts"),
-	getPluginBuild("index", "./src/index.ts"),
+	mergeConfig(
+		{
+			deps: { alwaysBundle: PRIVATE_PACKAGES },
+			entry: { cli: "./src/cli.ts", index: "./src/index.ts" },
+			outDir: "dist",
+			tsconfig: "tsconfig.lib.json",
+		},
+		BASE_CONFIGURATION,
+	),
+	mergeConfig(getPluginBuild("lsp-mux", "./src/cli.ts"), BASE_CONFIGURATION),
+	mergeConfig(getPluginBuild("index", "./src/index.ts"), BASE_CONFIGURATION),
 ]);
 
 export default configuration;
