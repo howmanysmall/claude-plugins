@@ -44,6 +44,9 @@
 	},
 	"dependencies": {
 		"@cliffy/command": "catalog:runtime",
+		"@inquirer/core": "catalog:runtime",
+		"@inquirer/prompts": "catalog:runtime",
+		"@inquirer/type": "catalog:runtime",
 		"arktype": "catalog:runtime",
 		"c12": "catalog:runtime",
 		"effect": "catalog:runtime",
