@@ -17,6 +17,7 @@ cargo.binstall_native = true
 "npm:sherif" = "latest"
 actionlint = "latest"
 betterleaks = "latest"
+bun = "1.4.3"
 communique = "latest"
 direnv = "latest"
 git-cliff = "latest"
