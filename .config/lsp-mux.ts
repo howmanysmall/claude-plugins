@@ -1,6 +1,6 @@
-import { defineConfig } from "@pobammer-ts/lsp-mux";
+import { defineConfiguration } from "@pobammer-ts/lsp-mux";
 
-export default defineConfig({
+export default defineConfiguration({
 	formatters: ["oxfmt", "biome", "rumdl"],
 	options: {
 		// TypeScript 7 ships as `tsc`.

@@ -22,9 +22,9 @@ until you list some.
 
 ```ts
 // .config/lsp-mux.ts (or lsp-mux.config.ts)
-import { defineConfig } from "@pobammer-ts/lsp-mux";
+import { defineConfiguration } from "@pobammer-ts/lsp-mux";
 
-export default defineConfig({
+export default defineConfiguration({
 	formatters: ["oxfmt", "biome"],
 	options: {
 		typescript: { command: "tsc" },
@@ -63,8 +63,8 @@ Servers that aren't installed are skipped.
 2. The project: `lsp-mux.config.*` or `.config/lsp-mux.*`, which overrides the
    user configuration. Lists replace each other, and `options` merge.
 
-Install `@pobammer-ts/lsp-mux` as a dev dependency to type-check `defineConfig`.
-The configuration loads without it.
+Install `@pobammer-ts/lsp-mux` as a dev dependency so the import resolves. Install `@pobammer-ts/lsp-mux` as a
+dev dependency to type-check it.
 
 ### Project configuration that runs code
 
