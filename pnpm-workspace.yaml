@@ -126,6 +126,8 @@ catalogs:
     arktype: 2.2.8
     c12: 4.0.0-rc.2
     effect: 4.0.2
+    jsonc-parser: 3.3.1
+    just-diff: 6.0.2
   scripts:
     consola: 3.4.2
   test:

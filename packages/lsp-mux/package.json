@@ -51,6 +51,8 @@
 		"arktype": "catalog:runtime",
 		"c12": "catalog:runtime",
 		"effect": "catalog:runtime",
+		"jsonc-parser": "catalog:runtime",
+		"just-diff": "catalog:runtime",
 		"type-fest": "catalog:types"
 	},
 	"devDependencies": {
