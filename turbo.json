@@ -6,7 +6,14 @@
 	"globalPassThroughEnv": ["CI", "FORCE_COLOR", "GITHUB_ACTIONS", "NODE_OPTIONS"],
 	"tasks": {
 		"//#type-check:node": {
-			"inputs": ["*.config.ts", ".config/*.ts", "scripts/*.ts", "tsconfig.json", "tsconfig.node.json"]
+			"inputs": [
+				"*.config.ts",
+				".config/*.ts",
+				"scripts/*.ts",
+				"tsconfig.json",
+				"tsconfig.node.json",
+				"turbo/generators/*.ts"
+			]
 		},
 		"build": {
 			"dependsOn": ["^build", "transit"],

@@ -1,0 +1,12 @@
+import { describe, expect, it } from "vitest";
+
+import { description, name } from "./index.ts";
+
+describe("package metadata", () => {
+	it("exposes the package name and description", () => {
+		expect.assertions(2);
+
+		expect(name).toBe("{{scope}}/{{kebabCase name}}");
+		expect(description).toBe({{{json description}}});
+	});
+});

@@ -1,0 +1,15 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"composite": true,
+		"tsBuildInfoFile": "./node_modules/.tmp/{{kebabCase name}}.tsbuildinfo",
+		"types": ["node"]
+	},
+	"references": [
+		{
+			"path": "../../tools/project-configurations"
+		}
+	],
+	"include": ["src/**/*.ts", "./package.json", "*.config.ts"],
+	"exclude": ["node_modules"]
+}

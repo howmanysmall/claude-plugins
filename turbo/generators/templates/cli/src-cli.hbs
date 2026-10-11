@@ -1,0 +1,15 @@
+{{{shebang}}}
+
+import { argv, stdout } from "node:process";
+import { createBaseCommand } from "@howmanysmall/cli-utilities/create-base-command";
+import { getScriptName } from "@howmanysmall/cli-utilities/get-script-name" with { type: "macro" };
+
+import { description, version } from "$constants";
+
+const scriptName = getScriptName(true);
+
+const command = createBaseCommand(scriptName, version, description).action(() => {
+	stdout.write(`Hello from ${scriptName}!\n`);
+});
+
+await command.parse(argv.slice(2));

@@ -1,0 +1,55 @@
+{
+	"name": "{{scope}}/{{kebabCase name}}",
+	"version": "0.0.0",
+	"description": {{{json description}}},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/howmanysmall/claude-plugins.git",
+		"directory": "packages/{{kebabCase name}}"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "HowManySmall",
+		"email": "contact@howmanysmall.com",
+		"url": "https://howmanysmall.com"
+	},
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"bin": {
+		"{{kebabCase name}}": "./dist/cli.js"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"prepublishOnly": "turbo run build --filter={{scope}}/{{kebabCase name}}",
+		"test": "vitest run",
+		"test:agent": "node --run test -- --reporter agent",
+		"type-check": "tsc --build"
+	},
+	"dependencies": {
+		"@cliffy/command": "catalog:runtime"
+	},
+	"devDependencies": {
+		"@howmanysmall/cli-utilities": "workspace:*",
+		"@howmanysmall/project-configurations": "workspace:*",
+		"@types/node": "catalog:types",
+		"tsdown": "catalog:build",
+		"unplugin-macros": "catalog:build",
+		"vitest": "catalog:test"
+	},
+	"engines": {
+		"node": ">=22.18.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
