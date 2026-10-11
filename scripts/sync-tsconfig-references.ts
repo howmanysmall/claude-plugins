@@ -1,8 +1,19 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import nodePath from "node:path";
 import { argv, cwd, exit } from "node:process";
-import { parseArgs } from "node:util";
+import {
+	isMaybeReadonlyDictionaryOfStrings,
+	isMaybeString,
+	isString,
+	isUndefined,
+} from "@howmanysmall/arktype-utilities";
+import { createBaseCommand } from "@howmanysmall/cli-utilities/create-base-command";
+import { getScriptName } from "@howmanysmall/cli-utilities/get-script-name";
 import { type } from "arktype";
+import { consola } from "consola";
+
+const scriptName = getScriptName(true);
+const log = consola.withTag(scriptName);
 
 // `tsc --build` skips a project it cannot reach through `references`, and the
 // import still resolves through the root `node_modules`, so a missing
@@ -20,20 +31,23 @@ const PROJECT_PARENTS = ["packages", "tools"] as const;
  */
 const ROOT_CONFIGURATION_FILES = ["tsconfig.node.json"] as const;
 
-const isDependencyMap = type({ "[string]": "string" }).readonly();
-
 const isManifest = type({
-	name: "string",
+	name: isString,
 	"+": "ignore",
-	"dependencies?": isDependencyMap,
-	"devDependencies?": isDependencyMap,
-	"optionalDependencies?": isDependencyMap,
-	"peerDependencies?": isDependencyMap,
+	"dependencies?": isMaybeReadonlyDictionaryOfStrings,
+	"devDependencies?": isMaybeReadonlyDictionaryOfStrings,
+	"optionalDependencies?": isMaybeReadonlyDictionaryOfStrings,
+	"peerDependencies?": isMaybeReadonlyDictionaryOfStrings,
+}).readonly();
+
+const isReference = type({
+	"+": "ignore",
+	"path?": isMaybeString,
 }).readonly();
 
 const isTsConfig = type({
 	"+": "ignore",
-	"references?": type({ "+": "ignore", "path?": "string" }).readonly().array().readonly(),
+	"references?": isReference.array().readonly().or(isUndefined),
 }).readonly();
 
 const parseJson = type("string.json.parse");
@@ -197,37 +211,35 @@ async function syncTsconfigReferencesAsync(rootDirectory: string): Promise<Reado
 	return staleReferences;
 }
 
-async function runAsync(): Promise<void> {
-	const { values } = parseArgs({
-		args: argv.slice(2),
-		options: { check: { default: false, short: "c", type: "boolean" } },
+const command = createBaseCommand(scriptName, "1.0.0", "Syncs tsconfig.json references for all workspace projects.")
+	.option("-c, --check", "Check for stale references without writing changes.")
+	.action(async ({ check }) => {
+		const rootDirectory = cwd();
+
+		if (check) {
+			const staleReferences = await findStaleReferencesAsync(rootDirectory);
+			for (const { actualReferences, expectedReferences, path } of staleReferences) {
+				log.fail(`${path} references are stale`);
+				log.fail(`  expected: ${expectedReferences.join(", ") || "(none)"}`);
+				log.fail(`  actual:   ${actualReferences.join(", ") || "(none)"}`);
+			}
+
+			if (staleReferences.length === 0) {
+				log.info("all tsconfig references are in sync");
+				return;
+			}
+
+			log.fail(`${staleReferences.length} tsconfig file(s) out of sync; run \`node --run references:sync\``);
+			exit(1);
+		}
+
+		const staleReferences = await syncTsconfigReferencesAsync(rootDirectory);
+		for (const { path } of staleReferences) log.info(`updated ${path}`);
+		log.success(
+			staleReferences.length === 0
+				? "all tsconfig references are in sync"
+				: `synced ${staleReferences.length} tsconfig file(s)`,
+		);
 	});
-	const rootDirectory = cwd();
 
-	if (values.check) {
-		const staleReferences = await findStaleReferencesAsync(rootDirectory);
-		for (const { actualReferences, expectedReferences, path } of staleReferences) {
-			console.error(`${path} references are stale`);
-			console.error(`  expected: ${expectedReferences.join(", ") || "(none)"}`);
-			console.error(`  actual:   ${actualReferences.join(", ") || "(none)"}`);
-		}
-
-		if (staleReferences.length === 0) {
-			console.log("all tsconfig references are in sync");
-			return;
-		}
-
-		console.error(`${staleReferences.length} tsconfig file(s) out of sync; run \`node --run references:sync\``);
-		exit(1);
-	}
-
-	const staleReferences = await syncTsconfigReferencesAsync(rootDirectory);
-	for (const { path } of staleReferences) console.log(`updated ${path}`);
-	console.log(
-		staleReferences.length === 0
-			? "all tsconfig references are in sync"
-			: `synced ${staleReferences.length} tsconfig file(s)`,
-	);
-}
-
-await runAsync();
+await command.parse(argv.slice(2));

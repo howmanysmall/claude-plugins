@@ -1,7 +1,7 @@
 import { exit } from "node:process";
 import { Command, ValidationError } from "@cliffy/command";
 
-import { ShowHelpError } from "./show-help-error";
+import { ShowHelpError } from "./show-help-error.ts";
 
 export interface ExtraOptions {
 	readonly showHelpWithoutArguments?: boolean | undefined;

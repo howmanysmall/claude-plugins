@@ -1,0 +1,15 @@
+{
+	"name": "@howmanysmall/scripts",
+	"private": true,
+	"type": "module",
+	"dependencies": {
+		"@cliffy/command": "catalog:runtime",
+		"@howmanysmall/arktype-utilities": "workspace:*",
+		"@howmanysmall/cli-utilities": "workspace:*",
+		"arktype": "catalog:runtime",
+		"consola": "catalog:scripts"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:types"
+	}
+}

@@ -5,6 +5,20 @@
 		"tsBuildInfoFile": "./node_modules/.tsbuildinfo-node",
 		"types": ["node"]
 	},
-	"include": ["*.config.ts", ".config/*.ts", "scripts/*.ts"],
+	"references": [
+		{
+			"path": "./packages/arktype-utilities"
+		},
+		{
+			"path": "./packages/cli-utilities"
+		},
+		{
+			"path": "./packages/lsp-mux"
+		},
+		{
+			"path": "./tools/lint-configurations"
+		}
+	],
+	"include": ["*.config.ts", ".config/*.ts", "scripts/*.ts", "turbo/generators/*.ts"],
 	"exclude": ["dist", "node_modules"]
 }

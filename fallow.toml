@@ -1,6 +1,6 @@
 entry = [
-	"packages/lsp-mux/src/cli.ts",
-	"packages/lsp-mux/src/index.ts",
+	"packages/*/src/cli.ts",
+	"packages/*/src/index.ts",
 	"packages/*/src/**/*.fuzz.ts",
 	"*.config.ts",
 	"packages/*/*.config.ts",
@@ -8,6 +8,7 @@ entry = [
 	".config/*.ts",
 	"tools/project-configurations/src/vitest/setup.ts",
 	"packages/*/src/**/*.bench.ts",
+	"turbo/generators/*.ts",
 ]
 ignorePatterns = ["plugins/**", ".claude/**", "!.config/**"]
 ignoreDependencies = [

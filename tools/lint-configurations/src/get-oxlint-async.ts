@@ -11,6 +11,7 @@ import type { OxlintConfig } from "@isentinel/eslint-config/oxlint";
 
 const CONFIGURATION_FILES = `**/*.config.${GLOB_SRC_EXT}`;
 const SCRIPT_FILES = `scripts/${GLOB_SRC}`;
+const TURBO_GENERATOR_FILES = `turbo/generators/${GLOB_SRC}`;
 
 interface ConfigurationOptions {
 	readonly argv?: ReadonlyArray<string> | undefined;
@@ -516,7 +517,7 @@ export async function getOxlintAsync({
 			},
 		},
 		{
-			name: "small-rules/native-id-length",
+			name: "claude-plugins/native-id-length",
 			files: [GLOB_SRC],
 			rules: {
 				"eslint-js/id-length": "off",
@@ -531,7 +532,7 @@ export async function getOxlintAsync({
 			},
 		},
 		{
-			name: "small-rules/react-doctor",
+			name: "claude-plugins/react-doctor",
 			files: [GLOB_SRC],
 			jsPlugins: [{ name: "react-doctor", specifier: "oxlint-plugin-react-doctor" }],
 			rules: {
@@ -556,7 +557,7 @@ export async function getOxlintAsync({
 			},
 		},
 		{
-			name: "small-rules/vitest",
+			name: "claude-plugins/vitest",
 			files: GLOB_TESTS.filter((glob) => !glob.includes(".bench.")),
 			plugins: ["vitest"],
 			rules: {
@@ -626,24 +627,24 @@ export async function getOxlintAsync({
 			},
 		},
 		{
-			name: "small-rules/allow-top-level-await",
+			name: "claude-plugins/allow-top-level-await",
 			files: [SCRIPT_FILES, CONFIGURATION_FILES],
 			rules: { "node/no-top-level-await": "off" },
 		},
 		{
-			name: "small-rules/allow-console",
+			name: "claude-plugins/allow-console",
 			files: [SCRIPT_FILES, CONFIGURATION_FILES],
 			rules: { "no-console": "off" },
 		},
 		{
-			name: "small-rules/these-are-fine",
+			name: "claude-plugins/these-are-fine",
 			files: [CONFIGURATION_FILES],
 			rules: {
 				"small-rules/no-unsafe-dictionary-type": "off",
 			},
 		},
 		{
-			name: "small-rules/benchmarks",
+			name: "claude-plugins/benchmarks",
 			files: [`.benchmarks/${GLOB_SRC}`],
 			rules: {
 				"node/no-top-level-await": "off",
@@ -653,7 +654,7 @@ export async function getOxlintAsync({
 			},
 		},
 		{
-			name: "small-rules/allow-default-export",
+			name: "claude-plugins/allow-default-export",
 			files: [CONFIGURATION_FILES],
 			rules: { "import/no-default-export": "off" },
 		},
@@ -663,7 +664,7 @@ export async function getOxlintAsync({
 			rules: { "small-rules/prevent-abbreviations": "off" },
 		},
 		{
-			name: "small-rules/allow-null",
+			name: "claude-plugins/allow-null",
 			files: [
 				"vitest*.config.ts",
 				...GLOB_TESTS.filter((glob) => !glob.includes(".bench.")),
@@ -672,26 +673,38 @@ export async function getOxlintAsync({
 			rules: { "unicorn/no-null": "off" },
 		},
 		{
-			name: "small-rules/allow-unambiguous-import",
+			name: "claude-plugins/allow-unambiguous-import",
 			files: [GLOB_DTS],
 			rules: { "import/unambiguous": "off" },
 		},
 		{
-			name: "small-rules/lsp-mux-naming",
+			name: "claude-plugins/lsp-mux-naming",
 			// lsp-mux predates `starts-with-verb`; its names are part of the
 			// tested API.
-			files: ["packages/lsp-mux/**"],
+			files: ["packages/lsp-mux/**", TURBO_GENERATOR_FILES],
 			rules: { "small-rules/starts-with-verb": "off" },
 		},
 		{
-			name: "small-rules/disable-stupid-rule",
-			files: [CONFIGURATION_FILES],
+			name: "claude-plugins/disable-stupid-rule",
+			files: [CONFIGURATION_FILES, TURBO_GENERATOR_FILES],
 			rules: { "sonar/file-name-differ-from-class": "off" },
 		},
 		{
-			name: "small-rules/allow-complexity",
+			name: "claude-plugins/allow-complexity",
 			files: ["scripts/**"],
 			rules: { complexity: "off" },
+		},
+		{
+			name: "claude-plugins/turbo-repo-generators",
+			files: [TURBO_GENERATOR_FILES],
+			rules: {
+				"small-rules/starts-with-verb": [
+					"error",
+					{
+						allowList: ["generator"],
+					},
+				],
+			},
 		},
 	);
 }
