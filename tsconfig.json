@@ -1,12 +1,27 @@
 {
 	"extends": "./tsconfig.base.json",
 	"references": [
-		{ "path": "./packages/arktype-utilities" },
-		{ "path": "./packages/lsp-mux" },
-		{ "path": "./tools/lint-configurations" },
-		{ "path": "./tools/linter-utilities" },
-		{ "path": "./tools/vite-configuration" },
-		{ "path": "./tsconfig.node.json" }
+		{
+			"path": "./packages/arktype-utilities"
+		},
+		{
+			"path": "./packages/cli-utilities"
+		},
+		{
+			"path": "./packages/lsp-mux"
+		},
+		{
+			"path": "./tools/lint-configurations"
+		},
+		{
+			"path": "./tools/linter-utilities"
+		},
+		{
+			"path": "./tools/vite-configuration"
+		},
+		{
+			"path": "./tsconfig.node.json"
+		}
 	],
 	"files": [],
 	"include": []

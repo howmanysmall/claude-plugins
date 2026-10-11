@@ -1,0 +1,43 @@
+{
+	"name": "@howmanysmall/cli-utilities",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Utilities relating to CLIs, specifically with Cliffy.",
+	"license": "MIT",
+	"author": {
+		"name": "HowManySmall",
+		"email": "contact@howmanysmall.com",
+		"url": "https://howmanysmall.com"
+	},
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		"./cliffy-highlight": "./src/cliffy-highlight.ts",
+		"./create-base-command": "./src/create-base-command.ts",
+		"./get-script-name": "./src/get-script-name.ts",
+		"./package.json": "./package.json"
+	},
+	"scripts": {
+		"test": "vitest run",
+		"test:agent": "node --run test -- --reporter agent",
+		"type-check": "tsc --build"
+	},
+	"dependencies": {
+		"@cliffy/command": "catalog:runtime",
+		"ansis": "catalog:runtime",
+		"arktype": "catalog:runtime"
+	},
+	"devDependencies": {
+		"@howmanysmall/arktype-utilities": "workspace:*",
+		"@howmanysmall/vite-configuration": "workspace:*",
+		"@types/node": "catalog:types",
+		"@vitiate/core": "catalog:test",
+		"fast-check": "catalog:test",
+		"tsdown": "catalog:build",
+		"unplugin-macros": "catalog:build",
+		"vitest": "catalog:test"
+	},
+	"engines": {
+		"node": ">=22.18.0"
+	}
+}
