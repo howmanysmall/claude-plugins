@@ -315,6 +315,9 @@ catalogs:
     c12:
       specifier: 4.0.0-rc.2
       version: 4.0.0-rc.2
+    consola:
+      specifier: 3.4.2
+      version: 3.4.2
     effect:
       specifier: 4.0.2
       version: 4.0.2
@@ -324,10 +327,6 @@ catalogs:
     just-diff:
       specifier: 6.0.2
       version: 6.0.2
-  scripts:
-    consola:
-      specifier: 3.4.2
-      version: 3.4.2
   test:
     '@fast-check/vitest':
       specifier: 0.5.0
@@ -698,6 +697,9 @@ importers:
       c12:
         specifier: catalog:runtime
         version: 4.0.0-rc.2(jiti@2.7.0)(magicast@0.5.5)
+      consola:
+        specifier: catalog:runtime
+        version: 3.4.2
       effect:
         specifier: catalog:runtime
         version: 4.0.2
@@ -763,7 +765,7 @@ importers:
         specifier: catalog:runtime
         version: 2.2.8
       consola:
-        specifier: catalog:scripts
+        specifier: catalog:runtime
         version: 3.4.2
     devDependencies:
       '@types/node':

@@ -7,7 +7,7 @@
 		"@howmanysmall/arktype-utilities": "workspace:*",
 		"@howmanysmall/cli-utilities": "workspace:*",
 		"arktype": "catalog:runtime",
-		"consola": "catalog:scripts"
+		"consola": "catalog:runtime"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:types"
