@@ -9,6 +9,10 @@ dist
 # code coverage
 coverage
 *.lcov
+/reports/
+.stryker-tmp/
+.vitiate/corpus/
+.swc/
 
 # logs
 logs
@@ -50,3 +54,9 @@ hk.local.pkl
 # installed agent skills (only the committed skills under .agents/skills are tracked)
 .agents/skills/.mise-skills.json
 .agents/skills/hk/
+
+# Claude Code machine-local settings
+.claude/settings.local.json
+
+# fallow coverage input
+.cache/
