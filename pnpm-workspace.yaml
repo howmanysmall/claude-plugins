@@ -83,6 +83,7 @@ catalogs:
   dev:
     confbox: 0.3.1
     empathic: 2.1.0
+    tinyexec: 1.3.1
   lint:
     "@biomejs/biome": 2.5.15
     "@e18e/eslint-plugin": 0.8.1
