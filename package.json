@@ -58,7 +58,7 @@
 		"@commitlint/types": "catalog:commitlint",
 		"@e18e/eslint-plugin": "catalog:lint",
 		"@howmanysmall/lint-configurations": "workspace:*",
-		"@howmanysmall/vite-configuration": "workspace:*",
+		"@howmanysmall/project-configurations": "workspace:*",
 		"@isentinel/eslint-config": "catalog:lint",
 		"@isentinel/hooks": "catalog:tooling",
 		"@pobammer-ts/lsp-mux": "workspace:*",

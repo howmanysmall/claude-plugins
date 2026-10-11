@@ -376,7 +376,7 @@
 				"noExportedImports": "error",
 				"noHeadElement": "error",
 				"noImplicitBoolean": "error",
-				"noInferrableTypes": "error",
+				"noInferrableTypes": "off",
 				"noJsxLiterals": "error",
 				"noMagicNumbers": "off",
 				"noMultiAssign": "error",

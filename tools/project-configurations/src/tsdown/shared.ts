@@ -1,9 +1,10 @@
 import nodePath from "node:path";
 import { defineConfig } from "tsdown";
+import Macros from "unplugin-macros/rolldown";
 
 // Settings every published package shares; each package's own
 // `tsdown.config.ts` adds its entries and output.
-const configuration = defineConfig({
+export const sharedConfiguration = defineConfig({
 	attw: {
 		enabled: true,
 		level: "error",
@@ -14,12 +15,13 @@ const configuration = defineConfig({
 		generator: "tsgo",
 		resolver: "oxc",
 		tsgo: {
-			path: nodePath.join(import.meta.dirname, "node_modules", ".bin", "tsc"),
+			path: nodePath.join(import.meta.dirname, "..", "..", "node_modules", ".bin", "tsc"),
 		},
 	},
 	fixedExtension: false,
 	format: ["esm"],
 	platform: "node",
+	plugins: [Macros()],
 	publint: {
 		enabled: true,
 		level: "error",
@@ -29,11 +31,4 @@ const configuration = defineConfig({
 		propertyReadSideEffects: false,
 		unknownGlobalSideEffects: false,
 	},
-	// Private packages are bundled into the packages that use them.
-	workspace: {
-		exclude: ["packages/arktype-utilities"],
-		include: ["packages/*"],
-	},
 });
-
-export default configuration;

@@ -4,15 +4,15 @@ import { readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import nodePath from "node:path";
 import { argv, cwd, env, exit, stdin, stdout } from "node:process";
+import { createBaseCommand } from "@howmanysmall/cli-utilities/create-base-command";
+import { getScriptName } from "@howmanysmall/cli-utilities/get-script-name" with { type: "macro" };
 
 import { description, version } from "$constants";
-import { createBaseCommand } from "$functions/create-base-command";
 import { createProcessTransport } from "$functions/create-process-transport";
 import { loadConfigurationAsync } from "$functions/load-configuration-async";
 import { runMux } from "$utilities/mux-utilities";
 
-// `index` sits next to this file in the source, the package, and the plugin.
-const apiPath = nodePath.join(import.meta.dirname, `index${nodePath.extname(import.meta.filename)}`);
+const scriptName = getScriptName(true);
 
 function fileExists(path: string): boolean {
 	return statSync(path, { throwIfNoEntry: false })?.isFile() === true;
@@ -26,10 +26,10 @@ function readFileOrUndefined(path: string): string | undefined {
 	}
 }
 
-const command = createBaseCommand("lsp-mux", version, description).action(async () => {
+const command = createBaseCommand(scriptName, version, description).action(async () => {
 	const directory = cwd();
 	runMux({
-		configuration: await loadConfigurationAsync({ apiPath, cwd: directory, environment: env, home: homedir() }),
+		configuration: await loadConfigurationAsync({ cwd: directory, environment: env, home: homedir() }),
 		createTransport: createProcessTransport,
 		cwd: directory,
 		exists: fileExists,

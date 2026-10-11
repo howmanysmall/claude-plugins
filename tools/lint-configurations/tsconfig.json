@@ -5,6 +5,13 @@
 		"tsBuildInfoFile": "./node_modules/.tmp/lint-configurations.tsbuildinfo",
 		"types": ["node"]
 	},
-	"references": [{ "path": "../linter-utilities" }, { "path": "../vite-configuration" }],
+	"references": [
+		{
+			"path": "../linter-utilities"
+		},
+		{
+			"path": "../project-configurations"
+		}
+	],
 	"include": ["*.config.ts", "src/**/*.ts"]
 }

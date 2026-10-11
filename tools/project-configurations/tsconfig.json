@@ -2,7 +2,7 @@
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"composite": true,
-		"tsBuildInfoFile": "./node_modules/.tmp/vite-configuration.tsbuildinfo",
+		"tsBuildInfoFile": "./node_modules/.tmp/project-configurations.tsbuildinfo",
 		"lib": ["ESNext"]
 	},
 	"include": ["src/**/*.ts"],

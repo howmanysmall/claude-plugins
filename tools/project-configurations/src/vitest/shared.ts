@@ -31,14 +31,11 @@ export const sharedConfiguration = defineConfig({
  * @returns The package's Vitest configuration.
  */
 export function createPackageConfiguration(name: string): ViteUserConfig {
-	return mergeConfig(
-		sharedConfiguration,
-		defineConfig({
-			test: {
-				name,
-				include: ["src/**/*.test.ts"],
-				testTimeout: 5_000,
-			},
-		}),
-	);
+	return mergeConfig(sharedConfiguration, {
+		test: {
+			name,
+			include: ["src/**/*.test.ts"],
+			testTimeout: 5_000,
+		},
+	});
 }

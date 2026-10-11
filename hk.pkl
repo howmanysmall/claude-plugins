@@ -248,7 +248,34 @@ local fileChecks = new Mapping<String, Step> {
   }
 }
 
-steps = fileChecks
+// The committed plugin bundle inlines every workspace package, so any staged
+// source change rebuilds it and stages the result. CI fails on a stale bundle.
+steps = (fileChecks) {
+  ["bundle"] {
+    glob =
+      List(
+        "packages/**",
+        "tools/**",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml",
+        "tsconfig.base.json",
+        "turbo.json",
+      )
+    depends = List("isentinel-lint", "biome")
+    exclusive = true
+    stage = List("plugins/howmanysmall-lsps/lsp-mux.js")
+    check = new CommandSpec {
+      command = "node --run build && git diff --exit-code -- plugins/"
+      effect = "write"
+    }
+    fix = new CommandSpec {
+      command = new Command {
+        argv = List("node", "--run", "build")
+      }
+      effect = "write"
+    }
+  }
+}
 
 local pullhook = new Step {
   check = new CommandSpec {

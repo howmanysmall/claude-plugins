@@ -1,7 +1,7 @@
 {
 	"name": "@pobammer-ts/lsp-mux",
 	"version": "3.1.2",
-	"description": "Run several language servers behind one LSP connection, configured with defineConfig.",
+	"description": "Run several language servers behind one LSP connection, configured with `defineConfiguration`.",
 	"keywords": [
 		"language-server",
 		"lsp",
@@ -36,7 +36,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown --config ../../tsdown.config.ts --filter @pobammer-ts/lsp-mux",
+		"build": "tsdown",
 		"prepublishOnly": "turbo run build --filter=@pobammer-ts/lsp-mux",
 		"test": "vitest run",
 		"test:agent": "node --run test -- --reporter agent",
@@ -52,13 +52,15 @@
 	"devDependencies": {
 		"@fast-check/vitest": "catalog:test",
 		"@howmanysmall/arktype-utilities": "workspace:*",
-		"@howmanysmall/vite-configuration": "workspace:*",
+		"@howmanysmall/cli-utilities": "workspace:*",
+		"@howmanysmall/project-configurations": "workspace:*",
 		"@total-typescript/ts-reset": "catalog:types",
 		"@types/node": "catalog:types",
 		"@vitiate/core": "catalog:test",
 		"@vitiate/fuzzed-data-provider": "catalog:test",
 		"fast-check": "catalog:test",
 		"tsdown": "catalog:build",
+		"unplugin-macros": "catalog:build",
 		"vitest": "catalog:test"
 	},
 	"engines": {
