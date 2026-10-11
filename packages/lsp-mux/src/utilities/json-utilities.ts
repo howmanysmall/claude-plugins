@@ -27,7 +27,7 @@ export function isJsonArray(value?: JsonValue): value is ReadonlyArray<JsonValue
 }
 
 export function isJsonRpcId(value: JsonValue | undefined): value is number | string {
-	return typeof value === "number" || typeof value === "string";
+	return Predicate.isNumber(value) || Predicate.isString(value);
 }
 
 export function asObject(value?: JsonValue): JsonObject | undefined {
