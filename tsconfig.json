@@ -11,6 +11,12 @@
 			"path": "./packages/lsp-mux"
 		},
 		{
+			"path": "./packages/tmp-cli-pkg"
+		},
+		{
+			"path": "./packages/tmp-lib-pkg"
+		},
+		{
 			"path": "./tools/lint-configurations"
 		},
 		{

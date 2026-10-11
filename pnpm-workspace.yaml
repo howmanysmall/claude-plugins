@@ -35,6 +35,7 @@ lockfile: true
 
 packages:
   - packages/*
+  - scripts
   - tools/*
 
 overrides:
@@ -120,6 +121,8 @@ catalogs:
     arktype: 2.2.8
     c12: 4.0.0-rc.2
     effect: 4.0.2
+  scripts:
+    consola: 3.4.2
   test:
     "@fast-check/vitest": 0.5.0
     "@stryker-mutator/api": 10.0.0
