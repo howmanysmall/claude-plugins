@@ -36,7 +36,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown --config ../../tsdown.config.ts --filter @pobammer-ts/lsp-mux",
+		"build": "tsdown",
 		"prepublishOnly": "turbo run build --filter=@pobammer-ts/lsp-mux",
 		"test": "vitest run",
 		"test:agent": "node --run test -- --reporter agent",

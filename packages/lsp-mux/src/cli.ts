@@ -14,9 +14,6 @@ import { runMux } from "$utilities/mux-utilities";
 
 const scriptName = getScriptName(true);
 
-// `index` sits next to this file in the source, the package, and the plugin.
-const apiPath = nodePath.join(import.meta.dirname, `index${nodePath.extname(import.meta.filename)}`);
-
 function fileExists(path: string): boolean {
 	return statSync(path, { throwIfNoEntry: false })?.isFile() === true;
 }
@@ -32,7 +29,7 @@ function readFileOrUndefined(path: string): string | undefined {
 const command = createBaseCommand(scriptName, version, description).action(async () => {
 	const directory = cwd();
 	runMux({
-		configuration: await loadConfigurationAsync({ apiPath, cwd: directory, environment: env, home: homedir() }),
+		configuration: await loadConfigurationAsync({ cwd: directory, environment: env, home: homedir() }),
 		createTransport: createProcessTransport,
 		cwd: directory,
 		exists: fileExists,

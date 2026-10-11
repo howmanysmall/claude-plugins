@@ -1,42 +1,31 @@
+import { sharedConfiguration } from "@howmanysmall/project-configurations/tsdown";
 import { defineConfig, mergeConfig } from "tsdown";
 import Macros from "unplugin-macros/rolldown";
 
-import type { UserConfig } from "tsdown";
-
-/** The private workspace packages are not published, so they are inlined. */
-const PRIVATE_PACKAGES = [/^@howmanysmall\/.*/u];
-const ANYTHING = /.*/u;
-
-const BASE_CONFIGURATION: UserConfig = {
-	plugins: [Macros()],
-};
-
-function getPluginBuild(name: string, entry: string): UserConfig {
-	return {
+const configuration = defineConfig([
+	mergeConfig(sharedConfiguration, {
+		// The private workspace packages aren't published, so they are inlined.
+		deps: { alwaysBundle: [/^@howmanysmall\//u] },
+		entry: { cli: "./src/cli.ts", index: "./src/index.ts" },
+		outDir: "dist",
+		plugins: [Macros()],
+		tsconfig: "tsconfig.lib.json",
+	}),
+	mergeConfig(sharedConfiguration, {
+		// The plugin folder also holds its manifests, so it is never cleaned.
 		clean: false,
-		// giget backs c12's remote `extends`, which lsp-mux never uses.
-		deps: { alwaysBundle: [ANYTHING], neverBundle: ["giget"], onlyBundle: false },
+		// Claude Code runs the plugin from its cache with only a runtime on
+		// PATH, so this one file carries every dependency. giget backs c12's
+		// remote `extends`, which lsp-mux never uses.
+		deps: { alwaysBundle: [/.*/u], neverBundle: ["giget"], onlyBundle: false },
 		dts: false,
-		entry: { [name]: entry },
+		entry: { "lsp-mux": "./src/cli.ts" },
 		minify: true,
 		outDir: "../../plugins/howmanysmall-lsps",
 		outputOptions: { codeSplitting: false },
+		plugins: [Macros()],
 		target: "node22",
-	};
-}
-
-const configuration = defineConfig([
-	mergeConfig(
-		{
-			deps: { alwaysBundle: PRIVATE_PACKAGES },
-			entry: { cli: "./src/cli.ts", index: "./src/index.ts" },
-			outDir: "dist",
-			tsconfig: "tsconfig.lib.json",
-		},
-		BASE_CONFIGURATION,
-	),
-	mergeConfig(getPluginBuild("lsp-mux", "./src/cli.ts"), BASE_CONFIGURATION),
-	mergeConfig(getPluginBuild("index", "./src/index.ts"), BASE_CONFIGURATION),
+	}),
 ]);
 
 export default configuration;
