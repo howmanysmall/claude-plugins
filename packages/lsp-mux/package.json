@@ -49,9 +49,14 @@
 		"type-fest": "catalog:types"
 	},
 	"devDependencies": {
+		"@fast-check/vitest": "catalog:test",
 		"@howmanysmall/arktype-utilities": "workspace:*",
 		"@howmanysmall/vite-configuration": "workspace:*",
+		"@total-typescript/ts-reset": "catalog:types",
 		"@types/node": "catalog:types",
+		"@vitiate/core": "catalog:test",
+		"@vitiate/fuzzed-data-provider": "catalog:test",
+		"fast-check": "catalog:test",
 		"tsdown": "catalog:build",
 		"vitest": "catalog:test"
 	},

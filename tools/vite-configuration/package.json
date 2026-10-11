@@ -7,12 +7,15 @@
 	"type": "module",
 	"exports": {
 		".": "./src/shared.ts",
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./stryker": "./src/stryker.ts",
+		"./vitiate": "./src/vitiate.ts"
 	},
 	"scripts": {
 		"type-check": "tsc --build"
 	},
 	"dependencies": {
+		"@vitiate/core": "catalog:test",
 		"jest-extended": "catalog:test",
 		"vitest": "catalog:test"
 	},

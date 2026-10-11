@@ -14,6 +14,7 @@ minimumReleaseAgeExclude:
   - "@pobammer-ts/small-rules"
   - oxfmt
   - oxlint
+  - skills
 
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeStrict: true
@@ -58,6 +59,15 @@ overrides:
   "@isentinel/eslint-config>eslint-plugin-sonarjs": catalog:lint
   "@isentinel/eslint-config>eslint-plugin-unicorn": catalog:lint
   "@isentinel/eslint-config>eslint-plugin-unused-imports": catalog:lint
+  "@vitiate/core>@swc/core": 1.15.41
+  vite: ^8
+
+# Vitest 5 matches `testNamePattern` against `task.fullTestName`, which joins suite names with
+# " > ". The runner builds its per-mutant filter by joining them with " ", so the regex matches
+# nothing for any test inside a `describe` and every mutant runs zero tests and is reported
+# "Survived". Drop this once upstream supports Vitest 5.
+patchedDependencies:
+  "@stryker-mutator/vitest-runner@10.0.0": patches/@stryker-mutator__vitest-runner@10.0.0.patch
 
 catalogs:
   build:
@@ -109,21 +119,40 @@ catalogs:
     c12: 4.0.0-rc.2
     effect: 4.0.2
   test:
+    "@fast-check/vitest": 0.5.0
+    "@stryker-mutator/api": 10.0.0
+    "@stryker-mutator/core": 10.0.0
+    "@stryker-mutator/vitest-runner": 10.0.0
     "@vitest/coverage-istanbul": 5.0.3
+    "@vitiate/core": 0.3.1
+    "@vitiate/fuzzed-data-provider": 0.3.1
+    fast-check: 4.10.2
     jest-extended: 7.0.0
     vitest: 5.0.3
+    vitiate: 0.3.1
   tooling:
     "@isentinel/hooks": 1.7.0
     bumpp: 12.3.0
     jiti: 2.7.0
+    pncat: 0.13.4
+    sfw: 2.0.6
+    skills: 1.7.0
     typescript: npm:@typescript/typescript6@^6.0.2
     typescript7: npm:typescript@^7.0.2
   types:
+    "@total-typescript/ts-reset": 0.6.1
     "@types/node": ^26.6.4
     type-fest: 5.10.0
 
 allowBuilds:
+  "@swc/core": true
   esbuild: true
+
+packageExtensions:
+  "@stryker-mutator/core@10.0.0":
+    dependencies:
+      "@stryker-mutator/vitest-runner": 10.0.0
+      typescript: 5.9.3
 
 peerDependencyRules:
   allowedVersions:
