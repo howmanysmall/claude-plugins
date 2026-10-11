@@ -51,10 +51,6 @@ hk.local.pkl
 !.vale/styles/config/vocabularies/Project/
 !.vale/styles/config/vocabularies/Project/accept.txt
 
-# installed agent skills (only the committed skills under .agents/skills are tracked)
-.agents/skills/.mise-skills.json
-.agents/skills/hk/
-
 # Claude Code machine-local settings
 .claude/settings.local.json
 
@@ -63,3 +59,4 @@ hk.local.pkl
 
 # turborepo
 .turbo
+.agents/skills/pr/
