@@ -4,6 +4,7 @@
 		"composite": true,
 		"tsBuildInfoFile": "./node_modules/.tmp/lsp-mux.tsbuildinfo",
 		"paths": {
+			"@cliffy/command/_dist/*": ["./node_modules/@cliffy/command/_dist/*"],
 			"$commands/*": ["./src/commands/*"],
 			"$constants": ["./src/constants.ts"],
 			"$functions/*": ["./src/functions/*"],
