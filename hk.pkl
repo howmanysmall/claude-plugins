@@ -26,7 +26,7 @@ exclude =
     ".stryker-tmp",
     "do-not-sync-ever",
     // Generated bundle.
-    "plugins/howmanysmall-lsps/lsp-mux.js",
+    "plugins/*/*.js",
     "**/*.tsbuildinfo",
   )
 
