@@ -204,3 +204,12 @@ const CATALOG_BY_NAME = new Map<string, ServerOptions>(Object.entries(CATALOG));
 export function getCatalogServer(name: string): ServerOptions | undefined {
 	return CATALOG_BY_NAME.get(name);
 }
+
+/**
+ * Lists every language server lsp-mux knows how to start.
+ *
+ * @returns The server names, in alphabetical order.
+ */
+export function listCatalogServers(): ReadonlyArray<string> {
+	return [...CATALOG_BY_NAME.keys()];
+}
