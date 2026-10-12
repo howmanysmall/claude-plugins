@@ -1,9 +1,13 @@
 import { createBaseCommand } from "@howmanysmall/cli-utilities/create-base-command";
 import { getScriptName } from "@howmanysmall/cli-utilities/get-script-name" with { type: "macro" };
 
+import { version } from "$constants";
+
 const scriptName = getScriptName(true);
 
-export const lspCommand = createBaseCommand(scriptName, "1.0.0", "The interface for managing LSPs.")
+export const lspCommand = createBaseCommand(scriptName, version, "Manage the LSPs in a configuration.", {
+	showHelpWithoutArguments: true,
+})
 	.command("add", async () => {
 		const { addCommand } = await import("./add-command");
 		return addCommand;
