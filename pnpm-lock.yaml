@@ -7,153 +7,153 @@ importers:
     configDependencies: {}
     packageManagerDependencies:
       pnpm:
-        specifier: 12.10.1
-        version: 12.10.1
+        specifier: 12.12.1
+        version: 12.12.1
 
 packages:
 
-  '@pnpm/exe.android-arm64@12.10.1':
-    resolution: {integrity: sha512-CVTlHPwNvadQCJD9bGSMzWIhFX8QpjtqC2c27dhdnn/9iKzEjZ3qL62o3gHpKbIuo6qn4WxTKRoaokgNdReBig==}
+  '@pnpm/exe.android-arm64@12.12.1':
+    resolution: {integrity: sha512-+yg8ErBmGyi7VGjontMkjyUOIusBEaSUZB2Ao+kSmZtIIkQ6AfrO/A1e6ycUMtaUJ++o+gmqk52sqlHkSDR9Pg==}
     cpu: [arm64]
     os: [android]
 
-  '@pnpm/exe.android-x64@12.10.1':
-    resolution: {integrity: sha512-NFiYLIaodY7da0XIebwcU3JoP7IK/lzF7zgKSSP+9H+QcFnQ1GDfBkuBKCYJzZ+Xu0WH54neIPLBBCaOjaaauA==}
+  '@pnpm/exe.android-x64@12.12.1':
+    resolution: {integrity: sha512-d1U7DmdiLsXkuQl/EPlng3JKTwFC6LmmEmic8XcemrfIYF0TFp9WNR0JdjqFcE1kdvomLsP8qrkGrOVtQ89TxQ==}
     cpu: [x64]
     os: [android]
 
-  '@pnpm/exe.darwin-arm64@12.10.1':
-    resolution: {integrity: sha512-0O8tdQ8ijlPJudXspLMTcitMkdBEz6uUflazL5uQE0WMs85oQIp0U+5hfEktMFB64QqEhjqlvvujTwbzdr9oMg==}
+  '@pnpm/exe.darwin-arm64@12.12.1':
+    resolution: {integrity: sha512-MiDDp8DLFFizQId7oiOhtzZ2yM97d3gHVFAxL0wgFCu/SZv8enY9N283HJebyAj63P2pDIYe70krHgWEyVvElQ==}
     cpu: [arm64]
     os: [darwin]
 
-  '@pnpm/exe.darwin-x64@12.10.1':
-    resolution: {integrity: sha512-ud+1/uZOKEo8P/AsPynOJc/LNwfI0j6WwCElibj71rU9l4nIBnsSn+wWTIPZPkZ4BBSH5+82azSnAARMyJ1lNA==}
+  '@pnpm/exe.darwin-x64@12.12.1':
+    resolution: {integrity: sha512-81CoZFGlOddF7kiuW+KRMabrWpUWyfljPydes6n8P3sFGBdR+d04tKP8E9I9wp4MQ+kj/n2g8MbFDu0+c7pwSw==}
     cpu: [x64]
     os: [darwin]
 
-  '@pnpm/exe.freebsd-x64@12.10.1':
-    resolution: {integrity: sha512-mj9PE5rf8uAfQQ2K66HSATMSut+lNiB4eSqFd5+azFVCMnxNSy/32xpZQJT21PhnN3Y4qbK+iKHe5nWAxSuRhw==}
+  '@pnpm/exe.freebsd-x64@12.12.1':
+    resolution: {integrity: sha512-kvwMpN165MpKfbg8wXXUcIutW4ZsF+CJdgkKNmP0Ux00wY2emV/8exiFcWc2ub4J+gG9GRppvafMNohZbLMvbg==}
     cpu: [x64]
     os: [freebsd]
 
-  '@pnpm/exe.linux-arm64-musl@12.10.1':
-    resolution: {integrity: sha512-xba+00wZJ8Um6rBJJjWl88uJj0tydB8dtomvjlCLvi0uL32vpa9CRP8Vv26FIXvbiZ1bo2RCzYt/eChxJVV52w==}
+  '@pnpm/exe.linux-arm64-musl@12.12.1':
+    resolution: {integrity: sha512-Evrem/af4+oqkjRv9sSBdXTPGDWsxMActgpVpUvMeSWm/42r58PtzIikZF+9YKaBYXF/CjmqasGvgeIsLicdQg==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@pnpm/exe.linux-arm64@12.10.1':
-    resolution: {integrity: sha512-oBdMp69ScC9UnniG4qZAQVr2fBDSXjm4yk/72vkEVyrlwS23yMxcRQl7Qdo3sgXPAygY6TWnPRKm4rXzjoyW7w==}
+  '@pnpm/exe.linux-arm64@12.12.1':
+    resolution: {integrity: sha512-RsGsD7WF1xQbTU1LW/5PLRiVMdMkQCYrOjTbHdaTYebelRYPgjRlxG8u0oVtVTD62ePNCjwQp+DSE8q8E+dyUA==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.linux-ppc64@12.10.1':
-    resolution: {integrity: sha512-Yyb3wu09h3c7mLme270uHFiVaAIUHC411Ru9LIU2BKUIstrGlXa9OqqVWoXaRgYRdFdOFknkwG7GNn6ygwLbnw==}
+  '@pnpm/exe.linux-ppc64@12.12.1':
+    resolution: {integrity: sha512-e3/q1q+HHISpQcjKl1UmtzNKX4ImbcqYfH/3loclW8iuhGSJkqME/eym0odH5XI2c2dd8DHiN5aRDwM/g/C2tA==}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.linux-riscv64@12.10.1':
-    resolution: {integrity: sha512-PdkeUFFkybknnGkWP0H22eMpIiS4OZXL5BcQzF4lh+vmrW3IaC2HOkbANKgot/PKO0Kl77pzA/6PKFxgbgfXIQ==}
+  '@pnpm/exe.linux-riscv64@12.12.1':
+    resolution: {integrity: sha512-utNVjoXSmMsoG8t1iGQCGzk9WHu+SDW8MC+rBE80zy3Qh5CWqZelC9AgwBhxhEcCCZAxCXTtSBqjAQRLp0qn5g==}
     cpu: [riscv64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.linux-s390x@12.10.1':
-    resolution: {integrity: sha512-1okKuHKJwJPAbofDxfhZWAUxEWtee4ZSf7Pah8kcvocaJkf2WxFJ5KVTiNIvDml5GLidDQsgf7Pcf/WHbCak7Q==}
+  '@pnpm/exe.linux-s390x@12.12.1':
+    resolution: {integrity: sha512-58AS/lraL54lqrGe+Z8wYHsbkbYq2/CMcUYEr33CkZ9qd4LtltvrWhCSLm1dxiZ35hPs/UdyvWUYVYCZlXq6sw==}
     cpu: [s390x]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.linux-x64-musl@12.10.1':
-    resolution: {integrity: sha512-e6IqzVNkPa7srFKJKnY23uWJ+qz0LaRWiTUo/sHfFXRRMRzB5uNOr6qWWip/jqhdGwU91n9J7LrEYZ6e0tRczw==}
+  '@pnpm/exe.linux-x64-musl@12.12.1':
+    resolution: {integrity: sha512-uYugCvgK4S+cYNldIaU54Ir54EYUvb+mnm37c0jfjZajCJ2EevnxS3107cNNQINHhMb2wiAzItg3r7XKvHyHpA==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@pnpm/exe.linux-x64@12.10.1':
-    resolution: {integrity: sha512-ZByV0DRgWzGaDSjT5ddRBASdwz+r/qPMYh7o6RGmPQjtRGNFbSl94xY2DcAM8mqCOZJUUDtAXQ+wpBXcdpKlkg==}
+  '@pnpm/exe.linux-x64@12.12.1':
+    resolution: {integrity: sha512-3bJ3kvMif7clfxePoBZ40FGvU54GhLwQ+ebxjxGuKYHwrDySMfyggVGR0gYYcprq6IPGy6CrTPiqgP5TOTLC5w==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.win32-arm64@12.10.1':
-    resolution: {integrity: sha512-I7QZHcjioG7orFeCRUFUHByJ1G0zFPnAlaGGyrUvb6MGkv5oeNwNPl7t+Gp+7zHfnMcgLGJ1a+Wfim0IDw3lOw==}
+  '@pnpm/exe.win32-arm64@12.12.1':
+    resolution: {integrity: sha512-bX317q9nhS0XPp6hx/sOBC+49GPkq068dsZxGzHBuEbTtLLGHEImFODE57emNhC66bF/UZHuoWRIGg6VNT0HuQ==}
     cpu: [arm64]
     os: [win32]
 
-  '@pnpm/exe.win32-x64@12.10.1':
-    resolution: {integrity: sha512-4WJFdp58EKlCj0zLobrXU0vpszSZIr4X/3y/uNbAQqGW0zE+VdruZB0gFc3L2kzsUzVwTYbaCn+XEhnCYSAlTg==}
+  '@pnpm/exe.win32-x64@12.12.1':
+    resolution: {integrity: sha512-/CSqxJLpAjrYQnD31/TEsWlyz+FLgyHYhv1TsSdZhVWQAg617e/qeJ9dcqBt/IStTL3MUkTpq3sqiVfouayiaA==}
     cpu: [x64]
     os: [win32]
 
-  pnpm@12.10.1:
-    resolution: {integrity: sha512-ukCjfrGjcNYP6oxM8dNkwTvMzvUY6YrSvO6VT1OdONo3RY5YJho/pV4GUjRQ6g//+fSXsTW+QfLBXBZCusrObA==}
+  pnpm@12.12.1:
+    resolution: {integrity: sha512-t/mJNMCx8ppl9dpS8tf5lOf6rVc//d3qFJf7Tcta7AUVkO58fZWjgXK0v64QOluD7fLuhm4Rcxwsr6lgY2EKxQ==}
     engines: {node: '>=18.*'}
     hasBin: true
 
 snapshots:
 
-  '@pnpm/exe.android-arm64@12.10.1':
+  '@pnpm/exe.android-arm64@12.12.1':
     optional: true
 
-  '@pnpm/exe.android-x64@12.10.1':
+  '@pnpm/exe.android-x64@12.12.1':
     optional: true
 
-  '@pnpm/exe.darwin-arm64@12.10.1':
+  '@pnpm/exe.darwin-arm64@12.12.1':
     optional: true
 
-  '@pnpm/exe.darwin-x64@12.10.1':
+  '@pnpm/exe.darwin-x64@12.12.1':
     optional: true
 
-  '@pnpm/exe.freebsd-x64@12.10.1':
+  '@pnpm/exe.freebsd-x64@12.12.1':
     optional: true
 
-  '@pnpm/exe.linux-arm64-musl@12.10.1':
+  '@pnpm/exe.linux-arm64-musl@12.12.1':
     optional: true
 
-  '@pnpm/exe.linux-arm64@12.10.1':
+  '@pnpm/exe.linux-arm64@12.12.1':
     optional: true
 
-  '@pnpm/exe.linux-ppc64@12.10.1':
+  '@pnpm/exe.linux-ppc64@12.12.1':
     optional: true
 
-  '@pnpm/exe.linux-riscv64@12.10.1':
+  '@pnpm/exe.linux-riscv64@12.12.1':
     optional: true
 
-  '@pnpm/exe.linux-s390x@12.10.1':
+  '@pnpm/exe.linux-s390x@12.12.1':
     optional: true
 
-  '@pnpm/exe.linux-x64-musl@12.10.1':
+  '@pnpm/exe.linux-x64-musl@12.12.1':
     optional: true
 
-  '@pnpm/exe.linux-x64@12.10.1':
+  '@pnpm/exe.linux-x64@12.12.1':
     optional: true
 
-  '@pnpm/exe.win32-arm64@12.10.1':
+  '@pnpm/exe.win32-arm64@12.12.1':
     optional: true
 
-  '@pnpm/exe.win32-x64@12.10.1':
+  '@pnpm/exe.win32-x64@12.12.1':
     optional: true
 
-  pnpm@12.10.1:
+  pnpm@12.12.1:
     optionalDependencies:
-      '@pnpm/exe.android-arm64': 12.10.1
-      '@pnpm/exe.android-x64': 12.10.1
-      '@pnpm/exe.darwin-arm64': 12.10.1
-      '@pnpm/exe.darwin-x64': 12.10.1
-      '@pnpm/exe.freebsd-x64': 12.10.1
-      '@pnpm/exe.linux-arm64': 12.10.1
-      '@pnpm/exe.linux-arm64-musl': 12.10.1
-      '@pnpm/exe.linux-ppc64': 12.10.1
-      '@pnpm/exe.linux-riscv64': 12.10.1
-      '@pnpm/exe.linux-s390x': 12.10.1
-      '@pnpm/exe.linux-x64': 12.10.1
-      '@pnpm/exe.linux-x64-musl': 12.10.1
-      '@pnpm/exe.win32-arm64': 12.10.1
-      '@pnpm/exe.win32-x64': 12.10.1
+      '@pnpm/exe.android-arm64': 12.12.1
+      '@pnpm/exe.android-x64': 12.12.1
+      '@pnpm/exe.darwin-arm64': 12.12.1
+      '@pnpm/exe.darwin-x64': 12.12.1
+      '@pnpm/exe.freebsd-x64': 12.12.1
+      '@pnpm/exe.linux-arm64': 12.12.1
+      '@pnpm/exe.linux-arm64-musl': 12.12.1
+      '@pnpm/exe.linux-ppc64': 12.12.1
+      '@pnpm/exe.linux-riscv64': 12.12.1
+      '@pnpm/exe.linux-s390x': 12.12.1
+      '@pnpm/exe.linux-x64': 12.12.1
+      '@pnpm/exe.linux-x64-musl': 12.12.1
+      '@pnpm/exe.win32-arm64': 12.12.1
+      '@pnpm/exe.win32-x64': 12.12.1
 
 ---
 lockfileVersion: '9.0'
@@ -294,18 +294,12 @@ catalogs:
     '@cliffy/command':
       specifier: jsr:1.3.1
       version: 1.3.1
-    '@cliffy/prompt':
-      specifier: jsr:1.3.1
-      version: 1.3.1
     '@inquirer/core':
       specifier: 12.0.4
       version: 12.0.4
     '@inquirer/prompts':
       specifier: 8.7.3
       version: 8.7.3
-    '@inquirer/type':
-      specifier: 4.2.0
-      version: 4.2.0
     ansis:
       specifier: 4.4.0
       version: 4.4.0
@@ -327,6 +321,9 @@ catalogs:
     just-diff:
       specifier: 6.0.2
       version: 6.0.2
+    magicast:
+      specifier: 0.5.5
+      version: 0.5.5
   test:
     '@fast-check/vitest':
       specifier: 0.5.0
@@ -679,18 +676,12 @@ importers:
       '@cliffy/command':
         specifier: catalog:runtime
         version: '@jsr/cliffy__command@1.3.1'
-      '@cliffy/prompt':
-        specifier: catalog:runtime
-        version: '@jsr/cliffy__prompt@1.3.1'
       '@inquirer/core':
         specifier: catalog:runtime
         version: 12.0.4(@types/node@26.6.4)
       '@inquirer/prompts':
         specifier: catalog:runtime
         version: 8.7.3(@types/node@26.6.4)
-      '@inquirer/type':
-        specifier: catalog:runtime
-        version: 4.2.0(@types/node@26.6.4)
       arktype:
         specifier: catalog:runtime
         version: 2.2.8
@@ -709,6 +700,9 @@ importers:
       just-diff:
         specifier: catalog:runtime
         version: 6.0.2
+      magicast:
+        specifier: catalog:runtime
+        version: 0.5.5
       type-fest:
         specifier: catalog:types
         version: 5.10.0
@@ -2272,9 +2266,6 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@jsr/cliffy__ansi@1.3.1':
-    resolution: {integrity: sha512-+2D9fmcN7H5b2UBTGHv7fwzOqq1mYhVfUd/QAEM6r2xnkwe8K+OlPhyLgcvCE3It3uFAvzqGxTPSemAHLzORgg==, tarball: https://npm.jsr.io/~/11/@jsr/cliffy__ansi/1.3.1.tgz}
-
   '@jsr/cliffy__command@1.3.1':
     resolution: {integrity: sha512-xfwUppZF3FxaUPdiYncET/wgQerVpeiqbc4ASlIBW6Ze6yxkNK5/A3iOMbqWl/IF8mCS8Q+iDApcl+hxrtyTaQ==, tarball: https://npm.jsr.io/~/11/@jsr/cliffy__command/1.3.1.tgz}
 
@@ -2284,35 +2275,20 @@ packages:
   '@jsr/cliffy__internal@1.3.1':
     resolution: {integrity: sha512-i26tW16HBMsoB2RE73QmZdFM93bveVUeaWwscDynvIsVk2nobThfVXRjgzH3PXmQNKU2FmAkitHlqYcEZOBdJw==, tarball: https://npm.jsr.io/~/11/@jsr/cliffy__internal/1.3.1.tgz}
 
-  '@jsr/cliffy__keycode@1.3.1':
-    resolution: {integrity: sha512-gE5lQmzyy4e3E7/mBx1WSvnoT46uf7oDY+KTCPs76VHBSbGiLNgcXzJeJcyCQLYzj45Zf6w5rQiWFnwrxuxq5g==, tarball: https://npm.jsr.io/~/11/@jsr/cliffy__keycode/1.3.1.tgz}
-
-  '@jsr/cliffy__prompt@1.3.1':
-    resolution: {integrity: sha512-7xETEiwQQcMcQEA/gSi79BFF/hNs5a6JhybhmSIT88j3SfRj4IQPBZVpWLHYwTDaQLDXQs8wUL81XZRL8jhwpg==, tarball: https://npm.jsr.io/~/11/@jsr/cliffy__prompt/1.3.1.tgz}
-
   '@jsr/cliffy__table@1.3.1':
     resolution: {integrity: sha512-nme6FiT7jJ0/SLdapswVIlpxEWhfi6ZYM0gP90ASQpqNinvC/roilx77LPlNl+TVFoEqhJcVQzWcy8ax8kFfSA==, tarball: https://npm.jsr.io/~/11/@jsr/cliffy__table/1.3.1.tgz}
 
   '@jsr/cliffy__upgrade@1.3.1':
     resolution: {integrity: sha512-iXwRgWF4FZLpH89t6r1qMIErNvjSn6CAoC6SiEXxG7qQz+eQ8msknv/RoAiaSVsxU6wcKk8qwDP9mRn8pPA6RA==, tarball: https://npm.jsr.io/~/11/@jsr/cliffy__upgrade/1.3.1.tgz}
 
-  '@jsr/std__assert@1.0.19':
-    resolution: {integrity: sha512-pEj6RPkGbqlgRmyKwATp4cUs6+ijxtdrv3bq8v1d2I2CEcMEyPaO8cVKro61wGRDH4cNg8Zx6haztvK/9m7gkA==, tarball: https://npm.jsr.io/~/11/@jsr/std__assert/1.0.19.tgz}
-
   '@jsr/std__bytes@1.0.6':
     resolution: {integrity: sha512-St6yKggjFGhxS52IFLJWvkchRFbAKg2Xh8UxA4S1EGz7GJ2Ui+ssDDldj/w2c8vCxvl6qgR0HaYbKeFJNqujmA==, tarball: https://npm.jsr.io/~/11/@jsr/std__bytes/1.0.6.tgz}
-
-  '@jsr/std__encoding@1.0.11':
-    resolution: {integrity: sha512-4SmW8WXf4x4FjkxVpxbir06QYwxw/h/2+RU5A66iKXbJC9WAYCICZkH01mcOGj8FgSitF/lSTlT585RZfo8Ukg==, tarball: https://npm.jsr.io/~/11/@jsr/std__encoding/1.0.11.tgz}
 
   '@jsr/std__fmt@1.0.10':
     resolution: {integrity: sha512-Q2N8XDNkh/c1IKTi+sO4Vm64M5m4W0o47qTURmMX0vgHm9AJ6jL7jEQ2kw0M1T2rBZiwAY78eUbYzFyOYWaCqQ==, tarball: https://npm.jsr.io/~/11/@jsr/std__fmt/1.0.10.tgz}
 
   '@jsr/std__internal@1.0.14':
     resolution: {integrity: sha512-JT8b/t40WcR9q0GDwRZUooY7aXeXnFal8iidE/5TckdAFtvpVAsaJ71/Xgf1SfoChs41s6CZkuCYM8toaNgdvA==, tarball: https://npm.jsr.io/~/11/@jsr/std__internal/1.0.14.tgz}
-
-  '@jsr/std__io@0.225.3':
-    resolution: {integrity: sha512-IDXY253ipW6FV34CJVxO+3ubfvSEEzw9N2W303KnLe9K/Y9+v/ID1dQYf9VsCCOFMpFtCmOLqzIZsRqv6yQnWw==, tarball: https://npm.jsr.io/~/11/@jsr/std__io/0.225.3.tgz}
 
   '@jsr/std__path@1.1.6':
     resolution: {integrity: sha512-H1Cmg6z8jFyIsQbVV+vZB4eOx4k6Qg8lyUM6l7nZysj5MZumg89kb0M1bsPBTGQis3fw6mJFkJELo5+AK6oCFA==, tarball: https://npm.jsr.io/~/11/@jsr/std__path/1.1.6.tgz}
@@ -8421,13 +8397,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@jsr/cliffy__ansi@1.3.1':
-    dependencies:
-      '@jsr/cliffy__internal': 1.3.1
-      '@jsr/std__encoding': 1.0.11
-      '@jsr/std__fmt': 1.0.10
-      '@jsr/std__io': 0.225.3
-
   '@jsr/cliffy__command@1.3.1':
     dependencies:
       '@jsr/cliffy__flags': 1.3.1
@@ -8446,19 +8415,6 @@ snapshots:
     dependencies:
       '@jsr/std__fmt': 1.0.10
 
-  '@jsr/cliffy__keycode@1.3.1': {}
-
-  '@jsr/cliffy__prompt@1.3.1':
-    dependencies:
-      '@jsr/cliffy__ansi': 1.3.1
-      '@jsr/cliffy__internal': 1.3.1
-      '@jsr/cliffy__keycode': 1.3.1
-      '@jsr/std__assert': 1.0.19
-      '@jsr/std__fmt': 1.0.10
-      '@jsr/std__io': 0.225.3
-      '@jsr/std__path': 1.1.6
-      '@jsr/std__text': 1.1.0
-
   '@jsr/cliffy__table@1.3.1':
     dependencies:
       '@jsr/std__fmt': 1.0.10
@@ -8472,21 +8428,11 @@ snapshots:
       '@jsr/std__semver': 1.0.8
       '@jsr/std__tar': 0.1.10
 
-  '@jsr/std__assert@1.0.19':
-    dependencies:
-      '@jsr/std__internal': 1.0.14
-
   '@jsr/std__bytes@1.0.6': {}
-
-  '@jsr/std__encoding@1.0.11': {}
 
   '@jsr/std__fmt@1.0.10': {}
 
   '@jsr/std__internal@1.0.14': {}
-
-  '@jsr/std__io@0.225.3':
-    dependencies:
-      '@jsr/std__bytes': 1.0.6
 
   '@jsr/std__path@1.1.6':
     dependencies:
@@ -13053,11 +12999,9 @@ time:
   '@fast-check/vitest@0.5.0': '2026-09-11T07:53:32.669Z'
   '@inquirer/core@12.0.4': '2026-10-04T17:42:07.231Z'
   '@inquirer/prompts@8.7.3': '2026-10-04T17:41:40.731Z'
-  '@inquirer/type@4.2.0': '2026-10-04T17:42:11.879Z'
   '@isentinel/eslint-config@6.0.0-beta.46': '2026-09-04T19:21:57.468Z'
   '@isentinel/hooks@1.7.0': '2026-10-06T16:13:06.841Z'
   '@jsr/cliffy__command@1.3.1': '2026-09-18T20:43:56.527Z'
-  '@jsr/cliffy__prompt@1.3.1': '2026-09-18T20:44:00.848Z'
   '@pobammer-ts/small-rules@3.3.2': '2026-10-07T22:59:37.850Z'
   '@stryker-mutator/api@10.0.0': '2026-08-14T16:51:10.145Z'
   '@stryker-mutator/core@10.0.0': '2026-08-14T16:51:22.686Z'
@@ -13105,6 +13049,7 @@ time:
   jiti@2.7.0: '2026-05-05T21:02:47.918Z'
   jsonc-parser@3.3.1: '2024-06-24T21:12:45.445Z'
   just-diff@6.0.2: '2023-03-26T00:59:36.579Z'
+  magicast@0.5.5: '2026-09-11T03:31:09.196Z'
   oxfmt@0.72.0: '2026-10-05T11:03:48.808Z'
   oxlint-plugin-react-doctor@0.9.17: '2026-10-05T05:05:42.553Z'
   oxlint-tsgolint@7.0.2003: '2026-09-24T15:18:41.730Z'
