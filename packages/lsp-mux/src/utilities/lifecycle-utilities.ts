@@ -16,9 +16,9 @@ import { syncDocument } from "$utilities/sync-utilities";
 
 import type { JsonObject } from "type-fest";
 
+import type { ServerDefinition } from "$types/configuration-types";
 import type { Backend, Mux } from "$types/mux-types";
 import type { ResponseMessage } from "$types/protocol-types";
-import type { ServerDefinition } from "$validators/configuration-type";
 
 interface Owner {
 	readonly name: string;

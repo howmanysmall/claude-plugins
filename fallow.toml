@@ -9,6 +9,7 @@ entry = [
 	"tools/project-configurations/src/vitest/setup.ts",
 	"packages/*/src/**/*.bench.ts",
 	"turbo/generators/*.ts",
+	"packages/lsp-mux/src/types/cliffy-internal-types.ts"
 ]
 ignorePatterns = ["plugins/**", ".claude/**", "!.config/**"]
 ignoreDependencies = [

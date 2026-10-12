@@ -1,9 +1,9 @@
 import type { JsonObject, JsonValue } from "type-fest";
 
 import type { ResolvedConfiguration } from "$functions/resolve-configuration";
+import type { ServerDefinition } from "$types/configuration-types";
 import type { JsonRpcId, Message, RequestMessage, RequestResult, ResponseMessage } from "$types/protocol-types";
 import type { PathExists } from "$utilities/path-utilities";
-import type { ServerDefinition } from "$validators/configuration-type";
 
 export interface Transport {
 	readonly close: () => void;

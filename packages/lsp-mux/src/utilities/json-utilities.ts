@@ -13,8 +13,8 @@ export function isJsonValue(value: unknown): value is JsonValue {
 
 		case "object": {
 			if (value === null) return true;
-			if (Array.isArray(value)) return value.every((element) => isJsonValue(element));
-			return Object.values(value).every((element) => isJsonValue(element));
+			if (Array.isArray(value)) return value.every(isJsonValue);
+			return Object.values(value).every(isJsonValue);
 		}
 
 		default:
@@ -27,7 +27,7 @@ export function isJsonArray(value?: JsonValue): value is ReadonlyArray<JsonValue
 }
 
 export function isJsonRpcId(value: JsonValue | undefined): value is number | string {
-	return typeof value === "number" || typeof value === "string";
+	return Predicate.isNumber(value) || Predicate.isString(value);
 }
 
 export function asObject(value?: JsonValue): JsonObject | undefined {

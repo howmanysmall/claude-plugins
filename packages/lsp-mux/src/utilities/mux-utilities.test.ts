@@ -2,18 +2,18 @@ import { describe, expect, it } from "vitest";
 
 import { name as packageName } from "$constants";
 import { resolveConfiguration } from "$functions/resolve-configuration";
+import { isConfiguration } from "$types/configuration-types";
 import { detach } from "$utilities/connection-utilities";
 import { asObject, getObject, getString, isJsonArray } from "$utilities/json-utilities";
 import { createMux, receiveClientMessage } from "$utilities/mux-utilities";
-import { isConfiguration } from "$validators/configuration-type";
 
 import type { JsonObject, JsonValue } from "type-fest";
 
 import type { LspMuxConfiguration } from "$functions/define-config";
 import type { ResolvedConfiguration } from "$functions/resolve-configuration";
+import type { ServerOptions } from "$types/configuration-types";
 import type { Mux, SpawnSpecification, TransportEvents } from "$types/mux-types";
 import type { Message, RequestMessage, ResponseError } from "$types/protocol-types";
-import type { ServerOptions } from "$validators/configuration-type";
 
 type HandlerOutcome = JsonValue | { readonly failure: string };
 type Handler = (parameters: JsonObject) => HandlerOutcome | Promise<HandlerOutcome>;
