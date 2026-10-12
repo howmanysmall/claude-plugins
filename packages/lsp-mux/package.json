@@ -43,7 +43,6 @@
 		"type-check": "tsc --build"
 	},
 	"dependencies": {
-		"@cliffy/command": "catalog:runtime",
 		"@inquirer/core": "catalog:runtime",
 		"@inquirer/prompts": "catalog:runtime",
 		"arktype": "catalog:runtime",
@@ -56,6 +55,7 @@
 		"type-fest": "catalog:types"
 	},
 	"devDependencies": {
+		"@cliffy/command": "catalog:runtime",
 		"@fast-check/vitest": "catalog:test",
 		"@howmanysmall/arktype-utilities": "workspace:*",
 		"@howmanysmall/cli-utilities": "workspace:*",

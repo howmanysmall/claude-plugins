@@ -4,8 +4,9 @@ import Macros from "unplugin-macros/rolldown";
 
 const configuration = defineConfig([
 	mergeConfig(sharedConfiguration, {
-		// The private workspace packages aren't published, so they are inlined.
-		deps: { alwaysBundle: [/^@howmanysmall\//u] },
+		// The private workspace packages aren't published, and Cliffy is only
+		// on JSR, which plain npm can't install from, so both are inlined.
+		deps: { alwaysBundle: [/^@howmanysmall\//u, /^@cliffy\//u] },
 		entry: { cli: "./src/cli.ts", index: "./src/index.ts" },
 		outDir: "dist",
 		plugins: [Macros()],
