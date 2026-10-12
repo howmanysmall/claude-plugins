@@ -7,5 +7,5 @@
 	"description": "One configurable LSP multiplexer: run every language server you configure behind a single Claude Code LSP",
 	"lspServers": "./.lsp.json",
 	"name": "howmanysmall-lsps",
-	"version": "3.1.2"
+	"version": "3.2.0"
 }

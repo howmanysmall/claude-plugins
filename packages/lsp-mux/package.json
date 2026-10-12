@@ -1,6 +1,6 @@
 {
 	"name": "@pobammer-ts/lsp-mux",
-	"version": "3.1.2",
+	"version": "3.2.0",
 	"description": "Run several language servers behind one LSP connection, configured with `defineConfiguration`.",
 	"keywords": [
 		"language-server",
