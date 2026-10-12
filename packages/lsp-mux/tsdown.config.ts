@@ -12,6 +12,9 @@ const configuration = defineConfig([
 		tsconfig: "tsconfig.lib.json",
 	}),
 	mergeConfig(sharedConfiguration, {
+		// jsonc-parser's `main` is a UMD build whose `require("./impl/...")`
+		// calls survive bundling and fail at runtime, so inline its ESM build.
+		alias: { "jsonc-parser": "jsonc-parser/lib/esm/main.js" },
 		// The plugin folder also holds its manifests, so it is never cleaned.
 		clean: false,
 		// Claude Code runs the plugin from its cache with only a runtime on
