@@ -11,8 +11,6 @@ export const version = packageJson.version;
  * `.config/lsp-mux.*`.
  */
 export const CONFIGURATION_NAME = "lsp-mux";
-/** The executable, for usage hints. `getScriptName` names the command file. */
-export const CLI_NAME = "lsp-mux";
 /** Names a user configuration file, overriding the XDG location. */
 export const USER_CONFIGURATION_VARIABLE = "LSP_MUX_CONFIG";
 /** Set to `1` to run a project's `lsp-mux.config.ts`, which is code. */
