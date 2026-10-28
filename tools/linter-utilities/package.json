@@ -10,7 +10,7 @@
 		"./package.json": "./package.json"
 	},
 	"scripts": {
-		"type-check": "tsc --build",
+		"type-check": "tsrs --build",
 		"type-check:agent": "node --run type-check -- --pretty false"
 	},
 	"dependencies": {

@@ -98,7 +98,7 @@ function getMoveOffset(key: KeypressEvent): -1 | 1 | undefined {
  * A checkbox whose checked choices can be reordered with Shift+↑/↓. It
  * resolves to the checked choices in priority order.
  */
-export const orderedCheckbox = createPrompt<ReadonlyArray<string>, OrderedCheckboxConfiguration>((config, done) => {
+export const orderedCheckbox: OrderedCheckboxPrompt = createPrompt((config, done) => {
 	const { choices, pageSize = 10, required = false } = config;
 	const theme = makeTheme();
 	const [status, setStatus] = useState<"done" | "idle">("idle");
@@ -166,3 +166,5 @@ export const orderedCheckbox = createPrompt<ReadonlyArray<string>, OrderedCheckb
 	const lines = [`${prefix} ${message}`, page, " ", error === undefined ? "" : theme.style.error(error), help];
 	return `${lines.filter(Boolean).join("\n")}${CURSOR_HIDE}`;
 });
+
+export type OrderedCheckboxPrompt = (config: OrderedCheckboxConfiguration) => Promise<ReadonlyArray<string>>;

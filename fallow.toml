@@ -39,7 +39,6 @@ ignoreDependencies = [
 	"eslint-plugin-unused-imports",
 	"fast-check",
 	"publint",
-	"typescript7",
 ]
 ignoreExportsUsedInFile = true
 overrides = []

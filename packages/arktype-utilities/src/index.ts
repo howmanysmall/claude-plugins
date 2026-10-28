@@ -1,5 +1,8 @@
 import { type } from "arktype";
 
+import type { Json } from "@ark/util";
+import type { BaseType } from "arktype";
+
 export const isBoolean = type("boolean");
 export const isTrue = type("true");
 export const isFalse = type("false");
@@ -15,8 +18,8 @@ export const isMaybeNonEmptyString = isNonEmptyString.or(isUndefined);
 export const isNumber = type("number");
 export const isInteger = type("number % 1");
 
-export const isJsonObject = type("object.json");
-export const isMaybeJsonObject = isJsonObject.or(isUndefined);
+export const isJsonObject: BaseType<Json> = type("object.json");
+export const isMaybeJsonObject: BaseType<Json | undefined> = isJsonObject.or(isUndefined);
 
 export const isMaybeString = isString.or(isUndefined);
 export const isNullableString = isString.or(isNull);

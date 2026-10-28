@@ -80,7 +80,7 @@ configuration and JSON project configurations always load.
 ```sh
 pnpm install
 node --run test          # vitest in every package, through turbo
-node --run type-check    # tsc --build in every package, through turbo
+node --run type-check    # tsrs --build in every package, through turbo
 node --run lint:agent    # ESLint, oxlint, and Biome
 node --run build         # the npm package and the plugin bundle, through turbo
 nr release               # bump, rebuild, commit, tag, and push

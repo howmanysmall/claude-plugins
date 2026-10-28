@@ -5,6 +5,7 @@ tsdown
 arktype
 tsc
 tsgo
+tsrs
 biome
 oxfmt
 vitest
