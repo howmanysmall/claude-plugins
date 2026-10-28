@@ -40,9 +40,10 @@
 		"prepublishOnly": "turbo run build --filter=@pobammer-ts/lsp-mux",
 		"test": "vitest run",
 		"test:agent": "node --run test -- --reporter agent",
-		"type-check": "tsc --build"
+		"type-check": "tsrs --build"
 	},
 	"dependencies": {
+		"@ark/util": "catalog:runtime",
 		"@inquirer/core": "catalog:runtime",
 		"@inquirer/prompts": "catalog:runtime",
 		"arktype": "catalog:runtime",

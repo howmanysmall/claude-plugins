@@ -43,11 +43,11 @@
 		"test:fuzz:run": "vitiate fuzz --fuzz-time 10 --config vitest.vitiate.config.ts",
 		"test:istanbul": "vitest run --reporter agent --coverage.enabled --coverage.provider=istanbul --coverage.reporter=json --coverage.reportsDirectory=.cache/istanbul",
 		"test:mutation": "stryker run",
-		"tsc": "tsc",
+		"tsrs": "tsrs",
 		"turbo": "turbo",
 		"type-check": "turbo run type-check type-check:node",
 		"type-check:agent": "turbo run type-check type-check:node -- --pretty false",
-		"type-check:node": "tsc --build tsconfig.node.json",
+		"type-check:node": "tsrs --build tsconfig.node.json",
 		"preversion": "if test -n \"$(git status --porcelain)\"; then echo 'Release requires a clean worktree.' >&2; exit 1; fi"
 	},
 	"devDependencies": {
@@ -107,10 +107,10 @@
 		"skills": "catalog:tooling",
 		"tinyexec": "catalog:dev",
 		"tsdown": "catalog:build",
+		"tsrs": "catalog:tooling",
 		"turbo": "catalog:tooling",
 		"type-fest": "catalog:types",
 		"typescript": "catalog:tooling",
-		"typescript7": "catalog:tooling",
 		"vitest": "catalog:test",
 		"vitiate": "catalog:test"
 	},

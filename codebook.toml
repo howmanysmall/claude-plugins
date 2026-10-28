@@ -47,6 +47,7 @@ words = [
 	"tsdown",
 	"tsgo",
 	"tsgolint",
+	"tsrs",
 	"vale",
 	"vitiate",
 	"vscode",

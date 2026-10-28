@@ -13,7 +13,7 @@
 		"./vitest/vitiate": "./src/vitest/vitiate.ts"
 	},
 	"scripts": {
-		"type-check": "tsc --build"
+		"type-check": "tsrs --build"
 	},
 	"dependencies": {
 		"@vitiate/core": "catalog:test",
@@ -24,7 +24,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "catalog:types",
-		"typescript": "catalog:tooling",
-		"typescript7": "catalog:tooling"
+		"tsrs": "catalog:tooling",
+		"typescript": "catalog:tooling"
 	}
 }

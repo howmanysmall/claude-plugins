@@ -15,7 +15,7 @@ export const sharedConfiguration = defineConfig({
 		generator: "tsgo",
 		resolver: "oxc",
 		tsgo: {
-			path: nodePath.join(import.meta.dirname, "..", "..", "node_modules", ".bin", "tsc"),
+			path: nodePath.join(import.meta.dirname, "..", "..", "node_modules", ".bin", "tsrs"),
 		},
 	},
 	fixedExtension: false,

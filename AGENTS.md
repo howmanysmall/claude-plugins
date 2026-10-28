@@ -28,7 +28,7 @@ pnpm workspace with Turborepo (`turbo.json`). Scripts are run with `nr <script>`
 ```sh
 pnpm install
 nr test                  # vitest in every package, through turbo
-nr type-check            # tsc --build in every package, plus root configs via tsconfig.node.json
+nr type-check            # tsrs --build in every package, plus root configs via tsconfig.node.json
 nr lint:agent            # isentinel-lint (ESLint + oxlint + oxfmt) and Biome, concise output
 nr lint:agent path/      # same, limited to paths; flags before paths are forwarded
 nr format                # biome check --fix then oxfmt
@@ -78,7 +78,7 @@ fails. If a commit is blocked, run `nr fallow:audit` and fix or address the find
   package merges. `tools/lint-configurations` and `tools/linter-utilities` back the root `eslint.config.ts` and
   `oxlint.config.ts`.
 - `scripts/` is its own workspace package. `sync-tsconfig-references.ts` derives `tsconfig.json` `references` from
-  each package's `workspace:` dependencies; a missing reference is silent because `tsc --build` still resolves the
+  each package's `workspace:` dependencies; a missing reference is silent because `tsrs --build` still resolves the
   import through the root `node_modules`, so keep this in sync after adding a workspace dependency.
 - Dependency versions live in `pnpm-workspace.yaml` catalogs (`catalog:runtime`, `catalog:lint`, `catalog:test`, and
   so on). Add new dependencies to a catalog, not as a bare version in a `package.json`.

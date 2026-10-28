@@ -11,9 +11,10 @@
 	"scripts": {
 		"test": "vitest run",
 		"test:agent": "nr test --reporter agent",
-		"type-check": "tsc --build"
+		"type-check": "tsrs --build"
 	},
 	"dependencies": {
+		"@ark/util": "catalog:runtime",
 		"arktype": "catalog:runtime"
 	},
 	"devDependencies": {

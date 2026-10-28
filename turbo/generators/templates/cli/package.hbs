@@ -33,7 +33,7 @@
 		"prepublishOnly": "turbo run build --filter={{scope}}/{{kebabCase name}}",
 		"test": "vitest run",
 		"test:agent": "node --run test -- --reporter agent",
-		"type-check": "tsc --build"
+		"type-check": "tsrs --build"
 	},
 	"dependencies": {
 		"@cliffy/command": "catalog:runtime"
