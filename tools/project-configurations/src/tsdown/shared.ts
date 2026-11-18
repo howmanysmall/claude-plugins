@@ -1,4 +1,3 @@
-import nodePath from "node:path";
 import { defineConfig } from "tsdown";
 import Macros from "unplugin-macros/rolldown";
 
@@ -12,11 +11,10 @@ export const sharedConfiguration = defineConfig({
 	},
 	clean: true,
 	dts: {
-		generator: "tsgo",
+		generator: "tsrs",
 		resolver: "oxc",
-		tsgo: {
-			path: nodePath.join(import.meta.dirname, "..", "..", "node_modules", ".bin", "tsrs"),
-		},
+		// The plugin lives in the pnpm store, where `tsrs` does not resolve.
+		tsrs: { moduleUrl: import.meta.resolve("tsrs") },
 	},
 	fixedExtension: false,
 	format: ["esm"],
