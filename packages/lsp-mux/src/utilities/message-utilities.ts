@@ -85,7 +85,7 @@ export function createMessageReader(onMessage: (message: Message) => void): Mess
 	return (chunk) => {
 		buffer = buffer.byteLength === 0 ? Buffer.from(chunk) : Buffer.concat([buffer, chunk]);
 
-		for (;;) {
+		while (true) {
 			const headerEnd = buffer.indexOf(HEADER_SEPARATOR);
 			if (headerEnd === -1) return;
 

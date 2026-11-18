@@ -187,7 +187,7 @@ function createHarness(options: HarnessOptions): Harness {
 			const fake = createFakeServer(specification, events, options.behaviors?.[commandName(specification)] ?? {});
 			servers.push(fake);
 			return {
-				close: () => {},
+				close: () => undefined,
 				send: (message) => {
 					fake.receive(message);
 				},

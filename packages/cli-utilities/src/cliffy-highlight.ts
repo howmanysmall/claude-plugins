@@ -266,7 +266,7 @@ export const highlightDescription = defineMacro(function highlightDescription(
 
 function readNearestDescription(from: string): string {
 	let directory = nodePath.dirname(nodePath.resolve(from));
-	for (;;) {
+	while (true) {
 		const manifest = nodePath.join(directory, "package.json");
 		if (existsSync(manifest)) {
 			const result = isDescriptionObject(JSON.parse(readFileSync(manifest, "utf8")));

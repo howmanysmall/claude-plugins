@@ -11,7 +11,7 @@ function* ancestorsWithin(directory: string, boundary: string): Generator<string
 	if (!isWithin(directory, boundary)) return;
 
 	let current = directory;
-	for (;;) {
+	while (true) {
 		yield current;
 
 		if (current === boundary) return;
