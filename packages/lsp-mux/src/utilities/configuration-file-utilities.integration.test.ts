@@ -49,7 +49,7 @@ function assertIsConfigurationFormat(format: unknown): asserts format is Configu
 describe("renderConfiguration", () => {
 	it.for([ConfigurationFormat.Json, ConfigurationFormat.Jsonc, ConfigurationFormat.TypeScript] as const)(
 		"writes a %s file that reads back as the same configuration",
-		([format], { expect }) => {
+		(format, { expect }) => {
 			expect.assertions(1);
 
 			assertIsConfigurationFormat(format);
