@@ -46,6 +46,7 @@ const TAB_INDENTATION_REGEXP = /^\t/mu;
 const LEADING_TABS_REGEXP = /^\t+/gmu;
 const LEADING_SPACES_REGEXP = /^(?: {4})+/gmu;
 const SPACES_PER_TAB = 4;
+
 /** The order a new file lists its keys in: what runs, then how. */
 const KEY_ORDER = ["servers", "formatters", "options"] as const;
 
@@ -59,6 +60,7 @@ function getSourceKind(path: string): SourceKind {
 	if (kind === undefined) {
 		throw new TypeError(`lsp-mux can't edit ${extension || "extensionless"} configurations; edit ${path} by hand`);
 	}
+
 	return kind;
 }
 
@@ -66,6 +68,7 @@ function assertValid(path: string, result: ArkErrors | Configuration): Configura
 	if (result instanceof type.errors) {
 		throw new TypeError(`invalid lsp-mux configuration in ${path}: ${result.summary}`);
 	}
+
 	return result;
 }
 
@@ -76,6 +79,7 @@ function parseJsonConfiguration(path: string, content: string): Configuration {
 	if (error !== undefined) {
 		throw new SyntaxError(`${path}: ${printParseErrorCode(error.error)} at offset ${error.offset}`);
 	}
+
 	return assertValid(path, isConfiguration(data ?? {}));
 }
 
@@ -97,6 +101,7 @@ function getDefaultExportObject(path: string, program: ProxifiedModule<Configura
 		// oxlint-disable-next-line typescript/no-unsafe-type-assertion -- SAFETY: call arguments are proxified the same way.
 		literal = argument as ProxifiedValue | undefined;
 	}
+
 	if (literal?.$type === "object") {
 		// oxlint-disable-next-line typescript/no-unsafe-type-assertion -- SAFETY: object proxies read and write like plain objects.
 		return literal as UnknownRecord;
@@ -105,6 +110,7 @@ function getDefaultExportObject(path: string, program: ProxifiedModule<Configura
 	if (exported === undefined) {
 		throw new TypeError(`${path} has no default export; edit it by hand`);
 	}
+
 	throw new TypeError(`${path} doesn't export an object literal lsp-mux can edit; edit it by hand`);
 }
 
@@ -177,6 +183,7 @@ export function renderConfiguration(configuration: Configuration, format: Config
 		const inline = items.replaceAll(ITEM_SEPARATOR_REGEXP, ", ");
 		return `[${inline}]`;
 	});
+
 	if (format !== ConfigurationFormat.TypeScript) return `${json}\n`;
 
 	const literal = json.replaceAll(IDENTIFIER_KEY_REGEXP, "$<indentation>$<key>:");
@@ -192,9 +199,7 @@ export function renderConfiguration(configuration: Configuration, format: Config
  * @throws {TypeError} When the file can't be read statically or is invalid.
  */
 export function readConfigurationSource(path: string, content: string): Configuration {
-	if (getSourceKind(path) === SourceKind.Json) {
-		return parseJsonConfiguration(path, content);
-	}
+	if (getSourceKind(path) === SourceKind.Json) return parseJsonConfiguration(path, content);
 
 	return readProxiedConfiguration(path, getDefaultExportObject(path, parseModule<ConfigurationModule>(content)));
 }
@@ -233,5 +238,6 @@ export function editConfigurationSource(
 	const edited = usesTabs
 		? code.replaceAll(LEADING_SPACES_REGEXP, (spaces) => "\t".repeat(spaces.length / SPACES_PER_TAB))
 		: code;
+
 	return edited.endsWith("\n") ? edited : `${edited}\n`;
 }

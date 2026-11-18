@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { ConfigurationLocation } from "$validators/configuration-location-type";
 
@@ -9,7 +9,7 @@ const USER = { formatters: ["oxfmt"], servers: ["typescript", "oxfmt"] };
 describe("addServer", () => {
 	// Catches `lsp add` in a project silently dropping the user's servers,
 	// since a project `servers` list replaces the user's.
-	it("starts a project list from the user list", () => {
+	it("starts a project list from the user list", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(addServer({}, { name: "eslint", formatter: false, inheritFrom: USER })).toStrictEqual({
@@ -18,7 +18,7 @@ describe("addServer", () => {
 		});
 	});
 
-	it("keeps a layer's own list and adds formatters and options", () => {
+	it("keeps a layer's own list and adds formatters and options", ({ expect }) => {
 		expect.assertions(1);
 
 		const edit = addServer(
@@ -38,7 +38,7 @@ describe("addServer", () => {
 });
 
 describe("removeServer", () => {
-	it("removes a server from every list and drops its options", () => {
+	it("removes a server from every list and drops its options", ({ expect }) => {
 		expect.assertions(1);
 
 		const edit = removeServer(
@@ -51,7 +51,7 @@ describe("removeServer", () => {
 
 	// Catches `lsp remove --location local` being unable to stop a user server
 	// in one project.
-	it("starts a project list from the user list minus the server", () => {
+	it("starts a project list from the user list minus the server", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(removeServer({}, "oxfmt", USER)).toStrictEqual({
@@ -62,7 +62,7 @@ describe("removeServer", () => {
 });
 
 describe("describeServers", () => {
-	it("marks user servers shadowed once the project lists its own", () => {
+	it("marks user servers shadowed once the project lists its own", ({ expect }) => {
 		expect.assertions(1);
 
 		const entries = describeServers({ project: { servers: ["yaml"] }, user: USER });
@@ -76,7 +76,7 @@ describe("describeServers", () => {
 		]);
 	});
 
-	it("reports a custom server with no command instead of throwing", () => {
+	it("reports a custom server with no command instead of throwing", ({ expect }) => {
 		expect.assertions(2);
 
 		const [entry] = describeServers({ project: { servers: ["mystery"] }, user: {} });

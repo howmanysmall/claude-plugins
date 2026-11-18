@@ -27,6 +27,7 @@ function toRange(value?: JsonObject): Range | undefined {
 function toContentChange(change: JsonObject): ContentChange | undefined {
 	const text = getString(change, "text");
 	if (text === undefined) return undefined;
+
 	if (change.range === undefined) {
 		return { text };
 	}
@@ -87,6 +88,7 @@ export function changeDocument(mux: Mux, parameters?: JsonObject): void {
 		const converted = toContentChange(change);
 		return converted === undefined ? [] : [converted];
 	});
+
 	mux.documents.set(uri, {
 		languageId: document.languageId,
 		text: applyContentChanges(document.text, changes),
@@ -101,6 +103,7 @@ export function closeDocument(mux: Mux, parameters?: JsonObject): void {
 
 	mux.documents.delete(uri);
 	mux.diagnostics.delete(uri);
+
 	for (const backend of mux.backends.values()) {
 		if (backend.sentVersions.has(uri)) {
 			enqueue(backend, () => {

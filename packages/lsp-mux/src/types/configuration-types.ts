@@ -24,6 +24,7 @@ export const isServerOptions = type({
 	"rootMarkers?": isMaybeReadonlyArrayOfStrings,
 	"settings?": isMaybeJsonObject,
 }).readonly();
+
 export type ServerOptions = typeof isServerOptions.inferIn;
 
 /** A server with everything needed to start it. */
@@ -37,6 +38,7 @@ export const isServerDefinition = type({
 	rootMarkers: isReadonlyArrayOfStrings.default(() => []),
 	"settings?": isMaybeJsonObject,
 }).readonly();
+
 export type ServerDefinition = typeof isServerDefinition.infer;
 
 export const isConfiguration = type({
@@ -49,4 +51,5 @@ export const isConfiguration = type({
 	/** Servers to run, in priority order. */
 	"servers?": isMaybeReadonlyArrayOfStrings,
 }).readonly();
+
 export type Configuration = typeof isConfiguration.infer;

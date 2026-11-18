@@ -33,9 +33,13 @@ function parseEnvironment(variables: ReadonlyArray<string>): ServerOptions["env"
 	const environment = new Map<string, string>();
 	for (const variable of variables) {
 		const separator = variable.indexOf("=");
-		if (separator <= 0) throw new ValidationError(`Expected KEY=VALUE, got "${variable}".`);
+		if (separator <= 0) {
+			throw new ValidationError(`Expected KEY=VALUE, got "${variable}".`);
+		}
+
 		environment.set(variable.slice(0, separator), variable.slice(separator + 1));
 	}
+
 	return Object.fromEntries(environment);
 }
 
@@ -55,6 +59,7 @@ function buildOptions(
 		extensions: nonEmpty(extension),
 		rootMarkers: nonEmpty(rootMarker),
 	};
+
 	return Object.fromEntries(Object.entries(options).filter(([, value]) => value !== undefined));
 }
 
@@ -78,13 +83,7 @@ export const addCommand = createBaseCommand(scriptName, version, "Add an LSP to 
 	.example("A built-in server", "lsp-mux lsp add typescript")
 	.example("A built-in server as a formatter", "lsp-mux lsp add oxfmt --formatter")
 	.example("A custom server", "lsp-mux lsp add my-lsp --extension .foo -- my-lsp --stdio")
-	.action(async function addAction(
-		this: { getLiteralArgs(): Array<string> },
-		flags,
-		name,
-		command,
-		...commandArguments
-	) {
+	.action(async function addAction(this, flags, name, command, ...commandArguments) {
 		const literal = this.getLiteralArgs();
 		await runActionAsync(async () => {
 			const [literalCommand, ...literalArguments] = literal;
@@ -112,12 +111,14 @@ export const addCommand = createBaseCommand(scriptName, version, "Add an LSP to 
 				if (configuration.servers?.includes(name) === true) {
 					throw new Error(`${name} is already in ${path}.`);
 				}
+
 				const edit = addServer(configuration, {
 					name,
 					formatter: flags.formatter === true,
 					inheritFrom,
 					options,
 				});
+
 				({ inherited } = edit);
 				return edit.configuration;
 			});
@@ -127,6 +128,7 @@ export const addCommand = createBaseCommand(scriptName, version, "Add an LSP to 
 					`Copied the user configuration's ${describeInherited(inherited)} into ${path}, since a project list replaces the user list.`,
 				);
 			}
+
 			consola.success(`Added ${name} to ${path}`);
 		});
 	});

@@ -50,6 +50,11 @@
 		"type-check:node": "tsrs --build tsconfig.node.json",
 		"preversion": "if test -n \"$(git status --porcelain)\"; then echo 'Release requires a clean worktree.' >&2; exit 1; fi"
 	},
+	"dependencies": {
+		"arktype": "catalog:runtime",
+		"effect": "catalog:runtime",
+		"tinyexec": "catalog:dev"
+	},
 	"devDependencies": {
 		"@arethetypeswrong/core": "catalog:build",
 		"@biomejs/biome": "catalog:lint",
@@ -71,9 +76,7 @@
 		"@types/node": "catalog:types",
 		"@vitest/coverage-istanbul": "catalog:test",
 		"@vitest/eslint-plugin": "catalog:lint",
-		"arktype": "catalog:runtime",
 		"bumpp": "catalog:tooling",
-		"effect": "catalog:runtime",
 		"eslint": "catalog:lint",
 		"eslint-plugin-antfu": "catalog:lint",
 		"eslint-plugin-better-max-params": "catalog:lint",
@@ -95,27 +98,28 @@
 		"eslint-plugin-unicorn": "catalog:lint",
 		"eslint-plugin-unused-imports": "catalog:lint",
 		"fallow": "catalog:lint",
-		"jest-extended": "catalog:test",
 		"jiti": "catalog:tooling",
 		"oxfmt": "catalog:lint",
 		"oxlint": "catalog:lint",
-		"oxlint-plugin-react-doctor": "catalog:lint",
 		"oxlint-tsgolint": "catalog:lint",
 		"pncat": "catalog:tooling",
 		"publint": "catalog:build",
 		"sfw": "catalog:tooling",
 		"skills": "catalog:tooling",
-		"tinyexec": "catalog:dev",
 		"tsdown": "catalog:build",
 		"tsrs": "catalog:tooling",
 		"turbo": "catalog:tooling",
-		"type-fest": "catalog:types",
 		"typescript": "catalog:tooling",
 		"vitest": "catalog:test",
 		"vitiate": "catalog:test"
 	},
-	"packageManager": "pnpm@12.12.1",
 	"engines": {
 		"node": ">=22.12.0"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "pnpm",
+			"version": "12.22.0"
+		}
 	}
 }

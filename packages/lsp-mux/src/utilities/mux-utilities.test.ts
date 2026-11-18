@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { name as packageName } from "$constants";
 import { resolveConfiguration } from "$functions/resolve-configuration";
@@ -16,6 +16,7 @@ import type { Mux, SpawnSpecification, TransportEvents } from "$types/mux-types"
 import type { Message, RequestMessage, ResponseError } from "$types/protocol-types";
 
 type HandlerOutcome = JsonValue | { readonly failure: string };
+
 type Handler = (parameters: JsonObject) => HandlerOutcome | Promise<HandlerOutcome>;
 
 interface FakeBehavior {
@@ -67,14 +68,17 @@ function createFakeServer(
 
 	async function answerAsync(request: RequestMessage): Promise<void> {
 		await Promise.resolve();
+
 		if (request.method === "initialize") {
 			if (behavior.initializeError === true) {
 				events.onMessage({ id: request.id, error: { code: -1, message: "nope" }, jsonrpc: "2.0" });
 				return;
 			}
+
 			const result = behavior.initializeResult ?? {
 				capabilities: behavior.capabilities ?? { textDocumentSync: 1 },
 			};
+
 			events.onMessage({ id: request.id, jsonrpc: "2.0", result });
 			return;
 		}
@@ -106,7 +110,10 @@ function createFakeServer(
 		parametersOf: getParametersOf,
 		receive: (message): void => {
 			received.push(message);
-			if ("method" in message && "id" in message) detach(answerAsync(message));
+
+			if ("method" in message && "id" in message) {
+				detach(answerAsync(message));
+			}
 		},
 		request: (method, parameters): number => {
 			const id = nextId++;
@@ -201,6 +208,7 @@ function createHarness(options: HarnessOptions): Harness {
 	});
 
 	let nextId = 1;
+
 	async function requestAsync(method: string, parameters: JsonValue): Promise<Message | undefined> {
 		const id = nextId++;
 		receiveClientMessage(mux, { id, jsonrpc: "2.0", method, params: parameters });
@@ -244,14 +252,20 @@ function createHarness(options: HarnessOptions): Harness {
 		},
 		replyToClient: (method, index, reply): void => {
 			const request = clientRequests(method)[index];
-			if (request === undefined) throw new Error(`no ${method} request #${index}`);
+			if (request === undefined) {
+				throw new Error(`no ${method} request #${index}`);
+			}
+
 			receiveClientMessage(mux, { ...reply, id: request.id, jsonrpc: "2.0" });
 		},
 		requestAsync,
 		resultAsync: async (method, parameters) => getResultOf(await requestAsync(method, parameters)),
 		server: (name, index = 0): FakeServer => {
 			const found = serversNamed(name)[index];
-			if (found === undefined) throw new Error(`no ${name} server #${index}`);
+			if (found === undefined) {
+				throw new Error(`no ${name} server #${index}`);
+			}
+
 			return found;
 		},
 		servers,
@@ -268,8 +282,8 @@ const TS_AND_BIOME = serversOf({
 const WORKSPACE = { rootUri: "file:///repo", workspaceFolders: [{ name: "repo", uri: "file:///repo" }] };
 const POSITION = { position: { character: 0, line: 0 }, textDocument: { uri: "file:///repo/a.ts" } };
 
-function openParameters(uri: string, text = "const value = 1;\n"): JsonValue {
-	return { textDocument: { languageId: "typescript", text, uri, version: 1 } };
+function openParameters(uri: string): JsonValue {
+	return { textDocument: { languageId: "typescript", text: "const value = 1;\n", uri, version: 1 } };
 }
 
 async function startAsync(options: HarnessOptions): Promise<Harness> {
@@ -291,7 +305,7 @@ function incomingCallsFrom(parameters: JsonObject): JsonValue {
 	return [{ from: { name: "caller" }, fromRanges: [], seen: parameters.item ?? null }];
 }
 
-function firstElement(value: JsonValue | undefined): JsonValue {
+function firstElement(value?: JsonValue): JsonValue {
 	return isJsonArray(value) ? (value[0] ?? null) : null;
 }
 
@@ -304,7 +318,7 @@ async function hangAsync(): Promise<JsonValue> {
 }
 
 describe("mux", () => {
-	it("answers initialize with the combined capabilities", async () => {
+	it("answers initialize with the combined capabilities", async ({ expect }) => {
 		expect.assertions(2);
 
 		const harness = createHarness({ configuration: TS_AND_BIOME });
@@ -316,7 +330,7 @@ describe("mux", () => {
 
 	// Catches a monorepo package's server starting at the repo root with the
 	// root's tool version instead of its own.
-	it("starts each server in the nearest marked root with its local binary", async () => {
+	it("starts each server in the nearest marked root with its local binary", async ({ expect }) => {
 		expect.assertions(6);
 
 		const harness = createHarness({
@@ -340,6 +354,7 @@ describe("mux", () => {
 				"/repo/node_modules/.bin/tsgo",
 			],
 		});
+
 		await harness.requestAsync("initialize", {
 			...WORKSPACE,
 			capabilities: { textDocument: { diagnostic: {}, hover: {} } },
@@ -367,7 +382,7 @@ describe("mux", () => {
 
 	// Catches one default configuration erroring in every project that lacks
 	// one of its tools.
-	it("skips servers that are not installed", async () => {
+	it("skips servers that are not installed", async ({ expect }) => {
 		expect.assertions(2);
 
 		const harness = await startAsync({
@@ -380,7 +395,7 @@ describe("mux", () => {
 		expect(harness.logs()).toContain("[biome] biome is not installed for /repo");
 	});
 
-	it("starts servers that require a root marker only where one exists", async () => {
+	it("starts servers that require a root marker only where one exists", async ({ expect }) => {
 		expect.assertions(1);
 
 		const harness = await startAsync({
@@ -394,13 +409,14 @@ describe("mux", () => {
 			}),
 			paths: ["/usr/bin/biome", "/repo/pkg/biome.json"],
 		});
+
 		harness.notify("textDocument/didOpen", openParameters("file:///repo/pkg/b.ts"));
 		await settleAsync();
 
 		expect(harness.servers.map(({ specification }) => specification.cwd)).toStrictEqual(["/repo/pkg"]);
 	});
 
-	it("runs commands given as paths only when they exist", async () => {
+	it("runs commands given as paths only when they exist", async ({ expect }) => {
 		expect.assertions(1);
 
 		const harness = await startAsync({
@@ -414,7 +430,7 @@ describe("mux", () => {
 		expect(harness.servers.map(({ specification }) => specification.command)).toStrictEqual(["/tools/a"]);
 	});
 
-	it("uses the fallback directory and tolerates odd initialize parameters", async () => {
+	it("uses the fallback directory and tolerates odd initialize parameters", async ({ expect }) => {
 		expect.assertions(3);
 
 		const other = createHarness({ configuration: TS_AND_BIOME, paths: ["/usr/bin/tsgo", "/usr/bin/biome"] });
@@ -431,7 +447,7 @@ describe("mux", () => {
 		expect(empty.server("tsgo").specification.cwd).toBe("/fallback");
 	});
 
-	it("sends settings and answers workspace/configuration from them", async () => {
+	it("sends settings and answers workspace/configuration from them", async ({ expect }) => {
 		expect.assertions(2);
 
 		const harness = createHarness({
@@ -440,12 +456,15 @@ describe("mux", () => {
 			}),
 			paths: ["/usr/bin/yaml"],
 		});
+
 		await harness.requestAsync("initialize", WORKSPACE);
 		harness.notify("textDocument/didOpen", openParameters("file:///repo/a.yaml"));
 		await settleAsync();
+
 		const id = harness.server("yaml").request("workspace/configuration", {
 			items: [{ section: "yaml.format" }, { section: "yaml.missing" }, {}, { section: "" }],
 		});
+
 		await settleAsync();
 
 		expect(harness.server("yaml").parametersOf("workspace/didChangeConfiguration")).toStrictEqual([
@@ -459,7 +478,7 @@ describe("mux", () => {
 		]);
 	});
 
-	it("merges diagnostics from every server and labels their source", async () => {
+	it("merges diagnostics from every server and labels their source", async ({ expect }) => {
 		expect.assertions(3);
 
 		const harness = await startAsync({ configuration: TS_AND_BIOME, paths: ["/usr/bin/tsgo", "/usr/bin/biome"] });
@@ -485,7 +504,7 @@ describe("mux", () => {
 		expect(harness.logs()).toContain("[tsgo] exited (/repo): boom");
 	});
 
-	it("routes first-strategy requests to the highest-priority useful answer", async () => {
+	it("routes first-strategy requests to the highest-priority useful answer", async ({ expect }) => {
 		expect.assertions(3);
 
 		const harness = await startAsync({
@@ -510,7 +529,7 @@ describe("mux", () => {
 		await expect(harness.resultAsync("textDocument/definition", POSITION)).resolves.toStrictEqual([]);
 	});
 
-	it("merges array answers from every server", async () => {
+	it("merges array answers from every server", async ({ expect }) => {
 		expect.assertions(2);
 
 		const behaviors = { biome: answering("b"), tsgo: answering("t") };
@@ -524,7 +543,7 @@ describe("mux", () => {
 		await expect(merged.resultAsync("textDocument/definition", POSITION)).resolves.toStrictEqual([{ uri: "t" }]);
 	});
 
-	it("sends formatting to the configured formatters, in order", async () => {
+	it("sends formatting to the configured formatters, in order", async ({ expect }) => {
 		expect.assertions(1);
 
 		const formatting = { documentFormattingProvider: true };
@@ -542,7 +561,7 @@ describe("mux", () => {
 		).resolves.toStrictEqual([{ newText: "b" }]);
 	});
 
-	it("reports server errors and unknown methods", async () => {
+	it("reports server errors and unknown methods", async ({ expect }) => {
 		expect.assertions(4);
 
 		const harness = await startAsync({
@@ -568,7 +587,7 @@ describe("mux", () => {
 		).resolves.toBeNull();
 	});
 
-	it("opens unknown documents from disk", async () => {
+	it("opens unknown documents from disk", async ({ expect }) => {
 		expect.assertions(3);
 
 		const harness = createHarness({
@@ -579,6 +598,7 @@ describe("mux", () => {
 			files: { "/repo/disk.ts": "let disk = 1;" },
 			paths: ["/usr/bin/tsgo"],
 		});
+
 		await harness.requestAsync("initialize", WORKSPACE);
 		const disk = { position: { character: 0, line: 0 }, textDocument: { uri: "file:///repo/disk.ts" } };
 
@@ -592,7 +612,7 @@ describe("mux", () => {
 		expect(harness.server("tsgo").openedUris()).toHaveLength(1);
 	});
 
-	it("keeps every server in sync with full-text changes", async () => {
+	it("keeps every server in sync with full-text changes", async ({ expect }) => {
 		expect.assertions(2);
 
 		const harness = await startAsync({
@@ -600,6 +620,7 @@ describe("mux", () => {
 			configuration: TS_AND_BIOME,
 			paths: ["/usr/bin/tsgo", "/usr/bin/biome"],
 		});
+
 		harness.notify("textDocument/didChange", {
 			contentChanges: [
 				{ range: { end: { character: 11, line: 0 }, start: { character: 6, line: 0 } }, text: "bee" },
@@ -622,7 +643,7 @@ describe("mux", () => {
 		expect(harness.server("biome").methods()).not.toContain("textDocument/didChange");
 	});
 
-	it("forwards saves, closes, and workspace notifications", async () => {
+	it("forwards saves, closes, and workspace notifications", async ({ expect }) => {
 		expect.assertions(1);
 
 		const harness = await startAsync({ configuration: TS_AND_BIOME, paths: ["/usr/bin/tsgo"] });
@@ -644,7 +665,7 @@ describe("mux", () => {
 		]);
 	});
 
-	it("tags call hierarchy items so follow-up calls reach their server", async () => {
+	it("tags call hierarchy items so follow-up calls reach their server", async ({ expect }) => {
 		expect.assertions(3);
 
 		const harness = await startAsync({
@@ -674,7 +695,7 @@ describe("mux", () => {
 		await expect(harness.resultAsync("callHierarchy/incomingCalls", { item: { name: "x" } })).resolves.toBeNull();
 	});
 
-	it("pulls diagnostics from servers that only support pull", async () => {
+	it("pulls diagnostics from servers that only support pull", async ({ expect }) => {
 		expect.assertions(2);
 
 		const reports: Array<JsonValue> = [{ items: [{ message: "pulled" }], kind: "full" }, { kind: "unchanged" }];
@@ -693,6 +714,7 @@ describe("mux", () => {
 			configuration: TS_AND_BIOME,
 			paths: ["/usr/bin/tsgo"],
 		});
+
 		harness.server("tsgo").request("client/registerCapability", {
 			registrations: [{ id: "d", method: "textDocument/diagnostic" }, { id: 5 }],
 		});
@@ -709,7 +731,7 @@ describe("mux", () => {
 		expect(calls).toBe(2);
 	});
 
-	it("answers server requests the mux owns and forwards edits to the client", async () => {
+	it("answers server requests the mux owns and forwards edits to the client", async ({ expect }) => {
 		expect.assertions(5);
 
 		const harness = await startAsync({ configuration: TS_AND_BIOME, paths: ["/usr/bin/tsgo"] });
@@ -732,7 +754,7 @@ describe("mux", () => {
 		expect(tsgo.errorFor(rejected)).toBe("no");
 	});
 
-	it("forwards important server log messages with the server name", async () => {
+	it("forwards important server log messages with the server name", async ({ expect }) => {
 		expect.assertions(1);
 
 		const harness = await startAsync({ configuration: TS_AND_BIOME, paths: ["/usr/bin/tsgo"] });
@@ -743,7 +765,7 @@ describe("mux", () => {
 		expect(harness.logs().filter((log) => log.startsWith("[tsgo]"))).toStrictEqual(["[tsgo] hello"]);
 	});
 
-	it("forwards cancellation to the servers working on a request", async () => {
+	it("forwards cancellation to the servers working on a request", async ({ expect }) => {
 		expect.assertions(1);
 
 		const harness = await startAsync({
@@ -753,6 +775,7 @@ describe("mux", () => {
 			configuration: TS_AND_BIOME,
 			paths: ["/usr/bin/tsgo"],
 		});
+
 		receiveClientMessage(harness.mux, {
 			id: "hover",
 			jsonrpc: "2.0",
@@ -767,7 +790,7 @@ describe("mux", () => {
 		expect(harness.server("tsgo").parametersOf("$/cancelRequest")).toHaveLength(1);
 	});
 
-	it("restarts crashed servers and gives up after too many crashes", async () => {
+	it("restarts crashed servers and gives up after too many crashes", async ({ expect }) => {
 		expect.assertions(3);
 
 		const harness = await startAsync({ configuration: TS_AND_BIOME, maxRestarts: 1, paths: ["/usr/bin/tsgo"] });
@@ -785,7 +808,7 @@ describe("mux", () => {
 		expect(harness.logs()).toContain("[tsgo] disabled for /repo");
 	});
 
-	it("disables servers that fail to start", async () => {
+	it("disables servers that fail to start", async ({ expect }) => {
 		expect.assertions(2);
 
 		const harness = createHarness({
@@ -793,6 +816,7 @@ describe("mux", () => {
 			configuration: TS_AND_BIOME,
 			paths: ["/usr/bin/tsgo", "/usr/bin/biome"],
 		});
+
 		await harness.requestAsync("initialize", WORKSPACE);
 		harness.notify("textDocument/didOpen", openParameters("file:///repo/a.ts"));
 		await settleAsync();
@@ -803,7 +827,7 @@ describe("mux", () => {
 		expect(harness.logs()).toContain("[biome] initialize failed (/repo): nope");
 	});
 
-	it("shuts every server down and exits cleanly, or with an error without shutdown", async () => {
+	it("shuts every server down and exits cleanly, or with an error without shutdown", async ({ expect }) => {
 		expect.assertions(4);
 
 		const harness = await startAsync({

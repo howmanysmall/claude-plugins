@@ -110,7 +110,7 @@ Runtime, in `src/utilities/`:
 - `lifecycle-utilities.ts` decides which servers own a document (matching the file extension, in `servers` order) and
   starts one `Backend` per server per project root. The root is the nearest directory that contains one of the
   server's `rootMarkers`,
-  bounded by the workspace folder from `initialize`; `requireRootMarker` makes a server skip documents with no marker.
+  bounded by the workspace folder from `initialize`. `requireRootMarker` makes a server skip documents with no marker.
   Commands resolve from the project's `node_modules/.bin` before `PATH` (`path-utilities.ts`). Missing commands mark
   the server unavailable instead of failing.
 - `request-utilities.ts` and `routing-utilities.ts` forward a request to every backend that advertises the method

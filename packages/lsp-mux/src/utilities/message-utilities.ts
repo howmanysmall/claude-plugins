@@ -35,12 +35,16 @@ export function toMessage(value: JsonValue): Message | undefined {
 	if (method !== undefined) {
 		const notification: NotificationMessage =
 			parameters === undefined ? { jsonrpc: "2.0", method } : { jsonrpc: "2.0", method, params: parameters };
+
 		return isJsonRpcId(id) ? { ...notification, id } : notification;
 	}
 
 	if (id !== null && !isJsonRpcId(id)) return undefined;
 	const error = toResponseError(object.error);
-	if (error !== undefined) return { id, error, jsonrpc: "2.0" };
+	if (error !== undefined) {
+		return { id, error, jsonrpc: "2.0" };
+	}
+
 	return { id, jsonrpc: "2.0", result: object.result ?? null };
 }
 
@@ -64,6 +68,7 @@ function parseBody(body: Buffer): Message | undefined {
 	} catch {
 		return undefined;
 	}
+
 	return isJsonValue(value) ? toMessage(value) : undefined;
 }
 
@@ -80,7 +85,7 @@ export function createMessageReader(onMessage: (message: Message) => void): Mess
 	return (chunk) => {
 		buffer = buffer.byteLength === 0 ? Buffer.from(chunk) : Buffer.concat([buffer, chunk]);
 
-		for (;;) {
+		while (true) {
 			const headerEnd = buffer.indexOf(HEADER_SEPARATOR);
 			if (headerEnd === -1) return;
 
@@ -96,7 +101,10 @@ export function createMessageReader(onMessage: (message: Message) => void): Mess
 
 			const message = parseBody(buffer.subarray(bodyStart, bodyEnd));
 			buffer = buffer.subarray(bodyEnd);
-			if (message !== undefined) onMessage(message);
+
+			if (message !== undefined) {
+				onMessage(message);
+			}
 		}
 	};
 }

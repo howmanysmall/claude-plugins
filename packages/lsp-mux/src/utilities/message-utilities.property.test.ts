@@ -46,6 +46,7 @@ function splitAt(bytes: Uint8Array, cuts: ReadonlyArray<number>): ReadonlyArray<
 		chunks.push(bytes.subarray(previous, offset));
 		previous = offset;
 	}
+
 	return chunks;
 }
 
@@ -66,7 +67,9 @@ describe("createMessageReader", () => {
 		const stream = Buffer.concat(requests.map((request) => encodeMessage(request)));
 
 		// Act
-		for (const chunk of splitAt(stream, cuts)) read(chunk);
+		for (const chunk of splitAt(stream, cuts)) {
+			read(chunk);
+		}
 
 		// Assert
 		expect(received).toStrictEqual(requests);

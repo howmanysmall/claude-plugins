@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { findProjectRoot, resolveCommand } from "./path-utilities";
 
@@ -7,7 +7,7 @@ function createExists(paths: ReadonlySet<string>): (path: string) => boolean {
 }
 
 describe("findProjectRoot", () => {
-	it("stops at the nearest marker and never leaves the boundary", () => {
+	it("stops at the nearest marker and never leaves the boundary", ({ expect }) => {
 		expect.assertions(3);
 
 		const exists = createExists(new Set(["/package.json", "/repo/pkg/package.json"]));
@@ -18,7 +18,7 @@ describe("findProjectRoot", () => {
 	});
 
 	// Catches eslint or vale starting in projects that do not use them.
-	it("finds nothing without a marker when one is required", () => {
+	it("finds nothing without a marker when one is required", ({ expect }) => {
 		expect.assertions(2);
 
 		const exists = createExists(new Set(["/repo/pkg/biome.json"]));
@@ -31,7 +31,7 @@ describe("findProjectRoot", () => {
 describe("resolveCommand", () => {
 	// Catches the project's pinned tsgo/oxlint being ignored for whatever is on
 	// PATH.
-	it("prefers the nearest node_modules/.bin, then PATH, else nothing", () => {
+	it("prefers the nearest node_modules/.bin, then PATH, else nothing", ({ expect }) => {
 		expect.assertions(4);
 
 		const paths = new Set(["/bin/biome", "/repo/node_modules/.bin/tsgo"]);

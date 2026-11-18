@@ -1,11 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { moveChoice, toggleChoice } from "./ordered-checkbox-prompt";
 
 const CHOICES = ["biome", "eslint", "oxfmt", "typescript"];
 
 describe("toggleChoice", () => {
-	it("lists checked choices first, in the order they were checked", () => {
+	it("lists checked choices first, in the order they were checked", ({ expect }) => {
 		expect.assertions(1);
 
 		const { order } = toggleChoice(CHOICES, ["typescript"], "eslint");
@@ -16,7 +16,7 @@ describe("toggleChoice", () => {
 		});
 	});
 
-	it("returns an unchecked choice to its original place", () => {
+	it("returns an unchecked choice to its original place", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(toggleChoice(CHOICES, ["typescript", "eslint"], "typescript")).toStrictEqual({
@@ -27,7 +27,7 @@ describe("toggleChoice", () => {
 });
 
 describe("moveChoice", () => {
-	it("swaps a checked choice with its neighbour", () => {
+	it("swaps a checked choice with its neighbour", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(moveChoice(CHOICES, ["typescript", "eslint", "oxfmt"], "oxfmt", -1).order).toStrictEqual([
@@ -37,7 +37,7 @@ describe("moveChoice", () => {
 		]);
 	});
 
-	it("leaves the order alone at either end and for unchecked choices", () => {
+	it("leaves the order alone at either end and for unchecked choices", ({ expect }) => {
 		expect.assertions(3);
 
 		const order = ["typescript", "eslint"];

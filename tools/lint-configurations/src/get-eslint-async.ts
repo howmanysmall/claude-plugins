@@ -38,7 +38,11 @@ export async function getEslintAsync(tsconfigPath: string): Promise<LintConfigur
 				yaml: true,
 			},
 			gitignore: true,
-			ignores: [...baseIgnores] satisfies ReadonlyArray<string>,
+			ignores: [
+				...baseIgnores,
+				"{.omo,.rumdl_cache}/**",
+				".github/workflows/react-doctor.yml",
+			] satisfies ReadonlyArray<string>,
 			jsdoc: true,
 			jsonc: true,
 			markdown: false,
@@ -48,7 +52,6 @@ export async function getEslintAsync(tsconfigPath: string): Promise<LintConfigur
 			roblox: false,
 			rules: {
 				"sonar/no-redundant-optional": "off",
-				"ts/prefer-destructuring": "off",
 				"unicorn/no-non-function-verb-prefix": "off",
 			},
 			spellCheck: false,
@@ -101,7 +104,7 @@ export async function getEslintAsync(tsconfigPath: string): Promise<LintConfigur
 		},
 		{
 			name: "small-rules/ignores",
-			ignores: ["**/*.js"],
+			ignores: ["{.omo,.rumdl_cache}/**", ".github/workflows/react-doctor.yml", "**/*.js"],
 		},
 		{
 			name: "small-rules/block-no-unsafe-string-replacement",

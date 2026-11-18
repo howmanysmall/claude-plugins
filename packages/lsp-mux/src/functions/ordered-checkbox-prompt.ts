@@ -78,9 +78,7 @@ export function moveChoice(
 ): OrderedSelection {
 	const index = order.indexOf(choice);
 	const target = index + offset;
-	if (index === -1 || target < 0 || target >= order.length) {
-		return createSelection(choices, order);
-	}
+	if (index === -1 || target < 0 || target >= order.length) return createSelection(choices, order);
 
 	const next = [...order];
 	[next[index], next[target]] = [order[target] ?? choice, choice];
@@ -122,6 +120,7 @@ export const orderedCheckbox: OrderedCheckboxPrompt = createPrompt((config, done
 				setError("Select at least one.");
 				return;
 			}
+
 			setStatus("done");
 			done(order);
 		} else if (offset !== undefined) {

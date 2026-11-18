@@ -70,7 +70,7 @@ dev dependency to type-check it.
 
 A `.ts` or `.js` configuration is code, and Claude Code starts lsp-mux on its own
 as soon as you open a matching file. To keep a cloned repository from running
-code unasked, lsp-mux only runs a project's code configuration when
+code unasked, lsp-mux only runs a project's configuration when it is code and
 `LSP_MUX_TRUST_PROJECT_CONFIGS=1` is set, such as in the `env` of
 `~/.claude/settings.json`. Otherwise it skips the file and logs why. Your user
 configuration and JSON project configurations always load.

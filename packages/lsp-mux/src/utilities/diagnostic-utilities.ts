@@ -44,7 +44,11 @@ export function storeDiagnostics(
 }
 
 export function clearBackendDiagnostics(mux: Mux, backend: Backend): void {
-	for (const [uri, owners] of mux.diagnostics) if (owners.delete(backend.key)) publishDiagnostics(mux, uri);
+	for (const [uri, owners] of mux.diagnostics) {
+		if (owners.delete(backend.key)) {
+			publishDiagnostics(mux, uri);
+		}
+	}
 }
 
 async function pullDiagnosticsAsync(mux: Mux, backend: Backend, uri: string): Promise<void> {
@@ -72,5 +76,7 @@ export function pullDiagnostics(mux: Mux, backend: Backend, uri: string): void {
 }
 
 export function pullAllDiagnostics(mux: Mux, backend: Backend): void {
-	for (const uri of backend.sentVersions.keys()) pullDiagnostics(mux, backend, uri);
+	for (const uri of backend.sentVersions.keys()) {
+		pullDiagnostics(mux, backend, uri);
+	}
 }

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { createMessageReader, encodeMessage, toMessage } from "./message-utilities";
 
@@ -6,7 +6,7 @@ import type { Message } from "$types/protocol-types";
 
 describe("createMessageReader", () => {
 	// Catches a message split across stdout chunks being dropped or mangled.
-	it("decodes framed messages split across chunks and skips malformed frames", () => {
+	it("decodes framed messages split across chunks and skips malformed frames", ({ expect }) => {
 		expect.assertions(1);
 
 		const messages = new Array<Message>();
@@ -25,7 +25,7 @@ describe("createMessageReader", () => {
 });
 
 describe("toMessage", () => {
-	it("decodes requests, notifications, responses, and errors", () => {
+	it("decodes requests, notifications, responses, and errors", ({ expect }) => {
 		expect.assertions(5);
 
 		expect(toMessage({ id: "x", jsonrpc: "2.0", method: "m" })).toStrictEqual({
@@ -44,7 +44,7 @@ describe("toMessage", () => {
 	});
 
 	// Catches a server's malformed or non-JSON-RPC output being forwarded.
-	it("rejects anything that isn't JSON-RPC 2.0 and keeps parameters and results", () => {
+	it("rejects anything that isn't JSON-RPC 2.0 and keeps parameters and results", ({ expect }) => {
 		expect.assertions(6);
 
 		expect(toMessage("text")).toBeUndefined();

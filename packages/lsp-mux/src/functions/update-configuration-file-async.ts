@@ -127,5 +127,6 @@ export async function updateConfigurationFileAsync(
 		await writeConfigurationFileAsync(path, mutate({}));
 		return;
 	}
+
 	await writeFile(path, editConfigurationSource(path, content, mutate));
 }

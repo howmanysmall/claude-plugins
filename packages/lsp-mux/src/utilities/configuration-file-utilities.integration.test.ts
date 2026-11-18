@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import nodePath from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { loadConfigurationAsync } from "$functions/load-configuration-async";
 
@@ -30,11 +30,29 @@ function addEslint(configuration: Configuration): Configuration {
 	return { ...configuration, servers: [...(configuration.servers ?? []), "eslint"] };
 }
 
+const VALID_CONFIGURATION_FORMATS = new Set<string>([
+	ConfigurationFormat.Json,
+	ConfigurationFormat.Jsonc,
+	ConfigurationFormat.TypeScript,
+]);
+
+function isConfigurationFormat(format: unknown): format is ConfigurationFormat {
+	return typeof format === "string" && VALID_CONFIGURATION_FORMATS.has(format);
+}
+
+function assertIsConfigurationFormat(format: unknown): asserts format is ConfigurationFormat {
+	if (!isConfigurationFormat(format)) {
+		throw new TypeError(`Expected a configuration format, got ${String(format)}`);
+	}
+}
+
 describe("renderConfiguration", () => {
-	it.each([ConfigurationFormat.Json, ConfigurationFormat.Jsonc, ConfigurationFormat.TypeScript])(
+	it.for([ConfigurationFormat.Json, ConfigurationFormat.Jsonc, ConfigurationFormat.TypeScript] as const)(
 		"writes a %s file that reads back as the same configuration",
-		(format) => {
+		(format, { expect }) => {
 			expect.assertions(1);
+
+			assertIsConfigurationFormat(format);
 
 			const path = `lsp-mux.config.${format}`;
 
@@ -47,7 +65,7 @@ describe("renderConfiguration", () => {
 	// Catches a scaffolded TypeScript configuration failing to load in a
 	// project that doesn't install the package, like the user config in
 	// ~/.config.
-	it("writes a TypeScript configuration that loads without the package installed", async () => {
+	it("writes a TypeScript configuration that loads without the package installed", async ({ expect }) => {
 		expect.assertions(1);
 
 		const configuration = await withWorkspaceAsync(async (workspace) => {
@@ -67,7 +85,7 @@ describe("renderConfiguration", () => {
 });
 
 describe("editConfigurationSource", () => {
-	it("keeps comments in a JSONC configuration", () => {
+	it("keeps comments in a JSONC configuration", ({ expect }) => {
 		expect.assertions(2);
 
 		const edited = editConfigurationSource(
@@ -82,7 +100,7 @@ describe("editConfigurationSource", () => {
 		});
 	});
 
-	it("edits a TypeScript configuration without running it", () => {
+	it("edits a TypeScript configuration without running it", ({ expect }) => {
 		expect.assertions(2);
 
 		const source = [
@@ -101,7 +119,7 @@ describe("editConfigurationSource", () => {
 	});
 
 	// Catches recast misaligning the tab indentation it reprints.
-	it("keeps tab indentation in a TypeScript configuration", () => {
+	it("keeps tab indentation in a TypeScript configuration", ({ expect }) => {
 		expect.assertions(1);
 
 		const source = renderConfiguration({ servers: ["typescript"] }, ConfigurationFormat.TypeScript);
@@ -113,7 +131,7 @@ describe("editConfigurationSource", () => {
 		expect(edited).not.toMatch(SPACE_INDENTATION_REGEXP);
 	});
 
-	it("refuses a TypeScript configuration it can't edit statically", () => {
+	it("refuses a TypeScript configuration it can't edit statically", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(() =>
@@ -125,7 +143,7 @@ describe("editConfigurationSource", () => {
 		).toThrow("edit it by hand");
 	});
 
-	it("refuses formats it can't edit", () => {
+	it("refuses formats it can't edit", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(() => editConfigurationSource("lsp-mux.config.yaml", "servers: []\n", addEslint)).toThrow(

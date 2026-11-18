@@ -24,6 +24,7 @@ function resolveServer(name: string, configuration: Configuration): ResolvedServ
 	if (definition instanceof type.errors) {
 		throw new TypeError(`lsp-mux server "${name}": ${definition.summary}`);
 	}
+
 	return { ...definition, name };
 }
 

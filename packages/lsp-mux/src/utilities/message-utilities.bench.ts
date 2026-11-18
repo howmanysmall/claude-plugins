@@ -22,7 +22,9 @@ it("createMessageReader", async ({ bench }) => {
 		}),
 		bench("frame in 16 byte chunks", () => {
 			const read = createMessageReader(() => undefined);
-			for (const chunk of CHUNKS) read(chunk);
+			for (const chunk of CHUNKS) {
+				read(chunk);
+			}
 		}),
 	);
 });

@@ -42,6 +42,7 @@ export const isReadonlyArrayOfNumbers = isArrayOfNumbers.readonly();
 export const isMaybeReadonlyArrayOfStrings = isReadonlyArrayOfStrings.or(isUndefined);
 
 export const isDictionaryOfUnknowns = type.Record(isString, isUnknown);
+
 export type DictionaryOfUnknowns = typeof isDictionaryOfUnknowns.infer;
 
 export const isReadonlyDictionaryOfUnknowns = type.Record(isString, isUnknown).readonly();
@@ -49,6 +50,7 @@ export const isReadonlyDictionaryOfUnknowns = type.Record(isString, isUnknown).r
 export const isDictionaryOfStrings = type.Record(isString, isString);
 export const isReadonlyDictionaryOfStrings = isDictionaryOfStrings.readonly();
 export const isMaybeReadonlyDictionaryOfStrings = isReadonlyDictionaryOfStrings.or(isUndefined);
+
 export type MaybeReadonlyDictionaryOfStrings = typeof isMaybeReadonlyDictionaryOfStrings.infer;
 
 // Unexported and redeclared ArkType types

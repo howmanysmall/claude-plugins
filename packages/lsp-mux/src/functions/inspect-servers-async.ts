@@ -46,6 +46,7 @@ export async function inspectServersAsync(
 		const found =
 			command !== undefined &&
 			resolveCommand(command, options.cwd, options.cwd, searchPath, fileExists) !== undefined;
+
 		servers.push({ ...entry, found });
 	}
 

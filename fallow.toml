@@ -12,6 +12,8 @@ entry = [
 	"packages/lsp-mux/src/types/cliffy-internal-types.ts"
 ]
 ignorePatterns = ["plugins/**", ".claude/**", "!.config/**"]
+# hk and nr come from mise, not the package graph.
+ignoreBinaries = ["hk", "nr"]
 ignoreDependencies = [
 	"@arethetypeswrong/core",
 	"@e18e/eslint-plugin",
@@ -68,7 +70,7 @@ maxCrap = 30
 crapRefactorBand = 5
 maxUnitSize = 60
 coverage = ".cache/istanbul/coverage-final.json"
-ignore = ["*.config.ts", "scripts/**"]
+ignore = ["scripts/**"]
 suggestInlineSuppression = true
 
 [health.ownership]

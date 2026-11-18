@@ -4,7 +4,10 @@ import type { ContentChange, Position } from "$types/protocol-types";
 
 function computeLineStarts(text: string): ReadonlyArray<number> {
 	const starts = [0];
-	for (const match of text.matchAll(LINE_BREAK_REGEXP)) starts.push(match.index + match[0].length);
+	for (const match of text.matchAll(LINE_BREAK_REGEXP)) {
+		starts.push(match.index + match[0].length);
+	}
+
 	return starts;
 }
 
@@ -50,5 +53,6 @@ export function applyContentChanges(text: string, changes: ReadonlyArray<Content
 		const end = getOffsetAt(current, lineStarts, change.range.end);
 		current = current.slice(0, start) + change.text + current.slice(end);
 	}
+
 	return current;
 }
