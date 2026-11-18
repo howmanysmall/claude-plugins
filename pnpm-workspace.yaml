@@ -149,14 +149,14 @@ catalogs:
     vitiate: 0.3.1
   tooling:
     "@isentinel/hooks": 1.7.0
-    "@turbo/gen": 2.11.11
+    "@turbo/gen": 2.11.12
     bumpp: 12.3.0
     jiti: 2.7.0
     pncat: 0.13.4
     sfw: 2.0.6
     skills: 1.9.0
     tsrs: 7.1.0-beta.tsrs3
-    turbo: 2.11.11
+    turbo: 2.11.12
     typescript: npm:@typescript/typescript6@^6.0.2
   types:
     "@total-typescript/ts-reset": 0.6.1
