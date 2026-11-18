@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import nodePath from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { mergeLayers } from "$utilities/merge-utilities";
 
@@ -47,7 +47,7 @@ function getNamesOf(servers: ReadonlyArray<HasName>): ReadonlyArray<string> {
 describe("mergeLayers", () => {
 	// Catches c12's default defu concatenating a project's args onto the
 	// defaults'.
-	it("replaces arrays and merges objects, leftmost winning", () => {
+	it("replaces arrays and merges objects, leftmost winning", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(
@@ -59,7 +59,7 @@ describe("mergeLayers", () => {
 });
 
 describe("getUserConfigurationLocation", () => {
-	it("prefers LSP_MUX_CONFIG, then XDG_CONFIG_HOME, then ~/.config", () => {
+	it("prefers LSP_MUX_CONFIG, then XDG_CONFIG_HOME, then ~/.config", ({ expect }) => {
 		expect.assertions(3);
 
 		expect(getUserConfigurationLocation({ LSP_MUX_CONFIG: "mux.jsonc" }, "/home")).toStrictEqual({
@@ -80,7 +80,7 @@ describe("getUserConfigurationLocation", () => {
 describe("loadConfigurationAsync", () => {
 	// Catches a project's `lsp-mux.config.ts` failing to load where the package
 	// isn't installed.
-	it("loads a TypeScript configuration that uses defineConfiguration", async () => {
+	it("loads a TypeScript configuration that uses defineConfiguration", async ({ expect }) => {
 		expect.assertions(2);
 
 		const configuration = await withWorkspaceAsync(async (workspace) => {
@@ -104,7 +104,7 @@ describe("loadConfigurationAsync", () => {
 	});
 
 	// Catches a user's personal servers being lost, or overriding the project.
-	it("layers the project configuration over the user configuration", async () => {
+	it("layers the project configuration over the user configuration", async ({ expect }) => {
 		expect.assertions(2);
 
 		const configuration = await withWorkspaceAsync(async (workspace) => {
@@ -127,7 +127,7 @@ describe("loadConfigurationAsync", () => {
 
 	// Catches an untrusted repository's config code running as soon as Claude
 	// Code starts the plugin.
-	it("skips a project's code configuration unless trusted, and says why", async () => {
+	it("skips a project's code configuration unless trusted, and says why", async ({ expect }) => {
 		expect.assertions(2);
 
 		const configuration = await withWorkspaceAsync(async (workspace) => {
@@ -141,7 +141,7 @@ describe("loadConfigurationAsync", () => {
 		]);
 	});
 
-	it("always runs the user's own code configuration", async () => {
+	it("always runs the user's own code configuration", async ({ expect }) => {
 		expect.assertions(1);
 
 		const configuration = await withWorkspaceAsync(async (workspace) => {
@@ -156,7 +156,7 @@ describe("loadConfigurationAsync", () => {
 		expect(getNamesOf(configuration.servers)).toStrictEqual(["yaml"]);
 	});
 
-	it("runs nothing without a configuration", async () => {
+	it("runs nothing without a configuration", async ({ expect }) => {
 		expect.assertions(1);
 
 		const configuration = await withWorkspaceAsync(async (workspace) =>
@@ -166,7 +166,7 @@ describe("loadConfigurationAsync", () => {
 		expect(configuration).toStrictEqual({ formatters: [], servers: [], warnings: [] });
 	});
 
-	it("rejects an unknown server without a command", async () => {
+	it("rejects an unknown server without a command", async ({ expect }) => {
 		expect.assertions(1);
 
 		await expect(
