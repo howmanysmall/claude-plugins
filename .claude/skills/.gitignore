@@ -6,3 +6,6 @@ communique
 hk
 hk-configure
 hk-debug
+# pnpm
+/fallow
+# pnpm end
