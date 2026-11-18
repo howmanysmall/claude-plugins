@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd "$(git rev-parse --show-toplevel 2> /dev/null || pwd)"
+git_toplevel=$(git rev-parse --show-toplevel 2> /dev/null) || git_toplevel=$PWD
+cd "$git_toplevel"
 
 # betterleaks does not auto-discover .betterleaks.toml, so the config path is
 # passed explicitly. Without it the scan runs on the built-in ruleset only and
