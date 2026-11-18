@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import nodePath from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { loadConfigurationAsync } from "$functions/load-configuration-async";
 
@@ -30,11 +30,29 @@ function addEslint(configuration: Configuration): Configuration {
 	return { ...configuration, servers: [...(configuration.servers ?? []), "eslint"] };
 }
 
+const VALID_CONFIGURATION_FORMATS = new Set<string>([
+	ConfigurationFormat.Json,
+	ConfigurationFormat.Jsonc,
+	ConfigurationFormat.TypeScript,
+]);
+
+function isConfigurationFormat(format: unknown): format is ConfigurationFormat {
+	return typeof format === "string" && VALID_CONFIGURATION_FORMATS.has(format);
+}
+
+function assertIsConfigurationFormat(format: unknown): asserts format is ConfigurationFormat {
+	if (!isConfigurationFormat(format)) {
+		throw new TypeError(`Expected a configuration format, got ${String(format)}`);
+	}
+}
+
 describe("renderConfiguration", () => {
-	it.each([ConfigurationFormat.Json, ConfigurationFormat.Jsonc, ConfigurationFormat.TypeScript])(
+	it.for([ConfigurationFormat.Json, ConfigurationFormat.Jsonc, ConfigurationFormat.TypeScript] as const)(
 		"writes a %s file that reads back as the same configuration",
-		(format) => {
+		([format], { expect }) => {
 			expect.assertions(1);
+
+			assertIsConfigurationFormat(format);
 
 			const path = `lsp-mux.config.${format}`;
 
