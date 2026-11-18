@@ -32,11 +32,11 @@ while read -r local_ref local_sha remote_ref remote_sha extra; do
 		range=${local_commit}
 	fi
 
-	if betterleaks git --config "${betterleaks_config}" --redact --no-banner --log-opts="${range}"; then
+	if betterleaks git --config "$betterleaks_config" --redact --no-banner --log-opts="$range"; then
 		continue
 	else
 		status=$?
 	fi
 done
 
-exit "${status}"
+exit "$status"
