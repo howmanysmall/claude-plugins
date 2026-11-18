@@ -513,6 +513,7 @@ export async function getOxlintAsync({
 				"unicorn/no-array-callback-reference": "off",
 				"unicorn/no-new-array": "error",
 				"unicorn/no-process-exit": "off",
+				"unicorn/no-useless-undefined": "off",
 				"unicorn/numeric-separators-style": "off",
 				"unicorn/prefer-event-target": "off",
 				"unicorn/prefer-math-trunc": "off",
