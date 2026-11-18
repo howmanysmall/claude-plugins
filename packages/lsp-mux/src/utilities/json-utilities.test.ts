@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import {
 	asObject,
@@ -17,7 +17,7 @@ import type { JsonObject } from "type-fest";
 describe("isJsonValue", () => {
 	// Catches a valid nested result or params payload being rejected as
 	// non-JSON, which would drop a legitimate server message.
-	it("accepts every value JSON can carry, at any depth", () => {
+	it("accepts every value JSON can carry, at any depth", ({ expect }) => {
 		expect.assertions(8);
 
 		expect(isJsonValue(null)).toBe(true);
@@ -32,7 +32,7 @@ describe("isJsonValue", () => {
 
 	// Catches NaN or Infinity in a server payload being treated as JSON, since
 	// those round-trip to the client as null and lose the real value.
-	it("rejects numbers JSON cannot represent", () => {
+	it("rejects numbers JSON cannot represent", ({ expect }) => {
 		expect.assertions(3);
 
 		expect(isJsonValue(Number.NaN)).toBe(false);
@@ -42,7 +42,7 @@ describe("isJsonValue", () => {
 
 	// Catches undefined, a function, or a symbol slipping through a shallow
 	// check at the top level or buried in a nested array or object.
-	it("rejects values with no JSON representation, even when nested", () => {
+	it("rejects values with no JSON representation, even when nested", ({ expect }) => {
 		expect.assertions(8);
 
 		expect(isJsonValue(undefined)).toBe(false);
@@ -59,7 +59,7 @@ describe("isJsonValue", () => {
 describe("isJsonArray", () => {
 	// Catches a single workspace folder sent as one object, or a scalar, being
 	// indexed as a list so `folders[0]` reads a key off the wrong thing.
-	it("treats only real arrays as arrays", () => {
+	it("treats only real arrays as arrays", ({ expect }) => {
 		expect.assertions(7);
 
 		expect(isJsonArray([])).toBe(true);
@@ -75,7 +75,7 @@ describe("isJsonArray", () => {
 describe("isJsonRpcId", () => {
 	// Catches id 0 or "" being discarded as falsy, which turns the client's
 	// request into a notification it never receives a response to.
-	it("accepts string and numeric ids, including 0 and the empty string", () => {
+	it("accepts string and numeric ids, including 0 and the empty string", ({ expect }) => {
 		expect.assertions(4);
 
 		expect(isJsonRpcId("1")).toBe(true);
@@ -86,7 +86,7 @@ describe("isJsonRpcId", () => {
 
 	// Catches a null or structured id from a parse-error response being read as
 	// correlation to a live request, so the wrong callback resolves.
-	it("rejects ids a JSON-RPC peer never sends", () => {
+	it("rejects ids a JSON-RPC peer never sends", ({ expect }) => {
 		expect.assertions(6);
 
 		expect(isJsonRpcId(undefined)).toBe(false);
@@ -101,7 +101,7 @@ describe("isJsonRpcId", () => {
 describe("asObject", () => {
 	// Catches params or an initialize result sent as an array or scalar being
 	// read as an object, so every key lookup against it silently misses.
-	it("returns JSON objects as-is and rejects everything else", () => {
+	it("returns JSON objects as-is and rejects everything else", ({ expect }) => {
 		expect.assertions(10);
 
 		expect(asObject({ a: 1 })).toStrictEqual({ a: 1 });
@@ -120,7 +120,7 @@ describe("asObject", () => {
 describe("getObject", () => {
 	// Catches a scalar sent where a nested object is expected (textDocument as
 	// a URI string, a range as an array) being handed on to key lookups.
-	it("reads a nested object by key and nothing else", () => {
+	it("reads a nested object by key and nothing else", ({ expect }) => {
 		expect.assertions(6);
 
 		expect(getObject({ a: { b: 1 } }, "a")).toStrictEqual({ b: 1 });
@@ -135,7 +135,7 @@ describe("getObject", () => {
 describe("getString", () => {
 	// Catches a version, language id, or boolean read as a string, so a URI or
 	// method comparison never matches.
-	it("reads only string values", () => {
+	it("reads only string values", ({ expect }) => {
 		expect.assertions(8);
 
 		const object: JsonObject = {
@@ -161,7 +161,7 @@ describe("getString", () => {
 describe("getNumber", () => {
 	// Catches a numeric string version ("3") or a boolean being read as a
 	// number, so a document version or message type comes out wrong.
-	it("reads only number values", () => {
+	it("reads only number values", ({ expect }) => {
 		expect.assertions(6);
 
 		const object: JsonObject = { array: [], flag: true, nothing: null, number: 3.5, string: "3" };
@@ -178,7 +178,7 @@ describe("getNumber", () => {
 describe("getObjects", () => {
 	// Catches a malformed entry inside contentChanges or diagnostics (a string,
 	// null, or nested array) crashing the caller or reading as an object.
-	it("keeps object entries in order and drops the rest", () => {
+	it("keeps object entries in order and drops the rest", ({ expect }) => {
 		expect.assertions(2);
 
 		const object: JsonObject = { items: [7, { a: 1 }, "x", [1], null, { b: 2 }] };
@@ -189,7 +189,7 @@ describe("getObjects", () => {
 
 	// Catches an object or scalar sent where a list is expected being iterated,
 	// or a missing key crashing the caller.
-	it("returns an empty list for a non-array or missing value", () => {
+	it("returns an empty list for a non-array or missing value", ({ expect }) => {
 		expect.assertions(5);
 
 		expect(getObjects({ items: { a: 1 } }, "items")).toStrictEqual([]);
@@ -203,7 +203,7 @@ describe("getObjects", () => {
 describe("withoutKeys", () => {
 	// Catches sibling capabilities being stripped with the targeted one, or a
 	// same-named key nested a level deeper being removed along with it.
-	it("removes only the named top-level keys", () => {
+	it("removes only the named top-level keys", ({ expect }) => {
 		expect.assertions(2);
 
 		const capabilities: JsonObject = {
@@ -221,7 +221,7 @@ describe("withoutKeys", () => {
 
 	// Catches the client's own initialization capabilities being mutated in
 	// place, which would leak the stripped capability into every later server.
-	it("leaves the input untouched", () => {
+	it("leaves the input untouched", ({ expect }) => {
 		expect.assertions(2);
 
 		const capabilities: JsonObject = { diagnostic: {}, hover: {} };

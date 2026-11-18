@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 import ansis, { Ansis } from "ansis";
 
 import { renderHighlight } from "./cliffy-highlight";
@@ -6,20 +6,20 @@ import { renderHighlight } from "./cliffy-highlight";
 const { blueBright, bold, cyan, dim, italic, magentaBright, strikethrough, underline } = new Ansis(1);
 
 describe("renderHighlight plain and block markup", () => {
-	it("returns plain text unchanged when there is no markup", () => {
+	it("returns plain text unchanged when there is no markup", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(renderHighlight("hello world")).toBe("hello world");
 	});
 
-	it("renders headings, with h1 underlined", () => {
+	it("renders headings, with h1 underlined", ({ expect }) => {
 		expect.assertions(2);
 
 		expect(renderHighlight("# Title")).toBe(`${dim("#")} ${bold(underline("Title"))}`);
 		expect(renderHighlight("## Section")).toBe(`${dim("##")} ${bold("Section")}`);
 	});
 
-	it("renders blockquotes, bullets, ordered lists, and rules", () => {
+	it("renders blockquotes, bullets, ordered lists, and rules", ({ expect }) => {
 		expect.assertions(8);
 
 		expect(renderHighlight("> quoted")).toBe(`${dim(">")} quoted`);
@@ -34,7 +34,7 @@ describe("renderHighlight plain and block markup", () => {
 });
 
 describe("renderHighlight inline markup", () => {
-	it("renders bold, italic, strikethrough, code, and links", () => {
+	it("renders bold, italic, strikethrough, code, and links", ({ expect }) => {
 		expect.assertions(5);
 
 		expect(renderHighlight("**bold**")).toBe(bold("bold"));
@@ -46,7 +46,7 @@ describe("renderHighlight inline markup", () => {
 		);
 	});
 
-	it("renders nested inline markup inside block constructs", () => {
+	it("renders nested inline markup inside block constructs", ({ expect }) => {
 		expect.assertions(4);
 
 		const boldHeading = bold(`has ${bold("bold")}`);
@@ -59,7 +59,7 @@ describe("renderHighlight inline markup", () => {
 });
 
 describe("renderHighlight fenced code", () => {
-	it("renders multi-line fenced code blocks and keeps blank lines", () => {
+	it("renders multi-line fenced code blocks and keeps blank lines", ({ expect }) => {
 		expect.assertions(1);
 
 		const input = ["```", "const value = 1;", "", "value", "```"].join("\n");
@@ -67,7 +67,7 @@ describe("renderHighlight fenced code", () => {
 		expect(renderHighlight(input)).toBe([dim("const value = 1;"), "", dim("value"), ""].join("\n"));
 	});
 
-	it("renders unclosed fences as code through the end of the text", () => {
+	it("renders unclosed fences as code through the end of the text", ({ expect }) => {
 		expect.assertions(1);
 
 		const input = ["```", "still code"].join("\n");
@@ -75,14 +75,14 @@ describe("renderHighlight fenced code", () => {
 		expect(renderHighlight(input)).toBe(dim("still code"));
 	});
 
-	it("renders same-line fences and leftover text after the closing marker", () => {
+	it("renders same-line fences and leftover text after the closing marker", ({ expect }) => {
 		expect.assertions(2);
 
 		expect(renderHighlight("```inline```")).toBe(dim("inline"));
 		expect(renderHighlight("```inline```trail")).toBe(`${dim("inline")}\ntrail`);
 	});
 
-	it("renders multi-line fences closed mid-line with leftover text", () => {
+	it("renders multi-line fences closed mid-line with leftover text", ({ expect }) => {
 		expect.assertions(1);
 
 		const input = ["```", "body", "```trail"].join("\n");
@@ -90,7 +90,7 @@ describe("renderHighlight fenced code", () => {
 		expect(renderHighlight(input)).toBe(`${dim("body")}\n\ntrail`);
 	});
 
-	it("supports tilde fences and CRLF line endings", () => {
+	it("supports tilde fences and CRLF line endings", ({ expect }) => {
 		expect.assertions(2);
 
 		expect(renderHighlight("~~~\nbody\n~~~")).toBe(`${dim("body")}\n`);
@@ -105,7 +105,7 @@ describe("renderHighlight command syntax", () => {
 	// into `download-package`. Expected colors from Cliffy help palette (binary
 	// magenta, args cyan). Survives renames/splits of internal helpers because it
 	// asserts via the public string seam only.
-	it("paints the binary magenta so `pkl download-package` does not melt into one cyan span", () => {
+	it("paints the binary magenta so `pkl download-package` does not melt into one cyan span", ({ expect }) => {
 		expect.assertions(2);
 
 		expect(renderHighlight("use `pkl download-package` now")).toBe(
@@ -117,7 +117,7 @@ describe("renderHighlight command syntax", () => {
 	// Bug: a runnable example with flags blends the binary into its args so
 	// users miss what to type first. Expected colors from Cliffy help palette
 	// (binary magenta, args cyan, flags bright blue).
-	it("paints binary, args, and flags distinctly for `pkl download-package --help`", () => {
+	it("paints binary, args, and flags distinctly for `pkl download-package --help`", ({ expect }) => {
 		expect.assertions(2);
 
 		expect(renderHighlight("run `pkl download-package --help` now")).toBe(
@@ -131,7 +131,7 @@ describe("renderHighlight command syntax", () => {
 	// Bug: fenced runnable examples stay flat dim so the binary blends into args
 	// and flags. Expected colors from Cliffy help palette; plain code lines stay
 	// dim.
-	it("paints commands inside fenced blocks while leaving plain code dim", () => {
+	it("paints commands inside fenced blocks while leaving plain code dim", ({ expect }) => {
 		expect.assertions(3);
 
 		expect(renderHighlight("```\nskills list --json\n```")).toBe(
@@ -143,7 +143,9 @@ describe("renderHighlight command syntax", () => {
 });
 
 describe("renderHighlight", () => {
-	it("paints --json the same bright blue as Options flags so it does not melt into the command words", () => {
+	it("paints --json the same bright blue as Options flags so it does not melt into the command words", ({
+		expect,
+	}) => {
 		expect.assertions(4);
 
 		const output = renderHighlight("slow `skills list --json` command");
@@ -154,7 +156,7 @@ describe("renderHighlight", () => {
 		expect(ansis.strip(output)).toBe("slow skills list --json command");
 	});
 
-	it("does not recolor inline code that is not a command example", () => {
+	it("does not recolor inline code that is not a command example", ({ expect }) => {
 		expect.assertions(2);
 
 		const code = "Promise.all";
@@ -164,7 +166,7 @@ describe("renderHighlight", () => {
 		expect(renderHighlight(input)).toBe(`x ${cyan(code)} y`);
 	});
 
-	it("treats a lone -- as prose, not a flag", () => {
+	it("treats a lone -- as prose, not a flag", ({ expect }) => {
 		expect.assertions(2);
 
 		const output = renderHighlight("see `a -- b`");

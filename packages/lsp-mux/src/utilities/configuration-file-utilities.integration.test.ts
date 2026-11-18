@@ -47,7 +47,7 @@ describe("renderConfiguration", () => {
 	// Catches a scaffolded TypeScript configuration failing to load in a
 	// project that doesn't install the package, like the user config in
 	// ~/.config.
-	it("writes a TypeScript configuration that loads without the package installed", async () => {
+	it("writes a TypeScript configuration that loads without the package installed", async ({ expect }) => {
 		expect.assertions(1);
 
 		const configuration = await withWorkspaceAsync(async (workspace) => {
@@ -67,7 +67,7 @@ describe("renderConfiguration", () => {
 });
 
 describe("editConfigurationSource", () => {
-	it("keeps comments in a JSONC configuration", () => {
+	it("keeps comments in a JSONC configuration", ({ expect }) => {
 		expect.assertions(2);
 
 		const edited = editConfigurationSource(
@@ -82,7 +82,7 @@ describe("editConfigurationSource", () => {
 		});
 	});
 
-	it("edits a TypeScript configuration without running it", () => {
+	it("edits a TypeScript configuration without running it", ({ expect }) => {
 		expect.assertions(2);
 
 		const source = [
@@ -101,7 +101,7 @@ describe("editConfigurationSource", () => {
 	});
 
 	// Catches recast misaligning the tab indentation it reprints.
-	it("keeps tab indentation in a TypeScript configuration", () => {
+	it("keeps tab indentation in a TypeScript configuration", ({ expect }) => {
 		expect.assertions(1);
 
 		const source = renderConfiguration({ servers: ["typescript"] }, ConfigurationFormat.TypeScript);
@@ -113,7 +113,7 @@ describe("editConfigurationSource", () => {
 		expect(edited).not.toMatch(SPACE_INDENTATION_REGEXP);
 	});
 
-	it("refuses a TypeScript configuration it can't edit statically", () => {
+	it("refuses a TypeScript configuration it can't edit statically", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(() =>
@@ -125,7 +125,7 @@ describe("editConfigurationSource", () => {
 		).toThrow("edit it by hand");
 	});
 
-	it("refuses formats it can't edit", () => {
+	it("refuses formats it can't edit", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(() => editConfigurationSource("lsp-mux.config.yaml", "servers: []\n", addEslint)).toThrow(

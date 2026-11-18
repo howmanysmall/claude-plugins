@@ -1,11 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 import { applyContentChanges } from "./apply-content-changes";
 
 describe("applyContentChanges", () => {
 	// Catches servers that started mid-edit seeing a different document than the
 	// client.
-	it("applies ranged and full changes in order, clamping positions past the end", () => {
+	it("applies ranged and full changes in order, clamping positions past the end", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(
@@ -17,7 +17,7 @@ describe("applyContentChanges", () => {
 		).toBe("o!\r\n2\nthree.");
 	});
 
-	it("replaces the whole document on a full change", () => {
+	it("replaces the whole document on a full change", ({ expect }) => {
 		expect.assertions(1);
 
 		expect(applyContentChanges("old", [{ text: "new" }])).toBe("new");

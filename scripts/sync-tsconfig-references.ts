@@ -107,8 +107,9 @@ async function readProjectAsync(rootDirectory: string, directory: string): Promi
 	if (
 		manifestText === undefined ||
 		(await readTextAsync(nodePath.join(rootDirectory, directory, TSCONFIG_JSON))) === undefined
-	)
+	) {
 		return undefined;
+	}
 
 	const manifest = isManifest.assert(parseJson.assert(manifestText));
 	return { name: manifest.name, directory, workspaceDependencies: collectWorkspaceDependencies(manifest) };
