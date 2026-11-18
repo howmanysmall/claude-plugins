@@ -265,11 +265,12 @@
 			"hard_tabs": true,
 			"language_servers": [
 				"!deno",
-				"!knip",
-				"!vtsls",
 				"!effect-tsgo",
 				"!graphql",
+				"!knip",
+				"!sloptor",
 				"!typescript-language-server",
+				"!vtsls",
 				"..."
 			],
 			"prettier": { "allowed": false },
@@ -286,11 +287,12 @@
 			"hard_tabs": true,
 			"language_servers": [
 				"!deno",
-				"!knip",
-				"!vtsls",
 				"!effect-tsgo",
 				"!graphql",
+				"!knip",
+				"!sloptor",
 				"!typescript-language-server",
+				"!vtsls",
 				"..."
 			],
 			"prettier": { "allowed": false },
@@ -394,7 +396,7 @@
 					},
 					"preferences": {
 						"autoImportFileExcludePatterns": ["**/node_modules/typescript"],
-						"autoImportSpecifierExcludeRegexes": ["^typescript(/.*)?$"]
+						"autoImportSpecifierExcludeRegexes": ["^typescript(/.*)?$", "^node:test$"]
 					}
 				}
 			}
@@ -449,6 +451,10 @@
 							".lefthook.yaml",
 							"lefthook.json",
 							".lefthook.json"
+						],
+						"https://raw.githubusercontent.com/jdx/jactionlint/main/schema/jactionlint-config.json": [
+							".github/jactionlint.yaml",
+							".github/jactionlint.yml"
 						]
 					}
 				}
