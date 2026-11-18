@@ -1,4 +1,4 @@
-export { defineConfiguration, defineConfiguration as defineConfig } from "$functions/define-config";
+export { defineConfiguration } from "$functions/define-config";
 
 export type { LspMuxConfiguration, ServerName } from "$functions/define-config";
 
