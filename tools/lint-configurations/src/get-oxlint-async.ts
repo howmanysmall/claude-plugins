@@ -1,6 +1,7 @@
 // oxlint-disable small-rules/prevent-abbreviations -- not here, lol.
 
 import nodePath from "node:path";
+import { fileURLToPath } from "node:url";
 import { GLOB_DTS, GLOB_SRC, GLOB_SRC_EXT, GLOB_TESTS } from "@isentinel/eslint-config";
 import { isentinel } from "@isentinel/eslint-config/oxlint";
 
@@ -10,8 +11,14 @@ import type { OxfmtOptions } from "@isentinel/eslint-config";
 import type { OxlintConfig } from "@isentinel/eslint-config/oxlint";
 
 const CONFIGURATION_FILES = `**/*.config.${GLOB_SRC_EXT}`;
+const FIXTURES_FILES = `tests/fixtures/${GLOB_SRC}`;
 const SCRIPT_FILES = `scripts/${GLOB_SRC}`;
 const TURBO_GENERATOR_FILES = `turbo/generators/${GLOB_SRC}`;
+
+const REACT_DOCTOR_PLUGIN = {
+	name: "react-doctor",
+	specifier: fileURLToPath(import.meta.resolve("oxlint-plugin-react-doctor")),
+};
 
 interface ConfigurationOptions {
 	readonly argv?: ReadonlyArray<string> | undefined;
@@ -21,6 +28,7 @@ interface ConfigurationOptions {
 
 async function getOxfmtOptionsAsync(): Promise<OxfmtOptions> {
 	const { getOxfmtConfigurationAsync } = await import("@howmanysmall/linter-utilities/configuration");
+
 	return getOxfmtConfigurationAsync();
 }
 
@@ -39,13 +47,14 @@ export async function getOxlintAsync({
 			if (key.includes("nextjs-") || key.includes("preact-") || key.includes("jsx-no-new-")) {
 				return [key, "off" as const];
 			}
+
 			return [key, value];
 		}),
 	);
 
 	return isentinel(
 		{
-			name: "small-rules",
+			name: "claude-plugins",
 			categories: {
 				correctness: "error",
 				nursery: "error",
@@ -106,7 +115,7 @@ export async function getOxlintAsync({
 					},
 				],
 				complexity: ["error", { max: 20 }],
-				curly: ["error", "multi-line"],
+				curly: "off",
 				"default-case": "off",
 				// this is literally not true -- it just worsens performance!
 				"e18e/prefer-static-collator": "off",
@@ -247,6 +256,7 @@ export async function getOxlintAsync({
 						replacements: {},
 					},
 				],
+				"small-rules/curly": "error",
 				"small-rules/directive-disable-enable-pair": "error",
 				"small-rules/directive-no-aggregating-enable": "error",
 				"small-rules/directive-no-duplicate-disable": "error",
@@ -270,8 +280,8 @@ export async function getOxlintAsync({
 						selectors: [],
 					},
 				],
-				"small-rules/memoized-effect-dependencies": "error",
-				"small-rules/no-adjust-state-on-prop-change": "error",
+				"small-rules/memoized-effect-dependencies": ["error", { environment: "standard" }],
+				"small-rules/no-adjust-state-on-prop-change": ["error", { environment: "standard" }],
 				"small-rules/no-array-constructor-elements": [
 					"error",
 					{
@@ -283,8 +293,9 @@ export async function getOxlintAsync({
 				"small-rules/no-array-size-assignment": ["error", { allowAutofix: false }],
 				"small-rules/no-async-in-system": "off",
 				"small-rules/no-cascading-set-state": "error",
-				"small-rules/no-chain-state-updates": "error",
+				"small-rules/no-chain-state-updates": ["error", { environment: "standard" }],
 				"small-rules/no-chained-type-assertions": "error",
+				"small-rules/no-cliffy-action-wrapper": "error",
 				"small-rules/no-color3-constructor": "off",
 				"small-rules/no-conditional-empty-object-spread": "error",
 				"small-rules/no-constant-condition-with-break": [
@@ -294,7 +305,7 @@ export async function getOxlintAsync({
 					},
 				],
 				"small-rules/no-dead-store": "error",
-				"small-rules/no-derived-state": "error",
+				"small-rules/no-derived-state": ["error", { environment: "standard" }],
 				"small-rules/no-discarded-rejection": "warn",
 				"small-rules/no-error": "off",
 				"small-rules/no-event-handler": ["error", { environment: "standard" }],
@@ -311,15 +322,20 @@ export async function getOxlintAsync({
 				"small-rules/no-increment-decrement": ["error", { allowAutofix: true }],
 				"small-rules/no-initialize-state": ["error", { environment: "standard" }],
 				"small-rules/no-inline-property-on-memo-component": "error",
+				"small-rules/no-inline-signature-types": "error",
 				"small-rules/no-instance-methods-without-this": "off",
+				"small-rules/no-jsx-spread-child": "error",
 				"small-rules/no-known-value-widening": "error",
 				"small-rules/no-module-mocking": "error",
+				"small-rules/no-multiple-cliffy-commands": "error",
 				"small-rules/no-native-properties-spread": "off",
+				"small-rules/no-nested-hook-calls": "warn",
 				"small-rules/no-new-instance-in-use-memo": "off",
 				"small-rules/no-object-parameters": "error",
 				"small-rules/no-pass-data-to-parent": ["error", { environment: "standard" }],
 				"small-rules/no-pass-live-state-to-parent": ["error", { environment: "standard" }],
 				"small-rules/no-print": "off",
+				"small-rules/no-reduce-accumulator-copy": "error",
 				"small-rules/no-redundant-aspect-ratio-constraint": "off",
 				"small-rules/no-reflect-apply": "error",
 				"small-rules/no-reflect-get": "error",
@@ -329,7 +345,7 @@ export async function getOxlintAsync({
 				"small-rules/no-runtime-typeof": ["error", { allowInTypeGuards: true }],
 				"small-rules/no-shape-in-symbol-names": "error",
 				"small-rules/no-spec-file-extension": "error",
-				"small-rules/no-static-react-create-element": "error",
+				"small-rules/no-static-react-create-element": ["error", { environment: "standard" }],
 				"small-rules/no-table-create-map": "off",
 				"small-rules/no-task-wait": "off",
 				"small-rules/no-trivial-assertions": "error",
@@ -339,10 +355,11 @@ export async function getOxlintAsync({
 				"small-rules/no-unknown-type-aliases": "error",
 				"small-rules/no-unsafe-dictionary-type": "error",
 				"small-rules/no-unused-imports": "error",
-				"small-rules/no-unused-use-memo": "error",
+				"small-rules/no-unused-use-memo": ["error", { environment: "standard" }],
 				"small-rules/no-use-memo-simple-expression": "error",
 				"small-rules/no-useless-constants": "error",
 				"small-rules/no-useless-default": "off",
+				"small-rules/no-useless-empty-string-comparison": "error",
 				"small-rules/no-useless-use-effect": ["error", { environment: "standard" }],
 				"small-rules/no-useless-use-memo": ["error", { environment: "standard" }],
 				"small-rules/no-useless-use-spring": "off",
@@ -364,6 +381,7 @@ export async function getOxlintAsync({
 				"small-rules/prefer-modding-inspect": "off",
 				"small-rules/prefer-module-scope-constants": "off",
 				"small-rules/prefer-native-collection-copy": "off",
+				"small-rules/prefer-optional-parameter": "error",
 				"small-rules/prefer-padding-components": "off",
 				"small-rules/prefer-pascal-case-enums": "error",
 				"small-rules/prefer-sequence-overloads": "off",
@@ -405,6 +423,18 @@ export async function getOxlintAsync({
 				"small-rules/require-paired-calls": "error",
 				"small-rules/require-react-component-keys": "off",
 				"small-rules/require-react-display-names": ["error", { environment: "standard" }],
+				"small-rules/require-readable-spacing": [
+					"error",
+					{
+						allowAttachedUses: true,
+						allowGuardClauseRuns: true,
+						allowMultilineBindingRuns: true,
+						overrides: [
+							{ blankLine: "any", next: "return", previous: "expression" },
+							{ blankLine: "any", next: "binding", previous: "enum", usesPrevious: true },
+						],
+					},
+				],
 				"small-rules/require-safety-comment-for-type-assertion": "error",
 				"small-rules/require-switch-case-braces": [
 					"error",
@@ -418,6 +448,7 @@ export async function getOxlintAsync({
 						allow: [{ name: "ValidationError", from: "package", package: "@cliffy/command" }],
 					},
 				],
+				"small-rules/require-tsx-for-hooks": "off",
 				"small-rules/require-unicode-regex": "error",
 				"small-rules/rerender-memo-with-default-value": "error",
 				"small-rules/starts-with-verb": [
@@ -476,13 +507,12 @@ export async function getOxlintAsync({
 				"unicorn-js/no-break-in-nested-loop": "off",
 				"unicorn-js/no-keyword-prefix": "off",
 				"unicorn-js/no-unreadable-new-expression": "off",
+				"unicorn-js/no-useless-undefined": "off",
 				"unicorn-js/prefer-global-number-constants": "off",
 				"unicorn/catch-error-name": ["warn", { name: "error" }],
 				"unicorn/no-array-callback-reference": "off",
 				"unicorn/no-new-array": "error",
 				"unicorn/no-process-exit": "off",
-				// shit rule that breaks everything:
-				"unicorn/no-useless-undefined": "off",
 				"unicorn/numeric-separators-style": "off",
 				"unicorn/prefer-event-target": "off",
 				"unicorn/prefer-math-trunc": "off",
@@ -517,6 +547,11 @@ export async function getOxlintAsync({
 			},
 		},
 		{
+			name: "claude-plugins/disable-slop-rules",
+			files: [GLOB_SRC],
+			rules: { "jsdoc/require-param": "off" },
+		},
+		{
 			name: "claude-plugins/native-id-length",
 			files: [GLOB_SRC],
 			rules: {
@@ -534,7 +569,7 @@ export async function getOxlintAsync({
 		{
 			name: "claude-plugins/react-doctor",
 			files: [GLOB_SRC],
-			jsPlugins: [{ name: "react-doctor", specifier: "oxlint-plugin-react-doctor" }],
+			jsPlugins: [REACT_DOCTOR_PLUGIN],
 			rules: {
 				...reactDoctorRules,
 				// STOP DUPLICATING NATIVE RULES!!!
@@ -557,6 +592,11 @@ export async function getOxlintAsync({
 			},
 		},
 		{
+			name: "claude-plugins/disable-stupid-rule",
+			files: [CONFIGURATION_FILES],
+			rules: { "sonar/file-name-differ-from-class": "off" },
+		},
+		{
 			name: "claude-plugins/vitest",
 			files: GLOB_TESTS.filter((glob) => !glob.includes(".bench.")),
 			plugins: ["vitest"],
@@ -567,6 +607,8 @@ export async function getOxlintAsync({
 				"max-lines-per-function": "off",
 				"no-console": "error",
 				"small-rules/no-filter-map-chain": "off",
+				"small-rules/no-real-temporary-directory": "error",
+				"small-rules/no-test-timeout": "error",
 				"small-rules/prefer-expect-assertions": [
 					"error",
 					{
@@ -627,6 +669,14 @@ export async function getOxlintAsync({
 			},
 		},
 		{
+			name: "claude-plugins/integration-tests",
+			files: ["**/*.integration.test.ts"],
+			rules: {
+				"small-rules/no-real-temporary-directory": "off",
+				"small-rules/no-test-timeout": "off",
+			},
+		},
+		{
 			name: "claude-plugins/allow-top-level-await",
 			files: [SCRIPT_FILES, CONFIGURATION_FILES],
 			rules: { "node/no-top-level-await": "off" },
@@ -655,12 +705,12 @@ export async function getOxlintAsync({
 		},
 		{
 			name: "claude-plugins/allow-default-export",
-			files: [CONFIGURATION_FILES],
+			files: [FIXTURES_FILES, CONFIGURATION_FILES],
 			rules: { "import/no-default-export": "off" },
 		},
 		{
-			name: "small-rules-type-aware/allow-abbreviations",
-			files: [CONFIGURATION_FILES],
+			name: "claude-plugins/allow-abbreviations",
+			files: [FIXTURES_FILES, CONFIGURATION_FILES],
 			rules: { "small-rules/prevent-abbreviations": "off" },
 		},
 		{
