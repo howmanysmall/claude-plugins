@@ -90,9 +90,8 @@ function findBinaryIndex(parts: ReadonlyArray<string>): number | undefined {
 
 function parseCommandParts(parts: ReadonlyArray<string>): number | undefined {
 	const binaryIndex = findBinaryIndex(parts);
-	if (binaryIndex === undefined) return undefined;
-
 	if (
+		binaryIndex === undefined ||
 		getWords(parts)
 			.slice(1)
 			.every((word) => !COMMAND_ARG_HINT_PATTERN.test(word))

@@ -9,7 +9,7 @@
 	"ignorePatterns": [
 		"**/*-lock.json",
 		"**/*.js",
-		"**/*.{md,toml,js,yaml,yml,toml}",
+		"**/*.{md,toml,js,yaml,yml,toml,hbs}",
 		"**/do-not-sync-ever/**",
 		"**/generated/**",
 		"**/ses_*.json",

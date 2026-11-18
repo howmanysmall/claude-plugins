@@ -104,8 +104,11 @@ function collectWorkspaceDependencies(manifest: typeof isManifest.infer): Readon
 
 async function readProjectAsync(rootDirectory: string, directory: string): Promise<Project | undefined> {
 	const manifestText = await readTextAsync(nodePath.join(rootDirectory, directory, "package.json"));
-	if (manifestText === undefined) return undefined;
-	if ((await readTextAsync(nodePath.join(rootDirectory, directory, TSCONFIG_JSON))) === undefined) return undefined;
+	if (
+		manifestText === undefined ||
+		(await readTextAsync(nodePath.join(rootDirectory, directory, TSCONFIG_JSON))) === undefined
+	)
+		return undefined;
 
 	const manifest = isManifest.assert(parseJson.assert(manifestText));
 	return { name: manifest.name, directory, workspaceDependencies: collectWorkspaceDependencies(manifest) };
