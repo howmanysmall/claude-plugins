@@ -7,5 +7,8 @@ hk
 hk-configure
 hk-debug
 # pnpm
+/arktype
 /fallow
+/fallow-setup
+/tsdown
 # pnpm end
