@@ -282,8 +282,8 @@ const TS_AND_BIOME = serversOf({
 const WORKSPACE = { rootUri: "file:///repo", workspaceFolders: [{ name: "repo", uri: "file:///repo" }] };
 const POSITION = { position: { character: 0, line: 0 }, textDocument: { uri: "file:///repo/a.ts" } };
 
-function openParameters(uri: string, text = "const value = 1;\n"): JsonValue {
-	return { textDocument: { languageId: "typescript", text, uri, version: 1 } };
+function openParameters(uri: string): JsonValue {
+	return { textDocument: { languageId: "typescript", text: "const value = 1;\n", uri, version: 1 } };
 }
 
 async function startAsync(options: HarnessOptions): Promise<Harness> {
