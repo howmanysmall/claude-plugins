@@ -48,7 +48,7 @@ export async function enqueueAsync<TResult>(
 	task: () => Promise<TResult> | TResult,
 ): Promise<TResult> {
 	const result = backend.queue.then(task);
-	backend.queue = result.then(() => {}).catch(() => {});
+	backend.queue = result.then(() => undefined).catch(() => undefined);
 	return result;
 }
 

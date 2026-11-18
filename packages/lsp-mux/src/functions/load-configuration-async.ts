@@ -104,7 +104,7 @@ export function getUserConfigurationLocation(
 	home: string,
 ): ConfigurationLocation {
 	const explicit = environment[USER_CONFIGURATION_VARIABLE];
-	if (explicit !== undefined && explicit !== "") {
+	if (explicit !== undefined && explicit.length > 0) {
 		const path = nodePath.resolve(home, explicit);
 		return { configFile: nodePath.basename(path), cwd: nodePath.dirname(path) };
 	}
@@ -112,7 +112,7 @@ export function getUserConfigurationLocation(
 	const xdg = environment.XDG_CONFIG_HOME;
 	return {
 		configFile: CONFIGURATION_NAME,
-		cwd: xdg === undefined || xdg === "" ? nodePath.join(home, ".config") : xdg,
+		cwd: xdg === undefined || xdg.length === 0 ? nodePath.join(home, ".config") : xdg,
 	};
 }
 

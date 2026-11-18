@@ -120,6 +120,7 @@ export function handleServerNotification(mux: Mux, backend: Backend, method: str
 	}
 
 	if (method !== "window/logMessage" && method !== "window/showMessage") return;
+	// oxlint-disable-next-line typescript/no-unsafe-enum-assignment -- this is fine I guess.
 	const type: MessageType = getNumber(object, "type") ?? MessageType.Info;
 	if (type <= MessageType.Warning) {
 		logToClient(mux, type, `[${backend.name}] ${getString(object, "message") ?? ""}`);

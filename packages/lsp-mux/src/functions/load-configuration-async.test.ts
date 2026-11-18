@@ -36,7 +36,11 @@ const TYPESCRIPT_CONFIGURATION = [
 	'export default defineConfiguration({ servers: ["yaml"] });',
 ].join("\n");
 
-function namesOf(servers: ReadonlyArray<{ readonly name: string }>): ReadonlyArray<string> {
+interface HasName {
+	readonly name: string;
+}
+
+function getNamesOf(servers: ReadonlyArray<HasName>): ReadonlyArray<string> {
 	return servers.map(({ name }) => name);
 }
 
@@ -95,7 +99,7 @@ describe("loadConfigurationAsync", () => {
 			return loadConfigurationAsync({ cwd: workspace, environment: TRUSTED, home: workspace });
 		});
 
-		expect(namesOf(configuration.servers)).toStrictEqual(["typescript", "biome"]);
+		expect(getNamesOf(configuration.servers)).toStrictEqual(["typescript", "biome"]);
 		expect(configuration.servers[0]).toMatchObject({ args: ["--lsp", "--stdio"], command: "tsc" });
 	});
 
@@ -149,7 +153,7 @@ describe("loadConfigurationAsync", () => {
 			});
 		});
 
-		expect(namesOf(configuration.servers)).toStrictEqual(["yaml"]);
+		expect(getNamesOf(configuration.servers)).toStrictEqual(["yaml"]);
 	});
 
 	it("runs nothing without a configuration", async () => {

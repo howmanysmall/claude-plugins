@@ -83,13 +83,7 @@ export const addCommand = createBaseCommand(scriptName, version, "Add an LSP to 
 	.example("A built-in server", "lsp-mux lsp add typescript")
 	.example("A built-in server as a formatter", "lsp-mux lsp add oxfmt --formatter")
 	.example("A custom server", "lsp-mux lsp add my-lsp --extension .foo -- my-lsp --stdio")
-	.action(async function addAction(
-		this: { getLiteralArgs(): Array<string> },
-		flags,
-		name,
-		command,
-		...commandArguments
-	) {
+	.action(async function addAction(this, flags, name, command, ...commandArguments) {
 		const literal = this.getLiteralArgs();
 		await runActionAsync(async () => {
 			const [literalCommand, ...literalArguments] = literal;

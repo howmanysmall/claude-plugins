@@ -16,7 +16,9 @@ import type { Message, RequestMessage, RequestResult, ResponseMessage } from "$t
  * @param promise - The work to let run.
  */
 export function detach(promise: Promise<unknown>): void {
-	promise.catch(() => {});
+	promise.catch(() => {
+		// does nothing!
+	});
 }
 
 export function createConnection(send: (message: Message) => void, handlers: ConnectionHandlers): Connection {

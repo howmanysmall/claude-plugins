@@ -230,7 +230,7 @@ function renderCodeLine(codeLines: Array<string>, line: string, rendered: Array<
 	rendered.push(renderCodeBlock(codeLines));
 
 	const remainder = line.slice(closingFenceIndex + marker.length);
-	if (remainder !== "") {
+	if (remainder.length > 0) {
 		rendered.push(renderLine(remainder));
 	}
 
