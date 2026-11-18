@@ -409,8 +409,8 @@ catalogs:
       specifier: ^26.6.6
       version: 26.6.6
     type-fest:
-      specifier: 5.10.0
-      version: 5.10.0
+      specifier: 6.0.1
+      version: 6.0.1
 
 overrides:
   '@isentinel/eslint-config>@e18e/eslint-plugin': 0.8.1
@@ -619,7 +619,7 @@ importers:
         version: 2.11.11
       type-fest:
         specifier: catalog:types
-        version: 5.10.0
+        version: 6.0.1
       typescript:
         specifier: catalog:tooling
         version: '@typescript/typescript6@6.0.2'
@@ -717,7 +717,7 @@ importers:
         version: 0.5.5
       type-fest:
         specifier: catalog:types
-        version: 5.10.0
+        version: 6.0.1
     devDependencies:
       '@cliffy/command':
         specifier: catalog:runtime
@@ -828,7 +828,7 @@ importers:
         version: 2.1.0
       type-fest:
         specifier: catalog:types
-        version: 5.10.0
+        version: 6.0.1
     devDependencies:
       '@types/node':
         specifier: catalog:types
@@ -6278,13 +6278,13 @@ packages:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
 
-  type-fest@5.10.0:
-    resolution: {integrity: sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==}
-    engines: {node: '>=20'}
-
   type-fest@5.7.0:
     resolution: {integrity: sha512-1URUxUqfHFM1c+zfSPsa3gnkO7Aq21qyH75SIduNYz4SzY964rn1X2vCMQaHSHhktiw+0kPa2iyb6PUpXqB6Vg==}
     engines: {node: '>=20'}
+
+  type-fest@6.0.1:
+    resolution: {integrity: sha512-nnRRKEpyNxX4XkeR6dpMy27ZNT5/nE3D73fs5FcKW/+OtqwSmdshWUw5azvpsMzjst5rAUe61ZxilQ70YFS9yA==}
+    engines: {node: '>=22'}
 
   typed-inject@5.0.0:
     resolution: {integrity: sha512-0Ql2ORqBORLMdAW89TQKZsb1PQkFGImFfVmncXWe7a+AA3+7dh7Se9exxZowH4kbnlvKEFkMxUYdHUpjYWFJaA==}
@@ -12073,11 +12073,11 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
 
-  type-fest@5.10.0:
+  type-fest@5.7.0:
     dependencies:
       tagged-tag: 1.0.0
 
-  type-fest@5.7.0:
+  type-fest@6.0.1:
     dependencies:
       tagged-tag: 1.0.0
 
@@ -12449,7 +12449,7 @@ time:
   tsdown@0.23.7: '2026-11-06T09:57:16.179Z'
   tsrs@7.1.0-beta.tsrs3: '2026-11-18T18:28:11.259Z'
   turbo@2.11.11: '2026-11-11T18:30:55.624Z'
-  type-fest@5.10.0: '2026-09-17T09:11:18.201Z'
+  type-fest@6.0.1: '2026-11-17T06:55:08.070Z'
   unplugin-macros@0.23.4: '2026-10-29T04:45:26.272Z'
   vitest@5.1.0: '2026-11-02T16:12:37.770Z'
   vitiate@0.3.1: '2026-06-22T02:01:18.701Z'
