@@ -27,7 +27,10 @@ export function createBackend(name: string, server: ServerDefinition, root: stri
 }
 
 export function getConnection(backend: Backend): Connection {
-	if (backend.connection === undefined) throw new Error(`${backend.key} has no transport`);
+	if (backend.connection === undefined) {
+		throw new Error(`${backend.key} has no transport`);
+	}
+
 	return backend.connection;
 }
 
@@ -45,7 +48,7 @@ export async function enqueueAsync<TResult>(
 	task: () => Promise<TResult> | TResult,
 ): Promise<TResult> {
 	const result = backend.queue.then(task);
-	backend.queue = result.then(() => undefined).catch(() => undefined);
+	backend.queue = result.then(() => {}).catch(() => {});
 	return result;
 }
 
@@ -61,7 +64,11 @@ export function enqueue(backend: Backend, task: () => Promise<void> | void): voi
  */
 export function stopBackend(backend: Backend, reason: string): void {
 	backend.state = BackendState.Stopped;
-	if (backend.connection !== undefined) closeConnection(backend.connection, reason);
+
+	if (backend.connection !== undefined) {
+		closeConnection(backend.connection, reason);
+	}
+
 	backend.transport?.close();
 }
 

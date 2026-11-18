@@ -91,10 +91,14 @@ function collectWorkspaceDependencies(manifest: typeof isManifest.infer): Readon
 		manifest.peerDependencies,
 	]) {
 		if (dependencies === undefined) continue;
+
 		for (const [name, specifier] of Object.entries(dependencies)) {
-			if (specifier.startsWith("workspace:")) names.add(name);
+			if (specifier.startsWith("workspace:")) {
+				names.add(name);
+			}
 		}
 	}
+
 	return [...names];
 }
 
@@ -112,12 +116,17 @@ async function findProjectsAsync(rootDirectory: string): Promise<ReadonlyArray<P
 	for (const parent of PROJECT_PARENTS) {
 		// oxlint-disable-next-line no-await-in-loop -- parents are read in declaration order
 		const children = await readdir(nodePath.join(rootDirectory, parent), { withFileTypes: true });
-		for (const child of children) if (child.isDirectory()) candidates.push(`${parent}/${child.name}`);
+		for (const child of children) {
+			if (child.isDirectory()) {
+				candidates.push(`${parent}/${child.name}`);
+			}
+		}
 	}
 
 	const projects = await Promise.all(
 		candidates.toSorted(compareUsingLocale).map(async (directory) => readProjectAsync(rootDirectory, directory)),
 	);
+
 	return projects.filter((project) => project !== undefined);
 }
 
@@ -133,6 +142,7 @@ async function writeReferencesAsync(filePath: string, referencePaths: ReadonlyAr
 	const entries = Object.entries(tsconfig).filter(([key]) => key !== "references");
 	const leading = entries.filter(([key]) => key === "extends" || key === "compilerOptions");
 	const trailing = entries.filter(([key]) => key !== "extends" && key !== "compilerOptions");
+
 	// `references` is owned by this script; an empty expected list removes the
 	// key instead of leaking the stale one back through.
 	const references: ReadonlyArray<readonly [string, unknown]> =
@@ -155,8 +165,11 @@ function toProjectReferences(
 	const references = new Array<string>();
 	for (const name of workspaceDependencies) {
 		const dependencyDirectory = directoriesByName.get(name);
-		if (dependencyDirectory !== undefined) references.push(toRelativeReference(directory, dependencyDirectory));
+		if (dependencyDirectory !== undefined) {
+			references.push(toRelativeReference(directory, dependencyDirectory));
+		}
 	}
+
 	return references.toSorted(compareUsingLocale);
 }
 
@@ -199,6 +212,7 @@ async function findStaleReferencesAsync(rootDirectory: string): Promise<Readonly
 		if (isSameReferences(actualReferences, expectedReferences)) continue;
 		staleReferences.push({ actualReferences, expectedReferences, path });
 	}
+
 	return staleReferences;
 }
 
@@ -208,6 +222,7 @@ async function syncTsconfigReferencesAsync(rootDirectory: string): Promise<Reado
 		// oxlint-disable-next-line no-await-in-loop -- sequential writes keep the report ordered
 		await writeReferencesAsync(nodePath.join(rootDirectory, path), expectedReferences);
 	}
+
 	return staleReferences;
 }
 
@@ -234,7 +249,10 @@ const command = createBaseCommand(scriptName, "1.0.0", "Syncs tsconfig.json refe
 		}
 
 		const staleReferences = await syncTsconfigReferencesAsync(rootDirectory);
-		for (const { path } of staleReferences) log.info(`updated ${path}`);
+		for (const { path } of staleReferences) {
+			log.info(`updated ${path}`);
+		}
+
 		log.success(
 			staleReferences.length === 0
 				? "all tsconfig references are in sync"

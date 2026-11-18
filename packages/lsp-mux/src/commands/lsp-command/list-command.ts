@@ -33,7 +33,9 @@ function toTable(servers: ReadonlyArray<InspectedServer>): string {
 	]);
 	const widths = [0, 0, 0];
 	for (const row of rows) {
-		for (const [column, width] of widths.entries()) widths[column] = Math.max(width, row[column]?.length ?? 0);
+		for (const [column, width] of widths.entries()) {
+			widths[column] = Math.max(width, row[column]?.length ?? 0);
+		}
 	}
 
 	return rows
@@ -42,6 +44,7 @@ function toTable(servers: ReadonlyArray<InspectedServer>): string {
 				.map((cell, column) => cell.padEnd(widths[column] ?? 0))
 				.join("  ")
 				.trimEnd();
+
 			return servers[index]?.shadowed === true ? styleText("dim", line) : line;
 		})
 		.join("\n");
@@ -54,7 +57,9 @@ export const listCommand = createBaseCommand(scriptName, version, "List configur
 	.action(async ({ json = false, location }) => {
 		await runActionAsync(async () => {
 			const { servers, warnings } = await inspectServersAsync(getLoadOptions(), location);
-			for (const warning of warnings) consola.warn(warning);
+			for (const warning of warnings) {
+				consola.warn(warning);
+			}
 
 			if (json) {
 				const rows = servers.map(({ name, definition, error, formatter, found, scope, shadowed }) => ({
@@ -67,6 +72,7 @@ export const listCommand = createBaseCommand(scriptName, version, "List configur
 					scope,
 					shadowed,
 				}));
+
 				console.log(JSON.stringify(rows, undefined, "\t"));
 				return;
 			}
@@ -75,6 +81,7 @@ export const listCommand = createBaseCommand(scriptName, version, "List configur
 				consola.info("No servers configured. Run `lsp-mux scaffold` to create a configuration.");
 				return;
 			}
+
 			console.log(toTable(servers));
 		});
 	});

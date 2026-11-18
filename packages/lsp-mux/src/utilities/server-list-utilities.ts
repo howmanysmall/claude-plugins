@@ -54,7 +54,10 @@ function startList(
 	if (own !== undefined) return own;
 
 	const parent = inheritFrom?.[key];
-	if (parent === undefined || parent.length === 0) return [];
+	if (parent === undefined || parent.length === 0) {
+		return [];
+	}
+
 	inherited.push(key);
 	return parent;
 }
@@ -79,9 +82,7 @@ function removeFromList(
 	inherited: Array<InheritedList>,
 ): ReadonlyArray<string> | undefined {
 	const own = configuration[key];
-	if (own !== undefined) {
-		return withoutName(own, name);
-	}
+	if (own !== undefined) return withoutName(own, name);
 
 	if (inheritFrom?.[key]?.includes(name) !== true) return undefined;
 	return withoutName(startList(configuration, key, inheritFrom, inherited), name);
@@ -201,6 +202,7 @@ export function describeServers({ project, user }: Layers): ReadonlyArray<Server
 			shadowed: false,
 		});
 	}
+
 	for (const name of userServers) {
 		entries.push({
 			name,
@@ -210,5 +212,6 @@ export function describeServers({ project, user }: Layers): ReadonlyArray<Server
 			shadowed: userShadowed,
 		});
 	}
+
 	return entries;
 }

@@ -31,6 +31,7 @@ const DIAGNOSTIC: ReadonlySet<string> = new Set(["diagnostic"]);
 
 export function toFilePath(uri: string): string | undefined {
 	if (!uri.startsWith("file:")) return undefined;
+
 	try {
 		return fileURLToPath(uri);
 	} catch {
@@ -46,7 +47,9 @@ export function toFilePath(uri: string): string | undefined {
  * @returns The capabilities to send each server.
  */
 function forServer(capabilities?: JsonObject): JsonObject {
-	if (capabilities === undefined) return {};
+	if (capabilities === undefined) {
+		return {};
+	}
 
 	const textDocument = getObject(capabilities, "textDocument");
 	if (textDocument === undefined) return capabilities;
@@ -77,7 +80,9 @@ function getRoot(
  */
 export function getOwners(mux: Mux, uri: string, names?: ReadonlyArray<string>): ReadonlyArray<Owner> {
 	const path = toFilePath(uri);
-	if (path === undefined) return [];
+	if (path === undefined) {
+		return [];
+	}
 
 	const extension = nodePath.extname(path);
 	const directory = nodePath.dirname(path);
@@ -86,7 +91,9 @@ export function getOwners(mux: Mux, uri: string, names?: ReadonlyArray<string>):
 		names === undefined ? servers : names.flatMap((name) => servers.filter((server) => server.name === name));
 
 	return candidates.flatMap((server) => {
-		if (!server.extensions.includes(extension)) return [];
+		if (!server.extensions.includes(extension)) {
+			return [];
+		}
 
 		const root = getRoot(mux, server.name, server, directory);
 		return root === undefined ? [] : [{ name: server.name, root, server }];
@@ -113,9 +120,15 @@ function completeInitialization(mux: Mux, backend: Backend, response: ResponseMe
 	const connection = getConnection(backend);
 	sendNotification(connection, "initialized", {});
 	const { settings } = server;
-	if (settings !== undefined) sendNotification(connection, "workspace/didChangeConfiguration", { settings });
+	if (settings !== undefined) {
+		sendNotification(connection, "workspace/didChangeConfiguration", { settings });
+	}
 
-	for (const uri of mux.documents.keys()) if (isOwnedBy(mux, uri, backend)) syncDocument(mux, backend, uri);
+	for (const uri of mux.documents.keys()) {
+		if (isOwnedBy(mux, uri, backend)) {
+			syncDocument(mux, backend, uri);
+		}
+	}
 }
 
 async function initializeBackendAsync(mux: Mux, backend: Backend): Promise<void> {
@@ -134,12 +147,17 @@ async function initializeBackendAsync(mux: Mux, backend: Backend): Promise<void>
 	const parameters = initializationOptions === undefined ? base : { ...base, initializationOptions };
 
 	const response = await sendRequest(getConnection(backend), "initialize", parameters).response;
-	if (backend.state !== BackendState.Stopped) completeInitialization(mux, backend, response);
+	if (backend.state !== BackendState.Stopped) {
+		completeInitialization(mux, backend, response);
+	}
 }
 
 function handleBackendExit(mux: Mux, backend: Backend, reason: string): void {
 	const { key, name, root, server } = backend;
-	if (mux.backends.get(key) === backend) mux.backends.delete(key);
+	if (mux.backends.get(key) === backend) {
+		mux.backends.delete(key);
+	}
+
 	if (backend.state === BackendState.Stopped) return;
 
 	const wasReady = backend.state === BackendState.Ready;
@@ -149,13 +167,16 @@ function handleBackendExit(mux: Mux, backend: Backend, reason: string): void {
 
 	const restarts = (mux.restarts.get(key) ?? 0) + 1;
 	mux.restarts.set(key, restarts);
+
 	if (!wasReady || restarts > (mux.options.maxRestarts ?? DEFAULT_MAX_RESTARTS)) {
 		mux.unavailable.add(key);
 		logToClient(mux, MessageType.Warning, `[${name}] disabled for ${root}`);
 		return;
 	}
 
-	if (mux.documents.keys().some((uri) => isOwnedBy(mux, uri, backend))) spawnBackend(mux, { name, root, server });
+	if (mux.documents.keys().some((uri) => isOwnedBy(mux, uri, backend))) {
+		spawnBackend(mux, { name, root, server });
+	}
 }
 
 function spawnBackend(mux: Mux, { name, root, server }: Owner): Backend | undefined {
@@ -179,10 +200,13 @@ function spawnBackend(mux: Mux, { name, root, server }: Owner): Backend | undefi
 				handleBackendExit(mux, backend, reason);
 			},
 			onMessage: (message) => {
-				if (backend.connection !== undefined) receiveMessage(backend.connection, message);
+				if (backend.connection !== undefined) {
+					receiveMessage(backend.connection, message);
+				}
 			},
 		},
 	);
+
 	backend.transport = transport;
 	backend.connection = createConnection(
 		(message) => {
@@ -219,7 +243,10 @@ export function getBackendsForDocument(mux: Mux, uri: string, names?: ReadonlyAr
 	const backends = new Array<Backend>();
 	for (const owner of getOwners(mux, uri, names)) {
 		const backend = getBackend(mux, owner);
-		if (backend !== undefined) backends.push(backend);
+		if (backend !== undefined) {
+			backends.push(backend);
+		}
 	}
+
 	return backends;
 }

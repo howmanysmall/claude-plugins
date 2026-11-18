@@ -16,6 +16,7 @@ import type { Mux, SpawnSpecification, TransportEvents } from "$types/mux-types"
 import type { Message, RequestMessage, ResponseError } from "$types/protocol-types";
 
 type HandlerOutcome = JsonValue | { readonly failure: string };
+
 type Handler = (parameters: JsonObject) => HandlerOutcome | Promise<HandlerOutcome>;
 
 interface FakeBehavior {
@@ -67,14 +68,17 @@ function createFakeServer(
 
 	async function answerAsync(request: RequestMessage): Promise<void> {
 		await Promise.resolve();
+
 		if (request.method === "initialize") {
 			if (behavior.initializeError === true) {
 				events.onMessage({ id: request.id, error: { code: -1, message: "nope" }, jsonrpc: "2.0" });
 				return;
 			}
+
 			const result = behavior.initializeResult ?? {
 				capabilities: behavior.capabilities ?? { textDocumentSync: 1 },
 			};
+
 			events.onMessage({ id: request.id, jsonrpc: "2.0", result });
 			return;
 		}
@@ -106,7 +110,10 @@ function createFakeServer(
 		parametersOf: getParametersOf,
 		receive: (message): void => {
 			received.push(message);
-			if ("method" in message && "id" in message) detach(answerAsync(message));
+
+			if ("method" in message && "id" in message) {
+				detach(answerAsync(message));
+			}
 		},
 		request: (method, parameters): number => {
 			const id = nextId++;
@@ -180,7 +187,7 @@ function createHarness(options: HarnessOptions): Harness {
 			const fake = createFakeServer(specification, events, options.behaviors?.[commandName(specification)] ?? {});
 			servers.push(fake);
 			return {
-				close: () => undefined,
+				close: () => {},
 				send: (message) => {
 					fake.receive(message);
 				},
@@ -201,6 +208,7 @@ function createHarness(options: HarnessOptions): Harness {
 	});
 
 	let nextId = 1;
+
 	async function requestAsync(method: string, parameters: JsonValue): Promise<Message | undefined> {
 		const id = nextId++;
 		receiveClientMessage(mux, { id, jsonrpc: "2.0", method, params: parameters });
@@ -244,14 +252,20 @@ function createHarness(options: HarnessOptions): Harness {
 		},
 		replyToClient: (method, index, reply): void => {
 			const request = clientRequests(method)[index];
-			if (request === undefined) throw new Error(`no ${method} request #${index}`);
+			if (request === undefined) {
+				throw new Error(`no ${method} request #${index}`);
+			}
+
 			receiveClientMessage(mux, { ...reply, id: request.id, jsonrpc: "2.0" });
 		},
 		requestAsync,
 		resultAsync: async (method, parameters) => getResultOf(await requestAsync(method, parameters)),
 		server: (name, index = 0): FakeServer => {
 			const found = serversNamed(name)[index];
-			if (found === undefined) throw new Error(`no ${name} server #${index}`);
+			if (found === undefined) {
+				throw new Error(`no ${name} server #${index}`);
+			}
+
 			return found;
 		},
 		servers,
@@ -291,7 +305,7 @@ function incomingCallsFrom(parameters: JsonObject): JsonValue {
 	return [{ from: { name: "caller" }, fromRanges: [], seen: parameters.item ?? null }];
 }
 
-function firstElement(value: JsonValue | undefined): JsonValue {
+function firstElement(value?: JsonValue): JsonValue {
 	return isJsonArray(value) ? (value[0] ?? null) : null;
 }
 
@@ -340,6 +354,7 @@ describe("mux", () => {
 				"/repo/node_modules/.bin/tsgo",
 			],
 		});
+
 		await harness.requestAsync("initialize", {
 			...WORKSPACE,
 			capabilities: { textDocument: { diagnostic: {}, hover: {} } },
@@ -394,6 +409,7 @@ describe("mux", () => {
 			}),
 			paths: ["/usr/bin/biome", "/repo/pkg/biome.json"],
 		});
+
 		harness.notify("textDocument/didOpen", openParameters("file:///repo/pkg/b.ts"));
 		await settleAsync();
 
@@ -440,12 +456,15 @@ describe("mux", () => {
 			}),
 			paths: ["/usr/bin/yaml"],
 		});
+
 		await harness.requestAsync("initialize", WORKSPACE);
 		harness.notify("textDocument/didOpen", openParameters("file:///repo/a.yaml"));
 		await settleAsync();
+
 		const id = harness.server("yaml").request("workspace/configuration", {
 			items: [{ section: "yaml.format" }, { section: "yaml.missing" }, {}, { section: "" }],
 		});
+
 		await settleAsync();
 
 		expect(harness.server("yaml").parametersOf("workspace/didChangeConfiguration")).toStrictEqual([
@@ -579,6 +598,7 @@ describe("mux", () => {
 			files: { "/repo/disk.ts": "let disk = 1;" },
 			paths: ["/usr/bin/tsgo"],
 		});
+
 		await harness.requestAsync("initialize", WORKSPACE);
 		const disk = { position: { character: 0, line: 0 }, textDocument: { uri: "file:///repo/disk.ts" } };
 
@@ -600,6 +620,7 @@ describe("mux", () => {
 			configuration: TS_AND_BIOME,
 			paths: ["/usr/bin/tsgo", "/usr/bin/biome"],
 		});
+
 		harness.notify("textDocument/didChange", {
 			contentChanges: [
 				{ range: { end: { character: 11, line: 0 }, start: { character: 6, line: 0 } }, text: "bee" },
@@ -693,6 +714,7 @@ describe("mux", () => {
 			configuration: TS_AND_BIOME,
 			paths: ["/usr/bin/tsgo"],
 		});
+
 		harness.server("tsgo").request("client/registerCapability", {
 			registrations: [{ id: "d", method: "textDocument/diagnostic" }, { id: 5 }],
 		});
@@ -753,6 +775,7 @@ describe("mux", () => {
 			configuration: TS_AND_BIOME,
 			paths: ["/usr/bin/tsgo"],
 		});
+
 		receiveClientMessage(harness.mux, {
 			id: "hover",
 			jsonrpc: "2.0",
@@ -793,6 +816,7 @@ describe("mux", () => {
 			configuration: TS_AND_BIOME,
 			paths: ["/usr/bin/tsgo", "/usr/bin/biome"],
 		});
+
 		await harness.requestAsync("initialize", WORKSPACE);
 		harness.notify("textDocument/didOpen", openParameters("file:///repo/a.ts"));
 		await settleAsync();

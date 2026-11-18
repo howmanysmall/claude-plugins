@@ -31,20 +31,29 @@ function formatServer(server: InspectedServer): string {
 		["Formatter", server.formatter ? "yes" : "no"],
 		["Environment", formatList(Object.entries(definition.env).map(([key, value]) => `${key}=${value}`))],
 	];
-	if (definition.settings !== undefined) fields.push(["Settings", JSON.stringify(definition.settings)]);
+
+	if (definition.settings !== undefined) {
+		fields.push(["Settings", JSON.stringify(definition.settings)]);
+	}
+
 	if (definition.initializationOptions !== undefined) {
 		fields.push(["Initialization options", JSON.stringify(definition.initializationOptions)]);
 	}
+
 	if (server.shadowed) {
 		fields.push(["Status", styleText("yellow", "shadowed: the project's `servers` list replaces the user list")]);
 	}
 
 	let width = 0;
-	for (const [label] of fields) width = Math.max(width, label.length + 1);
+	for (const [label] of fields) {
+		width = Math.max(width, label.length + 1);
+	}
+
 	const lines = fields.map(([label, value]) => {
 		const field = `${label}:`;
 		return `  ${field.padEnd(width)} ${value}`;
 	});
+
 	return [heading, ...lines].join("\n");
 }
 
@@ -57,15 +66,20 @@ export const getCommand = createBaseCommand(scriptName, version, "Get details ab
 	.action(async ({ json = false, location }, name) => {
 		await runActionAsync(async () => {
 			const { servers, warnings } = await inspectServersAsync(getLoadOptions(), location);
-			for (const warning of warnings) consola.warn(warning);
+			for (const warning of warnings) {
+				consola.warn(warning);
+			}
 
 			const matches = servers.filter((server) => server.name === name);
-			if (matches.length === 0) throw new Error(`${name} isn't configured.`);
+			if (matches.length === 0) {
+				throw new Error(`${name} isn't configured.`);
+			}
 
 			if (json) {
 				console.log(JSON.stringify(matches, undefined, "\t"));
 				return;
 			}
+
 			console.log(matches.map(formatServer).join("\n\n"));
 		});
 	});

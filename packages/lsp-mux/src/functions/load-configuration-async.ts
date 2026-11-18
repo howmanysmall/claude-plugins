@@ -51,6 +51,7 @@ const importConfigurationAsync: NonNullable<LoadConfigOptions["import"]> = async
  */
 function createProjectImport(trusted: boolean, warnings: Array<string>): NonNullable<LoadConfigOptions["import"]> {
 	if (trusted) return importConfigurationAsync;
+
 	// oxlint-disable-next-line typescript/require-await -- c12's hook returns a promise; skipping awaits nothing.
 	return async (id) => {
 		warnings.push(`skipped ${id}: set ${TRUST_PROJECT_CONFIGS_VARIABLE}=1 to run project configuration code`);
@@ -86,6 +87,7 @@ async function readLayerAsync(
 		packageJson: false,
 		rcFile: false,
 	});
+
 	return { configuration: Predicate.isObject(config) ? config : {}, file };
 }
 
@@ -126,6 +128,7 @@ export function parseConfiguration(config: UnknownRecord): Configuration {
 	if (configuration instanceof type.errors) {
 		throw new TypeError(`invalid lsp-mux configuration: ${configuration.summary}`);
 	}
+
 	return configuration;
 }
 
@@ -150,6 +153,7 @@ export async function loadConfigurationLayersAsync({
 		readLayerAsync({ ...getUserConfigurationLocation(environment, home), import: importConfigurationAsync }),
 		readLayerAsync({ name: CONFIGURATION_NAME, cwd, import: createProjectImport(trusted, warnings) }),
 	]);
+
 	return { project, user, warnings };
 }
 

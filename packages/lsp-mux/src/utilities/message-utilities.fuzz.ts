@@ -48,7 +48,9 @@ fuzz(
 
 		read(data);
 
-		for (const message of received) expect(message.jsonrpc).toBe("2.0");
+		for (const message of received) {
+			expect(message.jsonrpc).toBe("2.0");
+		}
 	},
 	{ maxLen: 1024 },
 );

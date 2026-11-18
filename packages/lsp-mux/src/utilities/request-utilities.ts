@@ -25,10 +25,12 @@ async function collectAsync(
 	request: RequestMessage,
 ): Promise<ReadonlyArray<BackendResponse>> {
 	// Waits out each server's queue so a just-started server can answer.
-	await Promise.all(backends.map(async (backend) => enqueueAsync(backend, () => undefined)));
+	await Promise.all(backends.map(async (backend) => enqueueAsync(backend, () => {})));
+
 	const capable = backends.filter(
 		(backend) => backend.state === BackendState.Ready && backendSupports(backend, request.method),
 	);
+
 	return Promise.all(
 		capable.map(async (backend) => ({
 			backend,

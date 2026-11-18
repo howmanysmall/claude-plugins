@@ -40,8 +40,11 @@ export async function forwardAsync(
 	const result = await response;
 	const remaining = entries.filter((candidate) => candidate !== entry);
 
-	if (remaining.length === 0) mux.cancellations.delete(clientId);
-	else mux.cancellations.set(clientId, remaining);
+	if (remaining.length === 0) {
+		mux.cancellations.delete(clientId);
+	} else {
+		mux.cancellations.set(clientId, remaining);
+	}
 
 	return result;
 }

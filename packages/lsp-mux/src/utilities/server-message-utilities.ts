@@ -20,7 +20,10 @@ function lookupSetting(settings?: JsonValue, section?: string): JsonValue {
 	if (section === undefined || section.length === 0) return settings;
 
 	let current: JsonValue | undefined = settings;
-	for (const key of section.split(".")) current = asObject(current)?.[key];
+	for (const key of section.split(".")) {
+		current = asObject(current)?.[key];
+	}
+
 	return current ?? null;
 }
 
@@ -28,8 +31,11 @@ function register(mux: Mux, backend: Backend, parameters?: JsonObject): RequestR
 	for (const registration of getObjects(parameters, "registrations")) {
 		const id = getString(registration, "id");
 		const method = getString(registration, "method");
-		if (id !== undefined && method !== undefined) backend.registrations.set(id, method);
+		if (id !== undefined && method !== undefined) {
+			backend.registrations.set(id, method);
+		}
 	}
+
 	pullAllDiagnostics(mux, backend);
 	return { result: null };
 }
@@ -37,8 +43,11 @@ function register(mux: Mux, backend: Backend, parameters?: JsonObject): RequestR
 function unregister(backend: Backend, parameters?: JsonObject): RequestResult {
 	for (const registration of getObjects(parameters, "unregisterations")) {
 		const id = getString(registration, "id");
-		if (id !== undefined) backend.registrations.delete(id);
+		if (id !== undefined) {
+			backend.registrations.delete(id);
+		}
 	}
+
 	return { result: null };
 }
 
@@ -90,7 +99,10 @@ export async function handleServerRequestAsync(
 			// Servers ask the client for UI work (progress, messages) and
 			// refreshes the mux has nothing to do for.
 			const { method } = request;
-			if (method.startsWith("window/") || method.endsWith("/refresh")) return { result: null };
+			if (method.startsWith("window/") || method.endsWith("/refresh")) {
+				return { result: null };
+			}
+
 			return { error: { code: METHOD_NOT_FOUND, message: `unhandled method ${method}` } };
 		}
 	}
@@ -100,7 +112,10 @@ export function handleServerNotification(mux: Mux, backend: Backend, method: str
 	const object = asObject(parameters);
 	if (method === "textDocument/publishDiagnostics") {
 		const uri = getString(object, "uri");
-		if (uri !== undefined) storeDiagnostics(mux, backend, uri, getObjects(object, "diagnostics"));
+		if (uri !== undefined) {
+			storeDiagnostics(mux, backend, uri, getObjects(object, "diagnostics"));
+		}
+
 		return;
 	}
 

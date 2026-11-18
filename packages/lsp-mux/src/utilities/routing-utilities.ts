@@ -35,9 +35,7 @@ export function supportsMethod(
 	if (provider === undefined) return true;
 
 	const value = capabilities[provider];
-	if (method === "textDocument/prepareRename") {
-		return asObject(value)?.prepareProvider === true;
-	}
+	if (method === "textDocument/prepareRename") return asObject(value)?.prepareProvider === true;
 
 	return value !== undefined && value !== null && value !== false;
 }
@@ -71,7 +69,9 @@ export function combineResponses(strategy: RouteStrategy, responses: ReadonlyArr
 	}
 
 	for (const { error, result } of responses) {
-		if (error === undefined && result !== undefined && !isEmpty(result)) return { result };
+		if (error === undefined && result !== undefined && !isEmpty(result)) {
+			return { result };
+		}
 	}
 
 	const answered = responses.find(({ error }) => error === undefined);

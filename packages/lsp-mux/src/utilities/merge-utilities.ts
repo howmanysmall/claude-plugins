@@ -14,6 +14,7 @@ export function mergeLayers(...layers: ReadonlyArray<unknown>): UnknownRecord {
 	const merged: UnknownRecord = {};
 	for (const layer of layers.toReversed()) {
 		if (!Predicate.isObject(layer)) continue;
+
 		for (const [key, value] of Object.entries(layer)) {
 			if (value === undefined) continue;
 
@@ -22,5 +23,6 @@ export function mergeLayers(...layers: ReadonlyArray<unknown>): UnknownRecord {
 				Predicate.isObject(previous) && Predicate.isObject(value) ? mergeLayers(value, previous) : value;
 		}
 	}
+
 	return merged;
 }

@@ -18,11 +18,13 @@ const CHUNKS = Array.from({ length: Math.ceil(FRAME.byteLength / 16) }, (_, inde
 it("createMessageReader", async ({ bench }) => {
 	await bench.compare(
 		bench("one whole frame", () => {
-			createMessageReader(() => undefined)(FRAME);
+			createMessageReader(() => {})(FRAME);
 		}),
 		bench("frame in 16 byte chunks", () => {
-			const read = createMessageReader(() => undefined);
-			for (const chunk of CHUNKS) read(chunk);
+			const read = createMessageReader(() => {});
+			for (const chunk of CHUNKS) {
+				read(chunk);
+			}
 		}),
 	);
 });

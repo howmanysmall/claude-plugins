@@ -23,6 +23,7 @@ function findLocation(name: string, { project, user }: ParsedLayers): Configurat
 	if (inProject && inUser) {
 		throw new Error(`${name} is in both configurations; pass --location local or --location global.`);
 	}
+
 	if (inProject) return ConfigurationLocation.Local;
 	if (inUser) return ConfigurationLocation.Global;
 	throw new Error(`${name} isn't configured.`);
@@ -67,6 +68,7 @@ export const removeCommand = createBaseCommand(scriptName, version, "Remove an L
 					`Copied the user configuration's ${lists} into ${path} without ${name}, since a project list replaces the user list.`,
 				);
 			}
+
 			consola.success(`Removed ${name} from ${path}`);
 		});
 	});

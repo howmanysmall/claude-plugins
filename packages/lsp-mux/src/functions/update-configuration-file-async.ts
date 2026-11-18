@@ -122,10 +122,11 @@ export async function updateConfigurationFileAsync(
 	path: string,
 	mutate: (configuration: Configuration) => Configuration,
 ): Promise<void> {
-	const content = await readFile(path, "utf8").catch(() => undefined);
+	const content = await readFile(path, "utf8").catch(() => {});
 	if (content === undefined) {
 		await writeConfigurationFileAsync(path, mutate({}));
 		return;
 	}
+
 	await writeFile(path, editConfigurationSource(path, content, mutate));
 }

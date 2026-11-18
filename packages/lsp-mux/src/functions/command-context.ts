@@ -39,11 +39,15 @@ export async function runActionAsync(runAsync: () => Promise<void>): Promise<voi
 	try {
 		await runAsync();
 	} catch (error) {
-		if (error instanceof ValidationError) throw error;
+		if (error instanceof ValidationError) {
+			throw error;
+		}
+
 		if (error instanceof ExitPromptError) {
 			process.exitCode = 130;
 			return;
 		}
+
 		consola.fail(error instanceof Error ? error.message : String(error));
 		process.exitCode = 1;
 	}

@@ -13,6 +13,7 @@ function* ancestorsWithin(directory: string, boundary: string): Generator<string
 	let current = directory;
 	for (;;) {
 		yield current;
+
 		if (current === boundary) return;
 		current = nodePath.dirname(current);
 	}
@@ -66,9 +67,7 @@ export function resolveCommand(
 	searchPath: ReadonlyArray<string>,
 	exists: PathExists,
 ): string | undefined {
-	if (command.includes("/") || command.includes(nodePath.sep)) {
-		return exists(command) ? command : undefined;
-	}
+	if (command.includes("/") || command.includes(nodePath.sep)) return exists(command) ? command : undefined;
 
 	for (const candidate of ancestorsWithin(root, boundary)) {
 		const binary = nodePath.join(candidate, "node_modules", ".bin", command);
@@ -78,5 +77,6 @@ export function resolveCommand(
 	for (const directory of searchPath) {
 		if (directory.length > 0 && exists(nodePath.join(directory, command))) return command;
 	}
+
 	return undefined;
 }

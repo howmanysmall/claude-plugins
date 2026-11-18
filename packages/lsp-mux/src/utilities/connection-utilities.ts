@@ -16,7 +16,7 @@ import type { Message, RequestMessage, RequestResult, ResponseMessage } from "$t
  * @param promise - The work to let run.
  */
 export function detach(promise: Promise<unknown>): void {
-	promise.catch(() => undefined);
+	promise.catch(() => {});
 }
 
 export function createConnection(send: (message: Message) => void, handlers: ConnectionHandlers): Connection {
@@ -33,6 +33,7 @@ export function closeConnection(connection: Connection, reason: string): void {
 	connection.closed = true;
 	const waiting = [...connection.pending.entries()];
 	connection.pending.clear();
+
 	for (const [id, resolve] of waiting) {
 		resolve({ id, error: { code: INTERNAL_ERROR, message: reason }, jsonrpc: "2.0" });
 	}
@@ -45,7 +46,10 @@ async function answerAsync(connection: Connection, request: RequestMessage): Pro
 	} catch (error) {
 		outcome = { error: { code: INTERNAL_ERROR, message: inspect(error) } };
 	}
-	if (!connection.closed) connection.send({ ...outcome, id: request.id, jsonrpc: "2.0" });
+
+	if (!connection.closed) {
+		connection.send({ ...outcome, id: request.id, jsonrpc: "2.0" });
+	}
 }
 
 /**
@@ -60,10 +64,12 @@ export function receiveMessage(connection: Connection, message: Message): void {
 		detach(answerAsync(connection, message));
 		return;
 	}
+
 	if (isNotificationMessage(message)) {
 		connection.handlers.onNotification(message.method, message.params);
 		return;
 	}
+
 	if (!Predicate.isNumber(message.id)) return;
 
 	const resolve = connection.pending.get(message.id);

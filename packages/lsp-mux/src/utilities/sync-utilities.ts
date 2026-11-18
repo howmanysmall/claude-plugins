@@ -41,5 +41,6 @@ export function syncDocument(mux: Mux, backend: Backend, uri: string): void {
 			textDocument: { uri, version: document.version },
 		});
 	}
+
 	pullDiagnostics(mux, backend, uri);
 }

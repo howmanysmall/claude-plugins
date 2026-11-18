@@ -26,7 +26,7 @@ export function isJsonArray(value?: JsonValue): value is ReadonlyArray<JsonValue
 	return Array.isArray(value);
 }
 
-export function isJsonRpcId(value: JsonValue | undefined): value is number | string {
+export function isJsonRpcId(value?: JsonValue): value is number | string {
 	return Predicate.isNumber(value) || Predicate.isString(value);
 }
 
@@ -41,6 +41,7 @@ export function asObject(value?: JsonValue): JsonObject | undefined {
 	) {
 		return undefined;
 	}
+
 	return value;
 }
 
@@ -60,14 +61,19 @@ export function getNumber(object: JsonObject | undefined, key: string): number |
 
 export function getObjects(object: JsonObject | undefined, key: string): ReadonlyArray<JsonObject> {
 	const value = object?.[key];
-	if (!isJsonArray(value)) return [];
+	if (!isJsonArray(value)) {
+		return [];
+	}
 
 	const objects = new Array<JsonObject>();
 	let size = 0;
 	for (const element of value) {
 		const entry = asObject(element);
-		if (entry !== undefined) objects[size++] = entry;
+		if (entry !== undefined) {
+			objects[size++] = entry;
+		}
 	}
+
 	return objects;
 }
 

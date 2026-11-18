@@ -33,6 +33,7 @@ async function promptFormatAsync(location: ConfigurationLocation): Promise<Confi
 		location === ConfigurationLocation.Local
 			? `Project TypeScript configurations only run when ${TRUST_PROJECT_CONFIGS_VARIABLE}=1 is set.`
 			: "Typed with `LspMuxConfiguration`.";
+
 	return select({
 		choices: [
 			{ name: "JSONC", value: ConfigurationFormat.Jsonc },
@@ -88,20 +89,26 @@ async function resolveTargetAsync(flags: ScaffoldFlags, interactive: boolean): P
 	if (getConfigurationFormat(path) !== format) {
 		throw new Error(`The user configuration path ${path} isn't a ${format} file.`);
 	}
-	if (existing === undefined) return { format, location, path };
+
+	if (existing === undefined) {
+		return { format, location, path };
+	}
 
 	if (nodePath.resolve(existing) !== path) {
 		throw new Error(`${existing} already exists in another format; remove it first.`);
 	}
+
 	if (interactive && !(await confirm({ default: false, message: `Overwrite ${existing}?` }))) return undefined;
 	return { format, location, path };
 }
 
 async function chooseServersAsync(flags: ScaffoldFlags, interactive: boolean): Promise<ReadonlyArray<string>> {
 	if (flags.servers !== undefined) return flags.servers;
+
 	if (!interactive) {
 		throw new ValidationError("Pass --servers when not running in a terminal.");
 	}
+
 	return orderedCheckbox({ choices: listCatalogServers(), message: "Which servers should run?", required: true });
 }
 
@@ -111,7 +118,11 @@ async function chooseFormattersAsync(
 	servers: ReadonlyArray<string>,
 ): Promise<ReadonlyArray<string>> {
 	if (flags.formatters !== undefined) return flags.formatters;
-	if (!interactive) return [];
+
+	if (!interactive) {
+		return [];
+	}
+
 	return orderedCheckbox({ choices: servers, message: "Which of them format documents?" });
 }
 
@@ -129,9 +140,11 @@ export const scaffoldCommand = createBaseCommand(scriptName, version, "Scaffold 
 	.action(async (flags) => {
 		await runActionAsync(async () => {
 			const interactive = isInteractive();
+
 			if (flags.servers !== undefined && flags.formatters !== undefined) {
 				checkFormatters(flags.servers, flags.formatters);
 			}
+
 			if (!interactive && flags.servers === undefined) {
 				throw new ValidationError("Pass --servers when not running in a terminal.");
 			}
@@ -148,6 +161,7 @@ export const scaffoldCommand = createBaseCommand(scriptName, version, "Scaffold 
 				formatters.length > 0 ? { formatters, servers } : { servers },
 			);
 			consola.success(`Wrote ${target.path}`);
+
 			if (target.location === ConfigurationLocation.Local && target.format === ConfigurationFormat.TypeScript) {
 				consola.info(
 					`lsp-mux only runs project TypeScript configurations when ${TRUST_PROJECT_CONFIGS_VARIABLE}=1 is set.`,

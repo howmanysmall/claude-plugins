@@ -20,6 +20,7 @@ export const createProcessTransport: TransportFactory = function createProcessTr
 	});
 
 	let exited = false;
+
 	function finish(reason: string): void {
 		if (exited) return;
 		exited = true;
@@ -33,7 +34,7 @@ export const createProcessTransport: TransportFactory = function createProcessTr
 	// The servers' own logs are noise; drain them so a full pipe never blocks.
 	child.stderr.resume();
 	// A server that dies mid-write raises EPIPE here; its exit event reports it.
-	child.stdin.on("error", () => undefined);
+	child.stdin.on("error", () => {});
 	child.on("error", (error) => {
 		finish(error.message);
 	});
@@ -43,10 +44,14 @@ export const createProcessTransport: TransportFactory = function createProcessTr
 
 	return {
 		close: () => {
-			if (!exited) child.kill();
+			if (!exited) {
+				child.kill();
+			}
 		},
 		send: (message) => {
-			if (!exited && child.stdin.writable) child.stdin.write(encodeMessage(message));
+			if (!exited && child.stdin.writable) {
+				child.stdin.write(encodeMessage(message));
+			}
 		},
 	};
 };

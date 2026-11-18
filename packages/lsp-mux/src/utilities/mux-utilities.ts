@@ -43,10 +43,14 @@ function initialize(mux: Mux, request: RequestMessage): RequestResult {
 	const folder = isJsonArray(folders) ? getString(asObject(folders[0]), "uri") : undefined;
 	const rootUri = folder ?? getString(parameters, "rootUri");
 	const root = (rootUri === undefined ? undefined : toFilePath(rootUri)) ?? getString(parameters, "rootPath");
-	if (root !== undefined) mux.boundary = root;
+	if (root !== undefined) {
+		mux.boundary = root;
+	}
 
 	const warnings = mux.options.configuration.warnings ?? [];
-	for (const warning of warnings) logToClient(mux, MessageType.Warning, warning);
+	for (const warning of warnings) {
+		logToClient(mux, MessageType.Warning, warning);
+	}
 
 	return { result: { capabilities: MUX_CAPABILITIES, serverInfo: { name } } };
 }
@@ -66,6 +70,7 @@ function exit(mux: Mux): void {
 		sendNotification(getConnection(backend), "exit");
 		stopBackend(backend, "mux exited");
 	}
+
 	mux.backends.clear();
 	closeConnection(mux.client, "mux exited");
 	mux.options.onExit(mux.shuttingDown ? 0 : 1);
@@ -94,7 +99,10 @@ async function handleClientRequestAsync(mux: Mux, request: RequestMessage): Prom
 				return { error: { code: METHOD_NOT_FOUND, message: `unhandled method ${request.method}` } };
 			}
 
-			if (!mux.documents.has(uri)) openFromDisk(mux, uri);
+			if (!mux.documents.has(uri)) {
+				openFromDisk(mux, uri);
+			}
+
 			const { formatters } = mux.options.configuration;
 			const names = FORMATTING_METHODS.has(request.method) && formatters.length > 0 ? formatters : undefined;
 			return routeAsync(mux, request, getBackendsForDocument(mux, uri, names));
@@ -177,6 +185,7 @@ export function createMux(options: MuxOptions): Mux {
 		shuttingDown: false,
 		unavailable: new Set(),
 	};
+
 	return mux;
 }
 
@@ -216,6 +225,7 @@ export function runMux({ exit: exitProcess, input, output, ...options }: RunOpti
 	const read = createMessageReader((message) => {
 		receiveClientMessage(mux, message);
 	});
+
 	input.on("data", (chunk: Buffer) => {
 		read(chunk);
 	});
