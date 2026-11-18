@@ -257,6 +257,7 @@ const isDescriptionObject = type({
  * @param text - The text to highlight, or `undefined` to use the nearest manifest description.
  * @returns The pre-highlighted text.
  */
+// eslint-disable-next-line ts/no-shadow -- not a shadowing
 export const highlightDescription = defineMacro(function highlightDescription(
 	this: MacroContext | undefined,
 	text?: string,

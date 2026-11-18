@@ -7,6 +7,7 @@ import type { MacroContext } from "unplugin-macros";
 const SUFFIXES_REGEXP = /-command$/gu;
 const GENERIC_ENTRY_NAMES = new Set(["cli", "index", "main"]);
 
+// eslint-disable-next-line ts/no-shadow -- not shadowing
 export const getScriptName = defineMacro(function getScriptName(
 	this: MacroContext | undefined,
 	// oxlint-disable-next-line typescript/no-inferrable-types -- clearly not?
