@@ -114,7 +114,7 @@
 		"vitest": "catalog:test",
 		"vitiate": "catalog:test"
 	},
-	"packageManager": "pnpm@12.12.1",
+	"packageManager": "pnpm@12.22.0",
 	"engines": {
 		"node": ">=22.12.0"
 	}
